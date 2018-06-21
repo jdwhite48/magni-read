@@ -3,8 +3,8 @@
 
 #include <QMainWindow>
 #include <QDesktopWidget>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
+#include <QBoxLayout>
+#include <QGridLayout>
 #include <QLabel>
 #include <QPushButton>
 #include <QGraphicsScene>
@@ -23,11 +23,13 @@ private:
 
     QGraphicsScene * scene;
     QGraphicsView * view;
-    QGraphicsPixmapItem image;
+    QPixmap image;
+    QGraphicsPixmapItem * imageItem;
 
-    QHBoxLayout * createMenuLayout(QGraphicsPixmapItem * image);
-    QVBoxLayout * createImageLayout(QGraphicsPixmapItem * image);
+    QGridLayout * createMenuLayout();
+    QVBoxLayout * createImageLayout();
     QVBoxLayout * createButtonLayout();
+    QGraphicsPixmapItem * drawImage();
 
 
 public:

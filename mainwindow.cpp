@@ -1,11 +1,12 @@
 #include "mainwindow.h"
 
+#include <cmath>
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
     window = new QWidget();
-    image.setPixmap(QPixmap("images\\sampleImage.jpg"));
-    QHBoxLayout * wLayout = createMenuLayout(&image);
+    QGridLayout * wLayout = createMenuLayout();
 
     window->setLayout(wLayout);
     this->setCentralWidget(window);
@@ -13,8 +14,8 @@ MainWindow::MainWindow(QWidget *parent)
     // Set window title
     this->setWindowTitle(tr("MagniRead"));
 
-    // Resize window to 100% current screen
-    resize(QDesktopWidget().availableGeometry(this).size() * 1.0);
+    // Maximize window
+    this->setWindowState(Qt::WindowMaximized);
 }
 
 QVBoxLayout * MainWindow::createButtonLayout() {
@@ -29,13 +30,10 @@ QVBoxLayout * MainWindow::createButtonLayout() {
     return buttonLayout;
 }
 
-QVBoxLayout * MainWindow::createImageLayout(QGraphicsPixmapItem * image) {
+QVBoxLayout * MainWindow::createImageLayout() {
     imageLayout = new QVBoxLayout();
 
-    scene = new QGraphicsScene(this);
-    view = new QGraphicsView(scene, this);
-    scene->addItem(image);
-    view->show();
+    drawImage();
 
     QPushButton * settingsButton = new QPushButton("Settings");
 
@@ -45,16 +43,33 @@ QVBoxLayout * MainWindow::createImageLayout(QGraphicsPixmapItem * image) {
     return imageLayout;
 }
 
-QHBoxLayout * MainWindow::createMenuLayout(QGraphicsPixmapItem * image) {
-    QHBoxLayout * menuLayout = new QHBoxLayout();
+QGridLayout * MainWindow::createMenuLayout() {
+    QGridLayout * menuLayout = new QGridLayout(this);
 
-    QVBoxLayout * imageLayout = createImageLayout(image);
+    QVBoxLayout * imageLayout = createImageLayout();
     QVBoxLayout * buttonLayout = createButtonLayout();
 
-    menuLayout->addLayout(imageLayout);
-    menuLayout->addLayout(buttonLayout);
+    // Image layout spans 7 of 8 columns, and all rows
+    menuLayout->addLayout(imageLayout, 0, 0, 10, 7);
+    // Button layout spans last column, and all rows
+    menuLayout->addLayout(buttonLayout, 0, 7, 10, 1);
 
     return menuLayout;
+}
+
+/*
+ * Update QGraphicsView with the relevant sizing and image
+ */
+QGraphicsPixmapItem * MainWindow::drawImage() {
+    scene = new QGraphicsScene(this);
+    view = new QGraphicsView(scene, this);
+    image = QPixmap("images//sampleImage.jpg");
+
+    imageItem = new QGraphicsPixmapItem(image);
+    scene->addItem(imageItem);
+    view->show();
+
+    return imageItem;
 }
 
 MainWindow::~MainWindow()
