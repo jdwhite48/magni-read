@@ -4,15 +4,34 @@
 #include <QMainWindow>
 #include <QDesktopWidget>
 #include <QHBoxLayout>
-#include <QString>
+#include <QVBoxLayout>
 #include <QLabel>
+#include <QPushButton>
+#include <QGraphicsScene>
+#include <QGraphicsView>
+#include <QGraphicsPixmapItem>
 
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
+private:
+    QWidget * window;
+    QHBoxLayout * menuLayout;
+    QVBoxLayout * imageLayout;
+    QVBoxLayout * buttonLayout;
+
+    QGraphicsScene * scene;
+    QGraphicsView * view;
+    QGraphicsPixmapItem image;
+
+    QHBoxLayout * createMenuLayout(QGraphicsPixmapItem * image);
+    QVBoxLayout * createImageLayout(QGraphicsPixmapItem * image);
+    QVBoxLayout * createButtonLayout();
+
+
 public:
-    MainWindow(QWidget *parent = 0);
+    MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 };
 

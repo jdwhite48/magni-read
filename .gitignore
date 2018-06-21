@@ -1,3 +1,7 @@
+# Custom folders
+build/
+images/
+
 # C++ objects and libraries
 
 *.dll
@@ -24,5 +28,16 @@ Thumbs.db
 
 # Qt-generated files
 
-build/
-*.pro*
+*.pro
+*.pro.user
+*.pro.user.*
+*.moc
+moc_*.cpp
+moc_*.h
+ui_*.h
+Makefile*
+*build-*
+.qmake.stash
+
+# QtCreator
+*.autosave
