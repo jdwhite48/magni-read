@@ -2,7 +2,6 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QDesktopWidget>
 #include <QBoxLayout>
 #include <QGridLayout>
 #include <QLabel>
@@ -10,6 +9,7 @@
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QGraphicsPixmapItem>
+#include <QResizeEvent>
 
 class MainWindow : public QMainWindow
 {
@@ -17,8 +17,8 @@ class MainWindow : public QMainWindow
 
 private:
     QWidget * window;
-    QHBoxLayout * menuLayout;
-    QVBoxLayout * imageLayout;
+    QHBoxLayout * mainLayout;
+    QVBoxLayout * graphicsLayout;
     QVBoxLayout * buttonLayout;
 
     QGraphicsScene * scene;
@@ -26,11 +26,13 @@ private:
     QPixmap image;
     QGraphicsPixmapItem * imageItem;
 
-    QGridLayout * createMenuLayout();
-    QVBoxLayout * createImageLayout();
+    QGridLayout * createMainLayout();
+    QVBoxLayout * createGraphicsLayout();
     QVBoxLayout * createButtonLayout();
-    QGraphicsPixmapItem * drawImage();
+    QGraphicsPixmapItem * initGraphics();
 
+protected:
+    void resizeEvent(QResizeEvent * event);
 
 public:
     MainWindow(QWidget *parent = nullptr);

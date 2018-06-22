@@ -1,12 +1,14 @@
 #include "mainwindow.h"
 
+#include <iostream>
 #include <cmath>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
-    window = new QWidget();
-    QGridLayout * wLayout = createMenuLayout();
+    // Set window layout
+    window = new QWidget(this);
+    QGridLayout * wLayout = createMainLayout();
 
     window->setLayout(wLayout);
     this->setCentralWidget(window);
@@ -18,11 +20,14 @@ MainWindow::MainWindow(QWidget *parent)
     this->setWindowState(Qt::WindowMaximized);
 }
 
+/*
+ * Layout for displaying basic image modification buttons
+ */
 QVBoxLayout * MainWindow::createButtonLayout() {
-    buttonLayout = new QVBoxLayout();
+    buttonLayout = new QVBoxLayout(this);
 
-    QLabel * buttonLabel = new QLabel("Buttons:");
-    QPushButton * okButton = new QPushButton("OK");
+    QLabel * buttonLabel = new QLabel("Buttons:", this);
+    QPushButton * okButton = new QPushButton("OK", this);
 
     buttonLayout ->addWidget(buttonLabel);
     buttonLayout->addWidget(okButton);
@@ -30,39 +35,49 @@ QVBoxLayout * MainWindow::createButtonLayout() {
     return buttonLayout;
 }
 
-QVBoxLayout * MainWindow::createImageLayout() {
-    imageLayout = new QVBoxLayout();
+/*
+ * Layout for displaying graphics and button for advanced image modifications
+ */
+QVBoxLayout * MainWindow::createGraphicsLayout() {
+    graphicsLayout = new QVBoxLayout(this);
 
-    drawImage();
+    initGraphics();
 
-    QPushButton * settingsButton = new QPushButton("Settings");
+    QPushButton * settingsButton = new QPushButton("Settings", this);
 
-    imageLayout->addWidget(view);
-    imageLayout->addWidget(settingsButton);
+    graphicsLayout->addWidget(view);
+    graphicsLayout->addWidget(settingsButton);
 
-    return imageLayout;
+    return graphicsLayout;
 }
 
-QGridLayout * MainWindow::createMenuLayout() {
-    QGridLayout * menuLayout = new QGridLayout(this);
 
-    QVBoxLayout * imageLayout = createImageLayout();
+/*
+ * Entire Layout for MainWindow
+ */
+QGridLayout * MainWindow::createMainLayout() {
+    QGridLayout * mainLayout = new QGridLayout(this);
+
+    QVBoxLayout * graphicsLayout = createGraphicsLayout();
     QVBoxLayout * buttonLayout = createButtonLayout();
 
     // Image layout spans 7 of 8 columns, and all rows
-    menuLayout->addLayout(imageLayout, 0, 0, 10, 7);
+    mainLayout->addLayout(graphicsLayout, 0, 0, 10, 7);
     // Button layout spans last column, and all rows
-    menuLayout->addLayout(buttonLayout, 0, 7, 10, 1);
+    mainLayout->addLayout(buttonLayout, 0, 7, 10, 1);
 
-    return menuLayout;
+    return mainLayout;
 }
 
 /*
- * Update QGraphicsView with the relevant sizing and image
+ * Update graphics with the relevant sizing
  */
-QGraphicsPixmapItem * MainWindow::drawImage() {
+QGraphicsPixmapItem * MainWindow::initGraphics() {
     scene = new QGraphicsScene(this);
     view = new QGraphicsView(scene, this);
+    view->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+    view->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+    view->setAlignment(Qt::AlignTop | Qt::AlignLeft);
     image = QPixmap("images//sampleImage.jpg");
 
     imageItem = new QGraphicsPixmapItem(image);
@@ -72,7 +87,29 @@ QGraphicsPixmapItem * MainWindow::drawImage() {
     return imageItem;
 }
 
+/*
+ * Rescale picture to be as large as possible while keeping aspect ratio
+ */
+void MainWindow::resizeEvent(QResizeEvent * event) {
+    QMainWindow::resizeEvent(event);
+
+
+    // Remove old image
+    scene->removeItem(imageItem);
+    delete imageItem;
+
+    // Rescale new image
+    image = QPixmap("images//sampleImage.jpg").scaled(
+                static_cast<int>(view->size().width()),
+                static_cast<int>(view->size().height()),
+                Qt::KeepAspectRatioByExpanding,
+                Qt::FastTransformation );
+    imageItem = new QGraphicsPixmapItem(image);
+    scene->addItem(imageItem);
+    scene->setSceneRect(0, 0, image.width(), image.height());
+    view->show();
+}
+
 MainWindow::~MainWindow()
 {
-    delete window;
 }
