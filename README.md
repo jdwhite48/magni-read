@@ -12,7 +12,8 @@ An assistive reading application designed for individuals with impaired vision. 
 (WIP)
 
 ## TODO
-* Create dialog box for image adjustment settings
+* Show sample images in settings dialog box
+* Allow adjustment of graphics settings
 * Fullscreen mode
 * Stream live video footage from webcam
 * Take snapshot of video footage and display
