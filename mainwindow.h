@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QDialog>
 #include <QBoxLayout>
 #include <QGridLayout>
 #include <QFormLayout>
@@ -12,14 +13,15 @@
 #include <QGraphicsView>
 #include <QGraphicsPixmapItem>
 #include <QResizeEvent>
-#include <QDialog>
+#include <QDragMoveEvent>
+
 
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
 private:
-    // Main window
+    // For Main window
     QWidget * window;
     QHBoxLayout * mainLayout;
     QVBoxLayout * graphicsLayout;
@@ -36,7 +38,7 @@ private:
     QVBoxLayout * createButtonLayout();
     QGraphicsPixmapItem * initGraphics();
 
-    // Settings dialog box
+    // For settings dialog box
     QDialog * settingsWindow;
     QSlider * brightnessSlider;
     QSlider * contrastSlider;
@@ -50,7 +52,9 @@ private slots:
         void openSettingsDialog();
 
 protected:
+    //For QGraphicsView
     void resizeEvent(QResizeEvent * event);
+    void mousePressEvent(QMouseEvent * event);
 
 public:
     MainWindow(QWidget *parent = nullptr);

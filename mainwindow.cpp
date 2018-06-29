@@ -2,7 +2,6 @@
 
 #include <iostream>
 #include <cmath>
-
 #include <QSpacerItem>
 
 /*
@@ -99,7 +98,28 @@ QGraphicsPixmapItem * MainWindow::initGraphics() {
     scene->addItem(imageItem);
     view->show();
 
+    view->setCursor(Qt::OpenHandCursor);
+
     return imageItem;
+}
+
+/*
+ * Click to turn scroll dragging on or off for the graphics view
+ */
+void MainWindow::mousePressEvent(QMouseEvent * event) {
+    std::cout << "Mouse pressed" << std::endl;
+    // Start dragging when clicking with open hand
+    if (view->cursor().shape() == Qt::OpenHandCursor && view->underMouse()) {
+        view->setCursor(Qt::ClosedHandCursor);
+        view->setDragMode(QGraphicsView::ScrollHandDrag);
+    }
+    // Stop dragging when clicking with closed hand
+    else if (view->cursor().shape() == Qt::ClosedHandCursor && view->underMouse()) {
+        view->setCursor(Qt::OpenHandCursor);
+        view->setDragMode(QGraphicsView::NoDrag);
+    }
+
+     QMainWindow::mousePressEvent(event);
 }
 
 /*
@@ -177,7 +197,7 @@ void MainWindow::resizeEvent(QResizeEvent * event) {
                 Qt::FastTransformation );
     imageItem = new QGraphicsPixmapItem(image);
     scene->addItem(imageItem);
-    scene->setSceneRect(0, 0, image.width(), image.height());
+    scene->setSceneRect(0, 0, image.width(), image.height()); 
     view->show();
 }
 
