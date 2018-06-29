@@ -9,11 +9,10 @@
 #include <QLabel>
 #include <QPushButton>
 #include <QSlider>
-#include <QGraphicsScene>
-#include <QGraphicsView>
-#include <QGraphicsPixmapItem>
 #include <QResizeEvent>
 #include <QDragMoveEvent>
+
+#include "webcamview.h"`
 
 
 class MainWindow : public QMainWindow
@@ -26,17 +25,11 @@ private:
     QHBoxLayout * mainLayout;
     QVBoxLayout * graphicsLayout;
     QVBoxLayout * buttonLayout;
-
-    QGraphicsScene * scene;
-    QGraphicsView * view;
-    QPixmap image;
-    QGraphicsPixmapItem * imageItem;
-
+    WebcamView * view;
 
     QGridLayout * createMainLayout();
     QVBoxLayout * createGraphicsLayout();
     QVBoxLayout * createButtonLayout();
-    QGraphicsPixmapItem * initGraphics();
 
     // For settings dialog box
     QDialog * settingsWindow;
@@ -52,7 +45,6 @@ private slots:
         void openSettingsDialog();
 
 protected:
-    //For QGraphicsView
     void resizeEvent(QResizeEvent * event);
     void mousePressEvent(QMouseEvent * event);
 

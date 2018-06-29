@@ -53,7 +53,7 @@ QVBoxLayout * MainWindow::createButtonLayout() {
 QVBoxLayout * MainWindow::createGraphicsLayout() {
     graphicsLayout = new QVBoxLayout(this);
 
-    initGraphics();
+    view = new WebcamView(this);
 
     QPushButton * settingsButton = new QPushButton("Settings", this);
 
@@ -84,26 +84,6 @@ QGridLayout * MainWindow::createMainLayout() {
 }
 
 /*
- * Update graphics with the relevant sizing
- */
-QGraphicsPixmapItem * MainWindow::initGraphics() {
-    scene = new QGraphicsScene(this);
-    view = new QGraphicsView(scene, this);
-    view->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
-    view->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
-    view->setAlignment(Qt::AlignTop | Qt::AlignLeft);
-    image = QPixmap("images//sampleImage.jpg");
-
-    imageItem = new QGraphicsPixmapItem(image);
-    scene->addItem(imageItem);
-    view->show();
-
-    view->setCursor(Qt::OpenHandCursor);
-
-    return imageItem;
-}
-
-/*
  * Click to turn scroll dragging on or off for the graphics view
  */
 void MainWindow::mousePressEvent(QMouseEvent * event) {
@@ -118,8 +98,9 @@ void MainWindow::mousePressEvent(QMouseEvent * event) {
         view->setCursor(Qt::OpenHandCursor);
         view->setDragMode(QGraphicsView::NoDrag);
     }
-
-     QMainWindow::mousePressEvent(event);
+    else {
+        QMainWindow::mousePressEvent(event);
+    }
 }
 
 /*
@@ -184,21 +165,7 @@ void MainWindow::openSettingsDialog() {
 void MainWindow::resizeEvent(QResizeEvent * event) {
     QMainWindow::resizeEvent(event);
 
-
-    // Remove old image
-    scene->removeItem(imageItem);
-    delete imageItem;
-
-    // Rescale new image
-    image = QPixmap("images//sampleImage.jpg").scaled(
-                static_cast<int>(view->size().width()),
-                static_cast<int>(view->size().height()),
-                Qt::KeepAspectRatioByExpanding,
-                Qt::FastTransformation );
-    imageItem = new QGraphicsPixmapItem(image);
-    scene->addItem(imageItem);
-    scene->setSceneRect(0, 0, image.width(), image.height()); 
-    view->show();
+    view->rescaleImage();
 }
 
 MainWindow::~MainWindow()
