@@ -12,7 +12,8 @@
 #include <QResizeEvent>
 #include <QDragMoveEvent>
 
-#include "webcamview.h"`
+#include "webcamview.h"
+#include "settingsdialog.h"
 
 
 class MainWindow : public QMainWindow
@@ -22,9 +23,6 @@ class MainWindow : public QMainWindow
 private:
     // For Main window
     QWidget * window;
-    QHBoxLayout * mainLayout;
-    QVBoxLayout * graphicsLayout;
-    QVBoxLayout * buttonLayout;
     WebcamView * view;
 
     QGridLayout * createMainLayout();
@@ -32,13 +30,13 @@ private:
     QVBoxLayout * createButtonLayout();
 
     // For settings dialog box
-    QDialog * settingsWindow;
-    QSlider * brightnessSlider;
-    QSlider * contrastSlider;
+    SettingsDialog * settingsDialog;
+//    QSlider * brightnessSlider;
+//    QSlider * contrastSlider;
 
-    QPushButton * defaultButton;
-    QPushButton * okButton;
-    QPushButton * cancelButton;
+//    QPushButton * defaultButton;
+//    QPushButton * okButton;
+//    QPushButton * cancelButton;
 
 
 private slots:

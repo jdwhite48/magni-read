@@ -36,7 +36,7 @@ MainWindow::MainWindow(QWidget *parent)
  * Layout for displaying basic image modification buttons
  */
 QVBoxLayout * MainWindow::createButtonLayout() {
-    buttonLayout = new QVBoxLayout(this);
+    QVBoxLayout * buttonLayout = new QVBoxLayout(this);
 
     QLabel * buttonLabel = new QLabel("Buttons:", this);
     QPushButton * okButton = new QPushButton("OK", this);
@@ -51,7 +51,7 @@ QVBoxLayout * MainWindow::createButtonLayout() {
  * Layout for displaying graphics and button for advanced image modifications
  */
 QVBoxLayout * MainWindow::createGraphicsLayout() {
-    graphicsLayout = new QVBoxLayout(this);
+    QVBoxLayout * graphicsLayout = new QVBoxLayout(this);
 
     view = new WebcamView(this);
 
@@ -107,56 +107,58 @@ void MainWindow::mousePressEvent(QMouseEvent * event) {
  * Open Dialog box for changing advanced settings
  */
 void MainWindow::openSettingsDialog() {
-    settingsWindow = new QDialog(this);
+//    settingsWindow = new QDialog(this);
 
-    QVBoxLayout * dialogLayout = new QVBoxLayout(settingsWindow);
+//    QVBoxLayout * dialogLayout = new QVBoxLayout(settingsWindow);
 
-    QFormLayout * settingsLayout = new QFormLayout(settingsWindow);
-    QHBoxLayout * sButtonLayout = new QHBoxLayout(settingsWindow);
+//    QFormLayout * settingsLayout = new QFormLayout(settingsWindow);
+//    QHBoxLayout * sButtonLayout = new QHBoxLayout(settingsWindow);
 
 
-    //Create brightness and contrast sliders that vary from 1 to 100, ticks every 25, starting at 50.
-    brightnessSlider = new QSlider(Qt::Horizontal, settingsWindow);
-    contrastSlider = new QSlider(Qt::Horizontal, settingsWindow);
-    brightnessSlider->setTickPosition(QSlider::TicksAbove);
-    contrastSlider->setTickPosition(QSlider::TicksAbove);
-    brightnessSlider->setMinimum(0);
-    brightnessSlider->setMaximum(100);
-    contrastSlider->setMinimum(0);
-    contrastSlider->setMaximum(100);
-    brightnessSlider->setTickInterval(25);
-    contrastSlider->setTickInterval(25);
-    brightnessSlider->setSingleStep(1);
-    contrastSlider->setSingleStep(1);
-    brightnessSlider->setPageStep(10);
-    contrastSlider->setPageStep(10);
-    brightnessSlider->setSliderPosition(50);
-    contrastSlider->setSliderPosition(50);
-    brightnessSlider->setTracking(true);
-    contrastSlider->setTracking(true);
+//    //Create brightness and contrast sliders that vary from 1 to 100, ticks every 25, starting at 50.
+//    brightnessSlider = new QSlider(Qt::Horizontal, settingsWindow);
+//    contrastSlider = new QSlider(Qt::Horizontal, settingsWindow);
+//    brightnessSlider->setTickPosition(QSlider::TicksAbove);
+//    contrastSlider->setTickPosition(QSlider::TicksAbove);
+//    brightnessSlider->setMinimum(0);
+//    brightnessSlider->setMaximum(100);
+//    contrastSlider->setMinimum(0);
+//    contrastSlider->setMaximum(100);
+//    brightnessSlider->setTickInterval(25);
+//    contrastSlider->setTickInterval(25);
+//    brightnessSlider->setSingleStep(1);
+//    contrastSlider->setSingleStep(1);
+//    brightnessSlider->setPageStep(10);
+//    contrastSlider->setPageStep(10);
+//    brightnessSlider->setSliderPosition(50);
+//    contrastSlider->setSliderPosition(50);
+//    brightnessSlider->setTracking(true);
+//    contrastSlider->setTracking(true);
 
-    //Add to QFormLayout
-    settingsLayout->addRow("Brightness:", brightnessSlider);
-    settingsLayout->addRow("Contrast:", contrastSlider);
+//    //Add to QFormLayout
+//    settingsLayout->addRow("Brightness:", brightnessSlider);
+//    settingsLayout->addRow("Contrast:", contrastSlider);
 
-    defaultButton = new QPushButton("Restore Defaults", settingsWindow);
-    okButton = new QPushButton("OK", settingsWindow);
-    cancelButton = new QPushButton("Cancel", settingsWindow);
+//    defaultButton = new QPushButton("Restore Defaults", settingsWindow);
+//    okButton = new QPushButton("OK", settingsWindow);
+//    cancelButton = new QPushButton("Cancel", settingsWindow);
 
-    //Add to QHBoxLayout
-    sButtonLayout->addWidget(defaultButton, 1, Qt::AlignBottom | Qt::AlignLeft);
-    sButtonLayout->addStretch(2);
-    sButtonLayout->addWidget(okButton, 1, Qt::AlignBottom | Qt::AlignRight);
-    sButtonLayout->addWidget(cancelButton, 0, Qt:: AlignBottom | Qt::AlignRight);
+//    //Add to QHBoxLayout
+//    sButtonLayout->addWidget(defaultButton, 1, Qt::AlignBottom | Qt::AlignLeft);
+//    sButtonLayout->addStretch(2);
+//    sButtonLayout->addWidget(okButton, 1, Qt::AlignBottom | Qt::AlignRight);
+//    sButtonLayout->addWidget(cancelButton, 0, Qt:: AlignBottom | Qt::AlignRight);
 
-    dialogLayout->addLayout(settingsLayout);
-    dialogLayout->addLayout(sButtonLayout);
+//    dialogLayout->addLayout(settingsLayout);
+//    dialogLayout->addLayout(sButtonLayout);
 
-    settingsWindow->setLayout(dialogLayout);
-    settingsWindow->setWindowTitle(tr("Advanced Settings"));
+//    settingsWindow->setLayout(dialogLayout);
+//    settingsWindow->setWindowTitle(tr("Advanced Settings"));
+
+    settingsDialog = new SettingsDialog(this);
 
     // Prevent main window from being interacted with until dialog closed
-    settingsWindow->exec();
+    settingsDialog->exec();
 }
 
 /*
