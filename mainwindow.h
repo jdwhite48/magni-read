@@ -29,14 +29,7 @@ private:
     QVBoxLayout * createGraphicsLayout();
     QVBoxLayout * createButtonLayout();
 
-    // For settings dialog box
     SettingsDialog * settingsDialog;
-//    QSlider * brightnessSlider;
-//    QSlider * contrastSlider;
-
-//    QPushButton * defaultButton;
-//    QPushButton * okButton;
-//    QPushButton * cancelButton;
 
 
 private slots:
@@ -44,7 +37,6 @@ private slots:
 
 protected:
     void resizeEvent(QResizeEvent * event);
-    void mousePressEvent(QMouseEvent * event);
 
 public:
     MainWindow(QWidget *parent = nullptr);
