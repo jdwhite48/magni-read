@@ -12,13 +12,18 @@ An assistive reading application designed for individuals with impaired vision. 
 (WIP)
 
 ## TODO
-* Drag view by clicking instead of holding mouse button
-* Show sample images in settings dialog box
-* Adjust image with settings
+
+### Upcoming
+* Add button icons in main window
+* Show sample images in settings window
+* Configure buttons in settings window
 * Fullscreen mode
 * Stream live video footage from webcam
 * Take snapshot of video footage and display
-* Implement image adjustments (zoom, brightness, contrast, etc.)
+* Implement display adjustments (zoom, brightness, contrast, etc.)
+
+### Ideas
+* Also drag image by clicking mouse button (like ClickLock on Windows)
 
 ## Dependencies
 * [Qt](https://www.qt.io/) - An open source graphical user interface (GUI)
