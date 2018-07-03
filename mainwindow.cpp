@@ -49,11 +49,23 @@ void MainWindow::switchWebcamMode() {
 QVBoxLayout * MainWindow::createButtonLayout() {
     QVBoxLayout * buttonLayout = new QVBoxLayout(this);
 
-    QLabel * buttonLabel = new QLabel("Buttons:", this);
+    QPushButton * fullscreenButton = new QPushButton("Fullscreen", this);
+    zoomSlider = new QSlider(this);
     modeButton = new QPushButton("Change Mode", this);
     QPushButton * settingsButton = new QPushButton("Settings", this);
 
-    buttonLayout ->addWidget(buttonLabel);
+    zoomSlider->setTickPosition(QSlider::TicksBothSides);
+    zoomSlider->setMinimum(0);
+    zoomSlider->setMaximum(100);
+    zoomSlider->setTickInterval( static_cast<int>((zoomSlider->maximum() - zoomSlider->minimum())/10) );
+    zoomSlider->setSingleStep(1);
+    zoomSlider->setPageStep(10);
+    zoomSlider->setSliderPosition( static_cast<int>((zoomSlider->maximum() - zoomSlider->minimum())/2) );
+    zoomSlider->setTracking(true);
+
+    buttonLayout->addWidget(fullscreenButton);
+    buttonLayout->addWidget(zoomSlider);
+    buttonLayout->setAlignment(zoomSlider,  Qt::AlignHCenter);
     buttonLayout->addWidget(modeButton);
     buttonLayout->addWidget(settingsButton);
 

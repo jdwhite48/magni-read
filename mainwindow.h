@@ -23,6 +23,7 @@ private:
     QWidget * window = nullptr;
     WebcamView * view = nullptr;
     QPushButton * modeButton = nullptr;
+    QSlider * zoomSlider = nullptr;
 
     SettingsDialog * settingsDialog;
 
