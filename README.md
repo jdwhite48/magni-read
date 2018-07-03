@@ -1,18 +1,17 @@
 # MagniRead
 
-An assistive reading application designed for individuals with impaired vision. MagniRead can take a snapshot of the webcam's video capture, giving users a stable image that they can comfortably read from. Unlike many other assistive reading technologies, it isn't necessary to physically move the camera or reading material, just take a snapshot, then zoom and drag the image wherever you please!
+An assistive reading application designed for individuals with impaired vision. MagniRead can take a snapshot from the webcam's live video footage, giving users a stable image that they can comfortably read from. Unlike many other assistive reading technologies, it isn't necessary to physically move the camera or reading material to view a magnified image. Just take a snapshot, then zoom and drag the image wherever you please! MagniRead also includes settings for modifying the image's brightness, contrast, etc.
 
 ## Getting Started 
 ### Pre-requisites
 
 * A modern OS (Windows, OS X, Linux, etc.)
-* An external webcam that can be mounted
+* A webcam (recommended: external and mountable)
 
 ### Installing
-(WIP)
+Currently, this program can only be run as a project in the QtCreator IDE. Build and installation details coming soon...
 
 ## TODO
-
 ### Upcoming
 * Add button icons in main window
 * Show sample images in settings window
@@ -26,7 +25,7 @@ An assistive reading application designed for individuals with impaired vision. 
 * Also drag image by clicking mouse button (like ClickLock on Windows)
 
 ## Dependencies
-* [Qt](https://www.qt.io/) - An open source graphical user interface (GUI)
+* [Qt 5.11](https://www.qt.io/) - An open source graphical user interface (GUI) API. 
 
 ## Author
 * **[Jacob White](https://github.com/jdwhite88)**
