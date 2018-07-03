@@ -1,5 +1,8 @@
 #include "settingsdialog.h"
 
+#include <QGuiApplication>
+#include <QScreen>
+
 SettingsDialog::SettingsDialog() : QDialog()
 {
     SettingsDialog(nullptr);
@@ -72,11 +75,12 @@ QHBoxLayout * SettingsDialog::createButtonLayout() {
     okButton = new QPushButton("OK", this);
     cancelButton = new QPushButton("Cancel", this);
 
-    // Add to layout, with "Restore Defaults" on the left, and "OK" and "Cancel" on the right
+    // Add to layout, with "Restore Defaults" on the left, and "Cancel" and "OK" on the right
     buttonLayout->addWidget(defaultButton, 1, Qt::AlignBottom | Qt::AlignLeft);
-    buttonLayout->addStretch(2);
-    buttonLayout->addWidget(okButton, 1, Qt::AlignBottom | Qt::AlignRight);
-    buttonLayout->addWidget(cancelButton, 0, Qt:: AlignBottom | Qt::AlignRight);
+    // Add spacing equal to 5% the current screen
+    buttonLayout->addSpacing(static_cast<int>(QGuiApplication::primaryScreen()->availableGeometry().width() * 0.05));
+    buttonLayout->addWidget(cancelButton, 1, Qt::AlignBottom | Qt::AlignRight);
+    buttonLayout->addWidget(okButton, 0, Qt:: AlignBottom | Qt::AlignRight);
 
     return buttonLayout;
 

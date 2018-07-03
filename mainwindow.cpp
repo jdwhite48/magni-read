@@ -24,13 +24,17 @@ MainWindow::MainWindow(QWidget *parent)
 /*
  * Change webcam mode from preview to snapshot, or vice versa
  */
-void MainWindow::changeWebcamMode() {
+void MainWindow::switchWebcamMode() {
     switch (view->getMode()) {
         case WebcamView::SNAPSHOT :
             view->setMode(WebcamView::PREVIEW);
+
+            modeButton->setToolTip(PREVIEW_TOOLTIP);
             break;
         case WebcamView::PREVIEW :
             view->setMode(WebcamView::SNAPSHOT);
+
+            modeButton->setToolTip(SNAPSHOT_TOOLTIP);
             break;
         case WebcamView::ERROR :
         default :
@@ -40,18 +44,25 @@ void MainWindow::changeWebcamMode() {
 }
 
 /*
- * Layout for displaying basic image modification buttons
+ * Layout for displaying interactive widgets that change the display
  */
 QVBoxLayout * MainWindow::createButtonLayout() {
     QVBoxLayout * buttonLayout = new QVBoxLayout(this);
 
     QLabel * buttonLabel = new QLabel("Buttons:", this);
     modeButton = new QPushButton("Change Mode", this);
+    QPushButton * settingsButton = new QPushButton("Settings", this);
 
     buttonLayout ->addWidget(buttonLabel);
     buttonLayout->addWidget(modeButton);
+    buttonLayout->addWidget(settingsButton);
 
-    connect(modeButton, SIGNAL (released()), this, SLOT (changeWebcamMode()));
+    modeButton->setToolTip(SNAPSHOT_TOOLTIP);
+
+    // "Settings" button opens dialog box for modifying advanced settings
+    connect(settingsButton, SIGNAL (released()), this, SLOT (openSettingsDialog()));
+    // "Change Mode" button switches from still image to video feed & vice versa
+    connect(modeButton, SIGNAL (released()), this, SLOT (switchWebcamMode()));
 
     return buttonLayout;
 }
@@ -64,16 +75,10 @@ QVBoxLayout * MainWindow::createGraphicsLayout() {
 
     view = new WebcamView(this);
 
-    QPushButton * settingsButton = new QPushButton("Settings", this);
-
     graphicsLayout->addWidget(view);
-    graphicsLayout->addWidget(settingsButton);
-
-    connect(settingsButton, SIGNAL (released()), this, SLOT (openSettingsDialog()));
 
     return graphicsLayout;
 }
-
 
 /*
  * Entire Layout for MainWindow
@@ -93,7 +98,7 @@ QGridLayout * MainWindow::createMainLayout() {
 }
 
 /*
- * Open Dialog box for changing advanced settings
+ * Bring up dialog box for changing advanced settings
  */
 void MainWindow::openSettingsDialog() {
     settingsDialog = new SettingsDialog(this);

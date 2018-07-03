@@ -24,16 +24,18 @@ private:
     WebcamView * view = nullptr;
     QPushButton * modeButton = nullptr;
 
+    SettingsDialog * settingsDialog;
+
+    const char * SNAPSHOT_TOOLTIP = "Take a snapshot";
+    const char * PREVIEW_TOOLTIP = "Preview camera";
+
     QGridLayout * createMainLayout();
     QVBoxLayout * createGraphicsLayout();
     QVBoxLayout * createButtonLayout();
 
-    SettingsDialog * settingsDialog;
-
-
 private slots:
-    void changeWebcamMode();
     void openSettingsDialog();
+    void switchWebcamMode();
 
 protected:
     void resizeEvent(QResizeEvent * event);
