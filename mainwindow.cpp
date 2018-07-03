@@ -4,17 +4,6 @@
 #include <cmath>
 #include <QSpacerItem>
 
-/*
- * Default settings for the image
- */
-struct {
-    bool fullscreen = false;
-    bool preview = true;
-    double zoom = 1.00;
-    double brightness = 0.50;
-    double contrast = 0.50;
-} DEFAULT_SETTINGS, graphicsSettings;
-
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
@@ -33,16 +22,36 @@ MainWindow::MainWindow(QWidget *parent)
 }
 
 /*
+ * Change webcam mode from preview to snapshot, or vice versa
+ */
+void MainWindow::changeWebcamMode() {
+    switch (view->getMode()) {
+        case WebcamView::SNAPSHOT :
+            view->setMode(WebcamView::PREVIEW);
+            break;
+        case WebcamView::PREVIEW :
+            view->setMode(WebcamView::SNAPSHOT);
+            break;
+        case WebcamView::ERROR :
+        default :
+            // Do not change mode on error
+            break;
+    }
+}
+
+/*
  * Layout for displaying basic image modification buttons
  */
 QVBoxLayout * MainWindow::createButtonLayout() {
     QVBoxLayout * buttonLayout = new QVBoxLayout(this);
 
     QLabel * buttonLabel = new QLabel("Buttons:", this);
-    QPushButton * okButton = new QPushButton("OK", this);
+    modeButton = new QPushButton("Change Mode", this);
 
     buttonLayout ->addWidget(buttonLabel);
-    buttonLayout->addWidget(okButton);
+    buttonLayout->addWidget(modeButton);
+
+    connect(modeButton, SIGNAL (released()), this, SLOT (changeWebcamMode()));
 
     return buttonLayout;
 }

@@ -5,21 +5,42 @@
 #include <QGraphicsScene>
 #include <QGraphicsView>
 
-
 class WebcamView : public QGraphicsView {
 
     Q_OBJECT
+public:
+    enum Mode : int {
+        // Display video feed from webcam
+        PREVIEW = 0,
+        // Display still image from webcam when the mode changed
+        SNAPSHOT = 1,
+        // Webcam not detected
+        ERROR = 2,
+    };
 
 private:
-    QGraphicsScene * scene;
+    WebcamView::Mode mode;
+
+
+    QGraphicsScene * scene = nullptr;
+
+    // For snapshot mode
     QPixmap image;
-    QGraphicsPixmapItem * imageItem;
+    QGraphicsPixmapItem * imageItem = nullptr;
+
+    // For preview mode
 
 public:
-    WebcamView();
-    WebcamView(QWidget * parent);
-    void initGraphics();
+
+    Mode DEFAULT_MODE = SNAPSHOT;
+
+    WebcamView(QWidget * parent = nullptr);
+    WebcamView(Mode mode, QWidget * parent = nullptr);
+
+    void init(Mode mode, QWidget * parent);
+    Mode getMode();
     void rescaleImage();
+    void setMode(Mode mode);
 
 };
 

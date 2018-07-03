@@ -15,15 +15,14 @@
 #include "webcamview.h"
 #include "settingsdialog.h"
 
-
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
 private:
-    // For Main window
-    QWidget * window;
-    WebcamView * view;
+    QWidget * window = nullptr;
+    WebcamView * view = nullptr;
+    QPushButton * modeButton = nullptr;
 
     QGridLayout * createMainLayout();
     QVBoxLayout * createGraphicsLayout();
@@ -33,13 +32,14 @@ private:
 
 
 private slots:
-        void openSettingsDialog();
+    void changeWebcamMode();
+    void openSettingsDialog();
 
 protected:
     void resizeEvent(QResizeEvent * event);
 
 public:
-    MainWindow(QWidget *parent = nullptr);
+    MainWindow(QWidget * parent = nullptr);
     ~MainWindow();
 };
 

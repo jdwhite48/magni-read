@@ -1,20 +1,31 @@
 #include "webcamview.h"
 
-WebcamView::WebcamView() : QGraphicsView() {
-    WebcamView(nullptr);
+WebcamView::WebcamView(QWidget * parent)
+    : QGraphicsView(parent)
+{
+    init(DEFAULT_MODE, parent);
 }
 
-WebcamView::WebcamView(QWidget * parent)
-    : QGraphicsView(parent) {
-    scene = new QGraphicsScene(parent);
-    initGraphics();
+WebcamView::WebcamView(WebcamView::Mode mode, QWidget * parent)
+    : QGraphicsView(parent)
+{
+    init(mode, parent);
 }
 
 /*
- * Attach scene to view and draw image
+ * Initialization of WebcamView
  */
-void  WebcamView::initGraphics() {
+void WebcamView::init(WebcamView::Mode mode, QWidget * parent) {
+    this->mode = mode;
+
+    // Change viewport functionality & appearance
+    setDragMode(QGraphicsView::ScrollHandDrag);
+    setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+    setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+    setAlignment(Qt::AlignTop | Qt::AlignLeft);
+
     // Attach scene
+    scene = new QGraphicsScene(parent);
     setScene(scene);
 
     // Add image to scene
@@ -22,12 +33,6 @@ void  WebcamView::initGraphics() {
 
     imageItem = new QGraphicsPixmapItem(image);
     scene->addItem(imageItem);
-
-    // Change appearance
-    setCursor(Qt::OpenHandCursor);
-    setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
-    setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
-    setAlignment(Qt::AlignTop | Qt::AlignLeft);
 
     // Prepare view for display
     this->show();
@@ -56,4 +61,15 @@ void WebcamView::rescaleImage() {
 
     // Prepare rescaled view for display
     this->show();
+}
+
+/*
+ * Change what is being viewed
+ */
+void WebcamView::setMode(WebcamView::Mode mode) {
+    this->mode = mode;
+}
+
+WebcamView::Mode WebcamView::getMode() {
+    return mode;
 }
