@@ -1,7 +1,12 @@
 #ifndef SETTINGSDIALOG_H
 #define SETTINGSDIALOG_H
 
+// Parent class
 #include <QDialog>
+
+// Implementation classes
+#include <QCameraInfo>
+#include <QComboBox>
 #include <QFormLayout>
 #include <QHBoxLayout>
 #include <QPushButton>
@@ -15,6 +20,7 @@ class SettingsDialog : public QDialog {
 private:
     QSlider * brightnessSlider;
     QSlider * contrastSlider;
+    QComboBox * webcamBox;
 
     QPushButton * defaultButton;
     QPushButton * okButton;

@@ -58,9 +58,35 @@ QFormLayout * SettingsDialog::createSettingsLayout() {
     contrastSlider->setSliderPosition( static_cast<int>((contrastSlider->maximum() - contrastSlider->minimum())/2) );
     contrastSlider->setTracking(true);
 
+    // Drop-down box listing available webcams
+    webcamBox = new QComboBox(this);
+    QList<QCameraInfo> webcams = QCameraInfo::availableCameras();
+    QList<QString> webcamNames = {};
+    if (webcams.count() > 0) {
+        // Get list of webcams
+        for (QCameraInfo & webcamInfo : webcams) {
+            webcamNames << webcamInfo.description();
+        }
+    }
+    else {
+        // Indicate no webcams
+        webcamNames << "<None>";
+    }
+    webcamBox->addItems(webcamNames);
+    // Set default to system's default webcam, or first index if else (Qt default)
+    if (!QCameraInfo::defaultCamera().isNull()) {
+        for (int i = 0; i < webcams.count(); i++) {
+            if (webcams[i] == QCameraInfo::defaultCamera()) {
+                webcamBox->setCurrentIndex(i);
+                break;
+            }
+        }
+    }
+
     // Add to layout
     settingsLayout->addRow("Brightness:", brightnessSlider);
     settingsLayout->addRow("Contrast:", contrastSlider);
+    settingsLayout->addRow("Webcam:", webcamBox);
 
     return settingsLayout;
 }
