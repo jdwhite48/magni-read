@@ -115,8 +115,18 @@ QGridLayout * MainWindow::createMainLayout() {
 void MainWindow::openSettingsDialog() {
     settingsDialog = new SettingsDialog(this);
 
+    // Process image whenever settings changed in dialog box
+    connect(settingsDialog, SIGNAL (settingsChanged()), this, SLOT (processImage()) );
+
     // Prevent main window from being interacted with until dialog closed
     settingsDialog->exec();
+}
+
+/*
+ * Process image with settings defined by dialog box
+ */
+void MainWindow::processImage() {
+    qDebug() << "Image changed!";
 }
 
 /*

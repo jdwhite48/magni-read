@@ -37,6 +37,7 @@ private:
 private slots:
     void openSettingsDialog();
     void switchWebcamMode();
+    void processImage();
 
 protected:
     void resizeEvent(QResizeEvent * event);

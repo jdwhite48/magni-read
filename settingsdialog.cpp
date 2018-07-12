@@ -17,6 +17,13 @@ SettingsDialog::SettingsDialog(QWidget * parent)
 }
 
 /*
+ * Close dialog box without saving settings
+ */
+void SettingsDialog::closeDialog() {
+    this->close();
+}
+
+/*
  * Design dialog box that displays advanced settings & preview for the webcam view
  */
 QVBoxLayout * SettingsDialog::createDialogLayout() {
@@ -108,6 +115,18 @@ QHBoxLayout * SettingsDialog::createButtonLayout() {
     buttonLayout->addWidget(cancelButton, 1, Qt::AlignBottom | Qt::AlignRight);
     buttonLayout->addWidget(okButton, 0, Qt:: AlignBottom | Qt::AlignRight);
 
+    // Perform action when buttons pressed
+    connect( okButton, SIGNAL (released()), this, SLOT (saveAndCloseDialog()) );
+    connect( cancelButton, SIGNAL (released()), this, SLOT (closeDialog()) );
+
     return buttonLayout;
 
+}
+
+/*
+ * Emit that image settings have changed and close dialog box.
+ */
+void SettingsDialog::saveAndCloseDialog() {
+    emit settingsChanged();
+    this->close();
 }

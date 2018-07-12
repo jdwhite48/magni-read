@@ -34,6 +34,13 @@ public:
     SettingsDialog();
     SettingsDialog(QWidget * parent);
 
+private slots:
+    void closeDialog();
+    void saveAndCloseDialog();
+
+signals:
+    void settingsChanged();
+
 };
 
 #endif // SETTINGSDIALOG_H
