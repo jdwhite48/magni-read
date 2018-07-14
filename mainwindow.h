@@ -13,7 +13,8 @@
 #include <QDragMoveEvent>
 
 #include "webcamview.h"
-#include "settingsdialog.h"
+#include "settingsDialog.h"
+#include "webcamsettings.cpp"
 
 class MainWindow : public QMainWindow
 {
@@ -37,7 +38,7 @@ private:
 private slots:
     void openSettingsDialog();
     void switchWebcamMode();
-    void processImage();
+    void processImage(webcamSettings settings);
 
 protected:
     void resizeEvent(QResizeEvent * event);

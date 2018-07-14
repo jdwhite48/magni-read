@@ -13,6 +13,8 @@
 #include <QSlider>
 #include <QVBoxLayout>
 
+#include "webcamsettings.cpp"
+
 class SettingsDialog : public QDialog {
 
     Q_OBJECT
@@ -34,12 +36,16 @@ public:
     SettingsDialog();
     SettingsDialog(QWidget * parent);
 
+    const struct webcamSettings DEFAULT_SETTINGS = {
+        0   // Device (int)
+    };
+
 private slots:
     void closeDialog();
     void saveAndCloseDialog();
 
 signals:
-    void settingsChanged();
+    void settingsChanged(webcamSettings settings);
 
 };
 

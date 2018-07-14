@@ -1,6 +1,5 @@
 #include "mainwindow.h"
 
-#include <iostream>
 #include <cmath>
 #include <QSpacerItem>
 
@@ -116,7 +115,7 @@ void MainWindow::openSettingsDialog() {
     settingsDialog = new SettingsDialog(this);
 
     // Process image whenever settings changed in dialog box
-    connect(settingsDialog, SIGNAL (settingsChanged()), this, SLOT (processImage()) );
+    connect(settingsDialog, SIGNAL (settingsChanged(webcamSettings)), this, SLOT (processImage(webcamSettings)) );
 
     // Prevent main window from being interacted with until dialog closed
     settingsDialog->exec();
@@ -125,8 +124,8 @@ void MainWindow::openSettingsDialog() {
 /*
  * Process image with settings defined by dialog box
  */
-void MainWindow::processImage() {
-    qDebug() << "Image changed!";
+void MainWindow::processImage(webcamSettings settings) {
+    qDebug() << "Device Num: " << settings.device;
 }
 
 /*

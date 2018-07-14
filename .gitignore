@@ -1,11 +1,13 @@
 # Custom folders
 build/
 images/saved
+lib
 
 # C++ objects and libraries
 
 *.dll
 *.so
+*.a
 *.o
 *.exe
 

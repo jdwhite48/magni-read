@@ -127,6 +127,8 @@ QHBoxLayout * SettingsDialog::createButtonLayout() {
  * Emit that image settings have changed and close dialog box.
  */
 void SettingsDialog::saveAndCloseDialog() {
-    emit settingsChanged();
+    webcamSettings settings;
+    settings.device = webcamBox->currentIndex();
+    emit settingsChanged(settings);
     this->close();
 }
