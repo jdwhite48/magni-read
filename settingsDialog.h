@@ -37,12 +37,15 @@ public:
     SettingsDialog(QWidget * parent);
 
     const struct webcamSettings DEFAULT_SETTINGS = {
-        0   // Device (int)
+        0,      // Device (int)
+        0.5,    // Brightness (double)
+        0.5,    // Contrast (double)
     };
 
 private slots:
     void closeDialog();
     void saveAndCloseDialog();
+    void restoreDefaults();
 
 signals:
     void settingsChanged(webcamSettings settings);

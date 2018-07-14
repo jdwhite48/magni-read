@@ -7,5 +7,7 @@
 struct webcamSettings {
     // Index of webcam device
     int device;
+    double brightness;
+    double contrast;
 };
 #endif

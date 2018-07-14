@@ -54,7 +54,6 @@ LIBS += path\to\opencv-build\bin\libopencv_highgui320.dll
 ### Upcoming
 * Add button icons in main window
 * Show sample images in settings window
-* Configure buttons in settings window
 * Fullscreen mode
 * Stream live video footage from webcam
 * Take snapshot of video footage and display

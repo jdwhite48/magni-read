@@ -52,7 +52,7 @@ QFormLayout * SettingsDialog::createSettingsLayout() {
     brightnessSlider->setTickInterval( static_cast<int>((brightnessSlider->maximum() - brightnessSlider->minimum())/4) );
     brightnessSlider->setSingleStep(1);
     brightnessSlider->setPageStep(10);
-    brightnessSlider->setSliderPosition( static_cast<int>((brightnessSlider->maximum() - brightnessSlider->minimum())/2) );
+    brightnessSlider->setSliderPosition( static_cast<int>((brightnessSlider->maximum() - brightnessSlider->minimum()) * DEFAULT_SETTINGS.brightness) );
     brightnessSlider->setTracking(true);
 
     contrastSlider = new QSlider(Qt::Horizontal, this);
@@ -62,7 +62,7 @@ QFormLayout * SettingsDialog::createSettingsLayout() {
     contrastSlider->setTickInterval( static_cast<int>((contrastSlider->maximum() - contrastSlider->minimum())/4) );
     contrastSlider->setSingleStep(1);
     contrastSlider->setPageStep(10);
-    contrastSlider->setSliderPosition( static_cast<int>((contrastSlider->maximum() - contrastSlider->minimum())/2) );
+    contrastSlider->setSliderPosition( static_cast<int>((contrastSlider->maximum() - contrastSlider->minimum()) * DEFAULT_SETTINGS.contrast) );
     contrastSlider->setTracking(true);
 
     // Drop-down box listing available webcams
@@ -118,9 +118,22 @@ QHBoxLayout * SettingsDialog::createButtonLayout() {
     // Perform action when buttons pressed
     connect( okButton, SIGNAL (released()), this, SLOT (saveAndCloseDialog()) );
     connect( cancelButton, SIGNAL (released()), this, SLOT (closeDialog()) );
+    connect( defaultButton, SIGNAL (released()), this, SLOT (restoreDefaults()) );
 
     return buttonLayout;
 
+}
+
+/*
+ * Change settings back to their default values
+ */
+void SettingsDialog::restoreDefaults() {
+    webcamBox->setCurrentIndex(DEFAULT_SETTINGS.device);
+
+    int brightnessRange = brightnessSlider->maximum() - brightnessSlider->minimum();
+    brightnessSlider->setSliderPosition( static_cast<int>(brightnessRange * DEFAULT_SETTINGS.brightness) );
+    int contrastRange = contrastSlider->maximum() - contrastSlider->minimum();
+    contrastSlider->setSliderPosition( static_cast<int>(contrastRange * DEFAULT_SETTINGS.contrast) );
 }
 
 /*
@@ -128,7 +141,13 @@ QHBoxLayout * SettingsDialog::createButtonLayout() {
  */
 void SettingsDialog::saveAndCloseDialog() {
     webcamSettings settings;
+    int brightnessRange = brightnessSlider->maximum() - brightnessSlider->minimum();
+    int contrastRange = contrastSlider->maximum() - contrastSlider->minimum();
+
     settings.device = webcamBox->currentIndex();
+    settings.brightness = static_cast<double>(brightnessSlider->value()) / brightnessRange;
+    settings.contrast = static_cast<double>(contrastSlider->value()) / contrastRange;
+
     emit settingsChanged(settings);
     this->close();
 }

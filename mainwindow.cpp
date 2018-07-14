@@ -126,6 +126,8 @@ void MainWindow::openSettingsDialog() {
  */
 void MainWindow::processImage(webcamSettings settings) {
     qDebug() << "Device Num: " << settings.device;
+    qDebug() << "Brightness: " << settings.brightness;
+    qDebug() << "Contrast: " << settings.contrast;
 }
 
 /*
