@@ -31,22 +31,20 @@ private:
     WebcamPlayer * videoPlayer;
     QGraphicsScene * scene = nullptr;
 
-    // For snapshot mode
-    QPixmap image;
+    // Copy of current image/frame
+    QImage image;
+    // Graphical representation of image in view
     QGraphicsPixmapItem * imageItem = nullptr;
-
-    // For preview mode
-    QGraphicsPixmapItem * frameItem = nullptr;
 
 protected:
     void setMode(Mode mode);
 
 protected slots:
-    void updatePlayer(QImage img);
+    void updateImage(QImage img);
 
 public:
 
-    Mode DEFAULT_MODE = PREVIEW;
+    Mode DEFAULT_MODE = SNAPSHOT;
 
     WebcamView(QWidget * parent = nullptr);
     WebcamView(Mode mode, QWidget * parent = nullptr);
@@ -54,7 +52,7 @@ public:
     void init(Mode mode, QWidget * parent);
     Mode getMode();
     void playVideo();
-    void rescaleImage();
+    void resize();
     void stopVideo();
 
 };

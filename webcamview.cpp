@@ -35,14 +35,11 @@ void WebcamView::init(WebcamView::Mode mode, QWidget * parent) {
     videoPlayer = new WebcamPlayer(this);
     videoPlayer->open("media//vtest.avi");
     connect(videoPlayer, SIGNAL (processedImage(QImage)),
-            this, SLOT (updatePlayer(QImage)));
+            this, SLOT (updateImage(QImage)));
 
     if (mode == SNAPSHOT) {
         // TODO: Instead of sample image, "choose webcam" image shown on screen
-        image = QPixmap("media//sampleImage.jpg");
-
-        imageItem = new QGraphicsPixmapItem(image);
-        scene->addItem(imageItem);
+        updateImage(QImage("media//sampleImage.jpg"));
     }
     else if (mode == PREVIEW) {
         // Play video stream
@@ -59,31 +56,35 @@ void WebcamView::init(WebcamView::Mode mode, QWidget * parent) {
 /*
  * Rescale image so that it keeps the aspect ratio, fills the entire viewport, and scrolls properly
  */
-void WebcamView::rescaleImage() {
+void WebcamView::updateImage(QImage img) {
 
     // Remove old image
-    if (imageItem != nullptr) {
-        scene->removeItem(imageItem);
-        delete imageItem;
-    }
+    scene->removeItem(imageItem);
+    delete imageItem;
 
-    if (mode == SNAPSHOT) {
-        // Rescale new image so that it at least fills the viewport
-        image = QPixmap("media//sampleImage.jpg").scaled(
-                    static_cast<int>(this->size().width()),
-                    static_cast<int>(this->size().height()),
-                    Qt::KeepAspectRatioByExpanding,
-                    Qt::FastTransformation );
-        imageItem = new QGraphicsPixmapItem(image);
+    image = img;
+    // Rescale new image so that it at least fills the viewport
+    imageItem = new QGraphicsPixmapItem(QPixmap::fromImage(img).scaled(
+                static_cast<int>(this->size().width()),
+                static_cast<int>(this->size().height()),
+                Qt::KeepAspectRatioByExpanding, Qt::FastTransformation ));
 
-        // Make scene larger scene than viewport if necessary (allows scrolling of zoomed image)
-        scene->setSceneRect(0, 0, image.width(), image.height());
+    // Make scene larger scene than viewport if necessary (allows scrolling of zoomed image)
+    scene->setSceneRect(0, 0, img.width(), img.height());
 
-        scene->addItem(imageItem);
-    }
+    scene->addItem(imageItem);
 
     // Prepare rescaled view for display
     this->show();
+}
+
+/*
+ * Resize current image to fit the screen
+ */
+void WebcamView::resize() {
+    if (!image.isNull()) {
+        updateImage(image);
+    }
 }
 
 /*
@@ -111,24 +112,4 @@ void WebcamView::playVideo() {
 void WebcamView::stopVideo() {
     setMode(SNAPSHOT);
     videoPlayer->stop();
-}
-
-/*
- * Rescale frame and update image
- */
-void WebcamView::updatePlayer(QImage img) {
-    if (!img.isNull()) {
-        delete frameItem;
-        frameItem = nullptr;
-
-        frameItem = new QGraphicsPixmapItem(QPixmap::fromImage(img).scaled(
-             static_cast<int>(this->size().width()),
-             static_cast<int>(this->size().height()),
-             Qt::KeepAspectRatioByExpanding, Qt::FastTransformation));
-
-        scene->setSceneRect(0, 0, image.width(), image.height());
-        scene->addItem(frameItem);
-
-        this->show();
-    }
 }

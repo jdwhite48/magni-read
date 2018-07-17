@@ -148,7 +148,7 @@ void MainWindow::processImage(webcamSettings settings) {
 void MainWindow::resizeEvent(QResizeEvent * event) {
     QMainWindow::resizeEvent(event);
 
-    view->rescaleImage();
+    view->resize();
 }
 
 MainWindow::~MainWindow()
