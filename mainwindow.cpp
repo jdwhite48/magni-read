@@ -21,18 +21,17 @@ MainWindow::MainWindow(QWidget *parent)
 }
 
 /*
- * Change webcam mode from preview to snapshot, or vice versa
+ * Change webcam mode between preview and snapshot,
+ * playing or stopping the video in the process, respectively.
  */
 void MainWindow::switchWebcamMode() {
     switch (view->getMode()) {
         case WebcamView::SNAPSHOT :
-            view->setMode(WebcamView::PREVIEW);
-
+            view->playVideo();
             modeButton->setToolTip(PREVIEW_TOOLTIP);
             break;
         case WebcamView::PREVIEW :
-            view->setMode(WebcamView::SNAPSHOT);
-
+            view->stopVideo();
             modeButton->setToolTip(SNAPSHOT_TOOLTIP);
             break;
         case WebcamView::ERROR :
@@ -68,7 +67,20 @@ QVBoxLayout * MainWindow::createButtonLayout() {
     buttonLayout->addWidget(modeButton);
     buttonLayout->addWidget(settingsButton);
 
-    modeButton->setToolTip(SNAPSHOT_TOOLTIP);
+    // Begin with proper tooltip
+    switch (view->getMode()) {
+    case WebcamView::SNAPSHOT:
+        modeButton->setToolTip(SNAPSHOT_TOOLTIP);
+        break;
+    case WebcamView::PREVIEW:
+        modeButton->setToolTip(PREVIEW_TOOLTIP);
+        break;
+    case WebcamView::ERROR:
+    default:
+        modeButton->setToolTip(ERROR_TOOLTIP);
+        modeButton->setEnabled(false);
+        break;
+    }
 
     // "Settings" button opens dialog box for modifying advanced settings
     connect(settingsButton, SIGNAL (released()), this, SLOT (openSettingsDialog()));

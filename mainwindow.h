@@ -30,6 +30,7 @@ private:
 
     const char * SNAPSHOT_TOOLTIP = "Take a snapshot";
     const char * PREVIEW_TOOLTIP = "Preview camera";
+    const char * ERROR_TOOLTIP = "Cannot find camera";
 
     QGridLayout * createMainLayout();
     QVBoxLayout * createGraphicsLayout();
