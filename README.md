@@ -41,22 +41,22 @@ Windows:
 4. Clone or download the application's source code from the [repository URL](https://github.com/jdwhite88/magni-read) to the project directory.
 5. Add these lines of code to the .pro file (where path\to\X is the location of the folder X):
 ```
-QT       += multimedia multimediawidgets
-QTPLUGIN += wmf
+QT       += multimedia
 
 INCLUDEPATH += path\to\opencv-build\install\include
 
 LIBS += path\to\opencv-build\bin\libopencv_core320.dll
 LIBS += path\to\opencv-build\bin\libopencv_highgui320.dll
+LIBS += path\to\opencv-build\bin\libopencv_imgproc320.dll
 ```
+...
 
 ## TODO
 ### Upcoming
-* Add button icons in main window
+* Redesign buttons and sliders to be easier to use
 * Show sample images in settings window
+* Configure player to play from webcam
 * Fullscreen mode
-* Stream live video footage from webcam
-* Take snapshot of video footage and display
 * Implement display adjustments (zoom, brightness, contrast, etc.)
 
 ### Ideas
