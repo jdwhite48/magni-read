@@ -3,12 +3,12 @@
 An assistive reading application designed for individuals with impaired vision. MagniRead can take a snapshot from the webcam's live video footage, giving users a stable image that they can comfortably read from. Unlike many other assistive reading technologies, it isn't necessary to physically move the camera or reading material to view a magnified image. Just take a snapshot, then zoom and drag the image wherever you please! MagniRead also includes settings for modifying the image's brightness, contrast, etc.
 
 ## Getting Started 
-### Pre-requisites (WIP)
+### Pre-requisites
 
-* A modern OS (Windows, OS X, Linux, etc.)
+* Windows Operating System
 * A webcam (recommended: external and mountable)
 
-### Installing (WIP)
+### Installing
 
 #### Run
 
@@ -49,28 +49,45 @@ LIBS += path\to\opencv-build\bin\libopencv_core320.dll
 LIBS += path\to\opencv-build\bin\libopencv_videoio320.dll
 LIBS += path\to\opencv-build\bin\libopencv_highgui320.dll
 LIBS += path\to\opencv-build\bin\libopencv_imgproc320.dll
+
+SOURCES += \
+    main.cpp \
+    mainwindow.cpp \
+    webcamview.cpp \
+    settingsdialog.cpp \
+    webcamsettings.cpp \
+    webcamplayer.cpp
+
+HEADERS += \
+    mainwindow.h \
+    webcamview.h \
+    settingsdialog.h \
+    webcamplayer.h
+
+RESOURCES += resources.qrc
 ```
-...
 
 ## TODO
 ### Upcoming
-* Redesign sliders to be easier to use
+* Redesign sliders' look-and-feel for easier use
 * Show sample images in settings window
 * Configure player to play from webcam
 * Fullscreen mode
 * Implement display adjustments (zoom, brightness, contrast, etc.)
 
-### Ideas
+### Future Ideas
 * Also drag image by clicking mouse button (like ClickLock on Windows)
+* Cross-platform compatibility (Linux && OS X)
 
 ## Dependencies
 * [Qt 5.11.0](https://www.qt.io/) - An open-source graphical user interface (GUI) framework.
 * [OpenCV 3.2.0](https://opencv.org/) - An open-source computer vision library, used for video capture and image processing.
 
 ### Developer Dependencies
-* MinGW 32bit (Optional, Windows only, I used v5.3.0) - Development environment that provides tools for compiling and debugging C++ programs (include with Qt installation)
-* CMake-gui (Optional, I used v3.11.4) - A GUI interface for CMake, which is a tool for compiling and building programs from source, used for configuring OpenCV build.
-* Git (Optional) - Version control system for obtaining repository files
+* MinGW 32bit (used v5.3.0) - Development environment that provides tools for compiling and debugging C++ programs (include with Qt installation)
+* CMake (used v3.11.4) - A tool for compiling and building programs from source, used for configuring OpenCV build.
+* CMake-GUI (Optional, used v3.11.4) - A GUI interface for CMake.
+* Git (Optional, used v2.18.0) - Version control system for obtaining and submitting changes to repository files
 
 ## Author
 * **[Jacob White](https://github.com/jdwhite88)**
