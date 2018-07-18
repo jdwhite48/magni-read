@@ -1,8 +1,5 @@
 #include "webcamview.h"
 
-#include <iostream>
-#include <opencv2/cvconfig.h>
-
 WebcamView::WebcamView(QWidget * parent)
     : QGraphicsView(parent)
 {
@@ -33,13 +30,13 @@ void WebcamView::init(WebcamView::Mode mode, QWidget * parent) {
 
     // Setup video capture and load video
     videoPlayer = new WebcamPlayer(this);
-    videoPlayer->open("media//vtest.avi");
+    videoPlayer->open("./media/vtest.avi");
     connect(videoPlayer, SIGNAL (processedImage(QImage)),
             this, SLOT (updateImage(QImage)));
 
     if (mode == SNAPSHOT) {
         // TODO: Instead of sample image, "choose webcam" image shown on screen
-        updateImage(QImage("media//sampleImage.jpg"));
+        updateImage(QImage(":/media/sampleImage.jpg"));
     }
     else if (mode == PREVIEW) {
         // Play video stream

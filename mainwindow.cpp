@@ -30,16 +30,16 @@ void MainWindow::switchWebcamMode() {
         case WebcamView::SNAPSHOT :
             view->playVideo();
             modeButton->setToolTip(PREVIEW_TOOLTIP);
-            modeButton->setIcon(QIcon("media\\icons\\image.png"));
+            modeButton->setIcon(QIcon(":/media/icons/image.png"));
             break;
         case WebcamView::PREVIEW :
             view->stopVideo();
             modeButton->setToolTip(SNAPSHOT_TOOLTIP);
-            modeButton->setIcon(QIcon("media\\icons\\videocam.png"));
+            modeButton->setIcon(QIcon(":/media/icons/videocam.png"));
             break;
         case WebcamView::ERROR :
         default :
-            modeButton->setIcon(QIcon("media\\icons\\error.png"));
+            modeButton->setIcon(QIcon(":/media/icons/error.png"));
             modeButton->setEnabled(false);
             break;
     }
@@ -64,25 +64,25 @@ QVBoxLayout * MainWindow::createButtonLayout() {
     switch (view->getMode()) {
     case WebcamView::SNAPSHOT:
         modeButton->setToolTip(SNAPSHOT_TOOLTIP);
-        modeButton->setIcon(QIcon("media\\icons\\videocam.png"));
+        modeButton->setIcon(QIcon(":/media/icons/videocam.png"));
         break;
     case WebcamView::PREVIEW:
         modeButton->setToolTip(PREVIEW_TOOLTIP);
-        modeButton->setIcon(QIcon("media\\icons\\image.png"));
+        modeButton->setIcon(QIcon(":/media/icons/image.png"));
         break;
     case WebcamView::ERROR:
     default:
         modeButton->setToolTip(ERROR_TOOLTIP);
-        modeButton->setIcon(QIcon("media\\icons\\error.png"));
+        modeButton->setIcon(QIcon(":/media/icons/error.png"));
         modeButton->setEnabled(false);
         break;
     }
     modeButton->setIconSize(QSize(BUTTON_SIZE, BUTTON_SIZE));
     modeButton->setFixedWidth(BUTTON_SIZE);
 
-    fullscreenButton->setIcon(QIcon("media\\icons\\fullscreen.svg"));
+    fullscreenButton->setIcon(QIcon(":/media/icons/fullscreen.svg"));
     fullscreenButton->setIconSize(QSize(BUTTON_SIZE, BUTTON_SIZE));
-    settingsButton->setIcon(QIcon("media\\icons\\gear.png"));
+    settingsButton->setIcon(QIcon(":/media/icons/gear.png"));
     settingsButton->setIconSize(QSize(BUTTON_SIZE, BUTTON_SIZE));
     fullscreenButton->setFixedWidth(BUTTON_SIZE);
     settingsButton->setFixedWidth(BUTTON_SIZE);

@@ -17,7 +17,7 @@ int main(int argc, char *argv[])
     a.setFont(_font);
 
     // Use custom stylesheet
-    QFile file("stylesheet.css");
+    QFile file(":/stylesheet.css");
     if (file.open(QFile::ReadOnly)) {
         QString stylesheet(file.readAll());
         // Replace whitespace characters with normal space

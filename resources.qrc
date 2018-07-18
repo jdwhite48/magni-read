@@ -1,0 +1,17 @@
+<RCC>
+    <qresource prefix="/media">
+        <file alias="sampleImage.jpg">media/sampleImage.jpg</file>
+    </qresource>
+    <qresource prefix="/">
+        <file>stylesheet.css</file>
+    </qresource>
+    <qresource prefix="/media/icons">
+        <file alias="error.png">media/icons/error.png</file>
+        <file alias="fullscreen.svg">media/icons/fullscreen.svg</file>
+        <file alias="fullscreen-exit.png">media/icons/fullscreen-exit.png</file>
+        <file alias="gear.png">media/icons/gear.png</file>
+        <file alias="image.png">media/icons/image.png</file>
+        <file alias="sunny.png">media/icons/sunny.png</file>
+        <file alias="videocam.png">media/icons/videocam.png</file>
+    </qresource>
+</RCC>
