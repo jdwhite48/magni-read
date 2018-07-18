@@ -28,9 +28,10 @@ private:
 
     SettingsDialog * settingsDialog;
 
-    const char * SNAPSHOT_TOOLTIP = "Take a snapshot";
-    const char * PREVIEW_TOOLTIP = "Preview camera";
+    const char * SNAPSHOT_TOOLTIP = "Preview camera";
+    const char * PREVIEW_TOOLTIP = "Take a snapshot";
     const char * ERROR_TOOLTIP = "Cannot find camera";
+    const int BUTTON_SIZE = 150;
 
     QGridLayout * createMainLayout();
     QVBoxLayout * createGraphicsLayout();

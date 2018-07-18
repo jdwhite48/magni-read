@@ -2,6 +2,7 @@
 
 #include <cmath>
 #include <QSpacerItem>
+#include <QPainter>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -29,16 +30,20 @@ void MainWindow::switchWebcamMode() {
         case WebcamView::SNAPSHOT :
             view->playVideo();
             modeButton->setToolTip(PREVIEW_TOOLTIP);
+            modeButton->setIcon(QIcon("media\\icons\\image.png"));
             break;
         case WebcamView::PREVIEW :
             view->stopVideo();
             modeButton->setToolTip(SNAPSHOT_TOOLTIP);
+            modeButton->setIcon(QIcon("media\\icons\\videocam.png"));
             break;
         case WebcamView::ERROR :
         default :
-            // Do not change mode on error
+            modeButton->setIcon(QIcon("media\\icons\\error.png"));
+            modeButton->setEnabled(false);
             break;
     }
+    modeButton->setIconSize(QSize(BUTTON_SIZE, BUTTON_SIZE));
 }
 
 /*
@@ -47,10 +52,47 @@ void MainWindow::switchWebcamMode() {
 QVBoxLayout * MainWindow::createButtonLayout() {
     QVBoxLayout * buttonLayout = new QVBoxLayout(this);
 
-    QPushButton * fullscreenButton = new QPushButton("Fullscreen", this);
+    QPushButton * fullscreenButton = new QPushButton(/*"Fullscreen",*/ this);
     zoomSlider = new QSlider(this);
-    modeButton = new QPushButton("Change Mode", this);
-    QPushButton * settingsButton = new QPushButton("Settings", this);
+    modeButton = new QPushButton(/*"Change Mode",*/ this);
+    QPushButton * settingsButton = new QPushButton(/*"Settings",*/ this);
+
+    // Set tooltips and icons for buttons
+    fullscreenButton->setToolTip("Enter Fullscreen");
+    settingsButton->setToolTip("Settings");
+
+    switch (view->getMode()) {
+    case WebcamView::SNAPSHOT:
+        modeButton->setToolTip(SNAPSHOT_TOOLTIP);
+        modeButton->setIcon(QIcon("media\\icons\\videocam.png"));
+        break;
+    case WebcamView::PREVIEW:
+        modeButton->setToolTip(PREVIEW_TOOLTIP);
+        modeButton->setIcon(QIcon("media\\icons\\image.png"));
+        break;
+    case WebcamView::ERROR:
+    default:
+        modeButton->setToolTip(ERROR_TOOLTIP);
+        modeButton->setIcon(QIcon("media\\icons\\error.png"));
+        modeButton->setEnabled(false);
+        break;
+    }
+    modeButton->setIconSize(QSize(BUTTON_SIZE, BUTTON_SIZE));
+    modeButton->setFixedWidth(BUTTON_SIZE);
+
+    fullscreenButton->setIcon(QIcon("media\\icons\\fullscreen.svg"));
+    fullscreenButton->setIconSize(QSize(BUTTON_SIZE, BUTTON_SIZE));
+    settingsButton->setIcon(QIcon("media\\icons\\gear.png"));
+    settingsButton->setIconSize(QSize(BUTTON_SIZE, BUTTON_SIZE));
+    fullscreenButton->setFixedWidth(BUTTON_SIZE);
+    settingsButton->setFixedWidth(BUTTON_SIZE);
+
+    // Customize buttons in stylesheet with "QPushButton#mainButton {...}"
+    fullscreenButton->setObjectName("mainButton");
+    modeButton->setObjectName("mainButton");
+    settingsButton->setObjectName("mainButton");
+
+
 
     zoomSlider->setTickPosition(QSlider::TicksBothSides);
     zoomSlider->setMinimum(0);
@@ -66,21 +108,6 @@ QVBoxLayout * MainWindow::createButtonLayout() {
     buttonLayout->setAlignment(zoomSlider,  Qt::AlignHCenter);
     buttonLayout->addWidget(modeButton);
     buttonLayout->addWidget(settingsButton);
-
-    // Begin with proper tooltip
-    switch (view->getMode()) {
-    case WebcamView::SNAPSHOT:
-        modeButton->setToolTip(SNAPSHOT_TOOLTIP);
-        break;
-    case WebcamView::PREVIEW:
-        modeButton->setToolTip(PREVIEW_TOOLTIP);
-        break;
-    case WebcamView::ERROR:
-    default:
-        modeButton->setToolTip(ERROR_TOOLTIP);
-        modeButton->setEnabled(false);
-        break;
-    }
 
     // "Settings" button opens dialog box for modifying advanced settings
     connect(settingsButton, SIGNAL (released()), this, SLOT (openSettingsDialog()));

@@ -40,6 +40,10 @@ ui_*.h
 Makefile*
 *build-*
 .qmake.stash
+object_script.*
 
 # QtCreator
 *.autosave
+
+# MISC
+*.swp
