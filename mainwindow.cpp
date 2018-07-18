@@ -39,7 +39,7 @@ void MainWindow::switchWebcamMode() {
             break;
         case WebcamView::ERROR :
         default :
-            modeButton->setIcon(QIcon(":/media/icons/error.png"));
+            modeButton->setIcon(QIcon(":/media/icons/videocam-off.png"));
             modeButton->setEnabled(false);
             break;
     }
@@ -73,7 +73,7 @@ QVBoxLayout * MainWindow::createButtonLayout() {
     case WebcamView::ERROR:
     default:
         modeButton->setToolTip(ERROR_TOOLTIP);
-        modeButton->setIcon(QIcon(":/media/icons/error.png"));
+        modeButton->setIcon(QIcon(":/media/icons/videocam-off.png"));
         modeButton->setEnabled(false);
         break;
     }

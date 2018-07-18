@@ -6,12 +6,12 @@
         <file>stylesheet.css</file>
     </qresource>
     <qresource prefix="/media/icons">
-        <file alias="error.png">media/icons/error.png</file>
         <file alias="fullscreen.svg">media/icons/fullscreen.svg</file>
         <file alias="fullscreen-exit.png">media/icons/fullscreen-exit.png</file>
-        <file alias="gear.png">media/icons/gear.png</file>
-        <file alias="image.png">media/icons/image.png</file>
-        <file alias="sunny.png">media/icons/sunny.png</file>
         <file alias="videocam.png">media/icons/videocam.png</file>
+        <file alias="videocam-off.png">media/icons/videocam-off.png</file>
+        <file alias="gear.png">media/icons/ionic_gear.png</file>
+        <file alias="image.png">media/icons/ionic_image.png</file>
+        <file alias="sunny.png">media/icons/ionic_sunny.png</file>
     </qresource>
 </RCC>
