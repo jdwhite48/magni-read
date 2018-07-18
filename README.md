@@ -46,6 +46,7 @@ QT       += multimedia
 INCLUDEPATH += path\to\opencv-build\install\include
 
 LIBS += path\to\opencv-build\bin\libopencv_core320.dll
+LIBS += path\to\opencv-build\bin\libopencv_videoio320.dll
 LIBS += path\to\opencv-build\bin\libopencv_highgui320.dll
 LIBS += path\to\opencv-build\bin\libopencv_imgproc320.dll
 ```
@@ -53,7 +54,7 @@ LIBS += path\to\opencv-build\bin\libopencv_imgproc320.dll
 
 ## TODO
 ### Upcoming
-* Redesign buttons and sliders to be easier to use
+* Redesign sliders to be easier to use
 * Show sample images in settings window
 * Configure player to play from webcam
 * Fullscreen mode
