@@ -45,10 +45,8 @@ bool WebcamPlayer::open(int device) {
     // Open new webcam
     capture.open(device);
     if (capture.isOpened()) {
-        frameRate = static_cast<int>(capture.get(CV_CAP_PROP_FPS));
         return true;
     }
-
     else return false;
 }
 
@@ -90,9 +88,11 @@ void WebcamPlayer::run() {
 
         emit processedImage(img);
 
-        // Regulate frame rate interval by waiting
-        int delay = 1000 / frameRate;
-        msleep( static_cast<unsigned long>(delay) );
+        // Regulate frame rate interval if fps is given
+        if (frameRate > 0) {
+            int delay = 1000 / frameRate;
+            msleep( static_cast<unsigned long>(delay) );
+        }
     }
 }
 

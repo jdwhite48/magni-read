@@ -44,7 +44,7 @@ protected slots:
 
 public:
 
-    Mode DEFAULT_MODE = SNAPSHOT;
+    Mode DEFAULT_MODE = PREVIEW;
 
     WebcamView(QWidget * parent = nullptr);
     WebcamView(Mode mode, QWidget * parent = nullptr);
