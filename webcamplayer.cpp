@@ -2,67 +2,30 @@
 
 WebcamPlayer::WebcamPlayer(QObject * parent)
     : QThread(parent) {
-    stopped = true;
+    stop();
 }
 
 /*
- * Closes any already opened camera, then opens video from file path and retreives FPS
- */
-bool WebcamPlayer::open(std::string filename) {
-    // Close any already opened camera
-    mutex.lock();
-    if (capture.isOpened()) {
-        stopped = true;
-        capture.release();
-    }
-
-    // Open new video
-    capture.open(filename);
-    mutex.unlock();
-
-    if (capture.isOpened()) {
-        frameRate = int(capture.get(CV_CAP_PROP_FPS));
-        return true;
-    }
-    else return false;
-}
-
-/*
- * Load video from webcam device's index (0 for default)
+ * Open webcam device from index (0 for default webcam). Closes the already opened device
  */
 bool WebcamPlayer::open(int device) {
-    // Close any already opened camera
-    mutex.lock();
-    if (capture.isOpened()) {
+    release();
 
-
-        stopped = true;
-        capture.release();
-    }
-
-    // Open new webcam
-    capture.open(device);
-    mutex.unlock();
-
-    if (capture.isOpened()) {
-        // if 0, runs as fast as it can read
-        frameRate = int(capture.get(CV_CAP_PROP_FPS));
-        return true;
-    }
-    else return false;
+    // Open new webcam && return result
+    return capture.open(device);
 }
 
 /*
- * Toggle player and start running thread
+ * Start emitting frame data (via processedImage(QImage))
  */
 void WebcamPlayer::play() {
     if (!isRunning()) {
-            if (isStopped()) {
-                stopped = false;
-            }
+        if (isStopped()) {
+            stopped = false;
+        }
 
-            // Start thread
-            start(LowPriority);
+        // Start running thread
+        start(LowPriority);
     }
 }
 
@@ -74,7 +37,7 @@ void WebcamPlayer::run() {
         // Get next frame of video
         bool isRead = capture.read(frame);
         if (!isRead) {
-            stopped = true;
+            stop();
         }
         // Switch from OpenCV's BGR to RGB format & convert to QImage
         if (frame.channels() == 3) {
@@ -89,12 +52,6 @@ void WebcamPlayer::run() {
         }
 
         emit processedImage(img);
-
-        // Regulate frame rate interval if necessary
-        if (frameRate > 0) {
-            int delay = 1000 / frameRate;
-            msleep( static_cast<unsigned long>(delay) );
-        }
     }
 }
 
@@ -102,19 +59,28 @@ bool WebcamPlayer::isStopped() const {
     return stopped;
 }
 
+/*
+ * Release device from video capture, preventing interruption from other threads
+ */
+void WebcamPlayer::release() {
+    mutex.lock();
+    if (capture.isOpened() ) {
+        stop();
+        capture.release();
+    }
+
+    mutex.unlock();
+}
+
+/*
+ * Stop emitting frame data
+ */
 void WebcamPlayer::stop() {
     stopped = true;
 }
 
 WebcamPlayer::~WebcamPlayer() {
-    // Prevent termination of thread before VideoCapture is finished
-    mutex.lock();
-
-    stopped = true;
-    capture.release();
-
-    mutex.unlock();
-    condition.wakeAll();
+    release();
 
     // Stop running thread
     wait();
