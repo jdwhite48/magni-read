@@ -10,19 +10,18 @@ WebcamPlayer::WebcamPlayer(QObject * parent)
  */
 bool WebcamPlayer::open(std::string filename) {
     // Close any already opened camera
+    mutex.lock();
     if (capture.isOpened()) {
-        mutex.lock();
-
         stopped = true;
         capture.release();
-
-        mutex.unlock();
     }
 
     // Open new video
     capture.open(filename);
+    mutex.unlock();
+
     if (capture.isOpened()) {
-        frameRate = static_cast<int>(capture.get(CV_CAP_PROP_FPS));
+        frameRate = int(capture.get(CV_CAP_PROP_FPS));
         return true;
     }
     else return false;
@@ -33,18 +32,21 @@ bool WebcamPlayer::open(std::string filename) {
  */
 bool WebcamPlayer::open(int device) {
     // Close any already opened camera
+    mutex.lock();
     if (capture.isOpened()) {
-        mutex.lock();
+
 
         stopped = true;
         capture.release();
-
-        mutex.unlock();
     }
 
     // Open new webcam
     capture.open(device);
+    mutex.unlock();
+
     if (capture.isOpened()) {
+        // if 0, runs as fast as it can read
+        frameRate = int(capture.get(CV_CAP_PROP_FPS));
         return true;
     }
     else return false;
@@ -88,7 +90,7 @@ void WebcamPlayer::run() {
 
         emit processedImage(img);
 
-        // Regulate frame rate interval if fps is given
+        // Regulate frame rate interval if necessary
         if (frameRate > 0) {
             int delay = 1000 / frameRate;
             msleep( static_cast<unsigned long>(delay) );
