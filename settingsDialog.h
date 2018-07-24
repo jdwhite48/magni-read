@@ -10,10 +10,9 @@
 #include <QFormLayout>
 #include <QHBoxLayout>
 #include <QPushButton>
+#include <QSettings>
 #include <QSlider>
 #include <QVBoxLayout>
-
-#include "webcamsettings.cpp"
 
 class SettingsDialog : public QDialog {
 
@@ -32,23 +31,22 @@ private:
     QFormLayout * createSettingsLayout();
     QHBoxLayout * createButtonLayout();
 
+protected:
+    const double DEFAULT_BRIGHTNESS = 0.5;
+    const double DEFAULT_CONTRAST = 0.5;
+
 public:
     SettingsDialog();
     SettingsDialog(QWidget * parent);
-
-    const struct webcamSettings DEFAULT_SETTINGS = {
-        0,      // Device (int)
-        0.5,    // Brightness (double)
-        0.5,    // Contrast (double)
-    };
 
 private slots:
     void closeDialog();
     void saveAndCloseDialog();
     void restoreDefaults();
+    void restoreWebcamDefault();
 
 signals:
-    void settingsChanged(webcamSettings settings);
+    void settingsChanged();
 
 };
 

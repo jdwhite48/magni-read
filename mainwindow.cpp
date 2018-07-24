@@ -154,19 +154,20 @@ void MainWindow::openSettingsDialog() {
     settingsDialog = new SettingsDialog(this);
 
     // Process image whenever settings changed in dialog box
-    connect(settingsDialog, SIGNAL (settingsChanged(webcamSettings)), this, SLOT (processImage(webcamSettings)) );
+    connect(settingsDialog, SIGNAL (settingsChanged()), this, SLOT (processImage()) );
 
-    // Prevent main window from being interacted with until dialog closed
+    // Prevent main window from being interacted with until dialog closed (i.e. make it modal)
     settingsDialog->exec();
 }
 
 /*
  * Process image with settings defined by dialog box
  */
-void MainWindow::processImage(webcamSettings settings) {
-    qDebug() << "Device Num: " << settings.device;
-    qDebug() << "Brightness: " << settings.brightness;
-    qDebug() << "Contrast: " << settings.contrast;
+void MainWindow::processImage() {
+    QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "JDWhite", "MagniRead");
+    qDebug() << "Device Index: " << settings.value("webcam/deviceIndex").toInt();
+    qDebug() << "Brightness: " << settings.value("image/brightness").toDouble();
+    qDebug() << "Contrast: " << settings.value("image/contrast").toDouble();
 }
 
 /*

@@ -14,7 +14,6 @@
 
 #include "webcamview.h"
 #include "settingsDialog.h"
-#include "webcamsettings.cpp"
 
 class MainWindow : public QMainWindow
 {
@@ -40,7 +39,7 @@ private:
 private slots:
     void openSettingsDialog();
     void switchWebcamMode();
-    void processImage(webcamSettings settings);
+    void processImage();
 
 protected:
     void resizeEvent(QResizeEvent * event);
