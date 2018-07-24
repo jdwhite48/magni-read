@@ -33,17 +33,20 @@ void WebcamView::init(WebcamView::Mode mode, QWidget * parent) {
     videoPlayer->open(0);
     connect(videoPlayer, SIGNAL (processedImage(QImage)),
             this, SLOT (updateImage(QImage)));
+    connect(videoPlayer, SIGNAL (readError()),
+            this, SLOT (handleError()));
 
+    // Initial display
     if (mode == SNAPSHOT) {
         // TODO: Instead of sample image, "choose webcam" image shown on screen
         updateImage(QImage(":/media/sampleImage.jpg"));
     }
     else if (mode == PREVIEW) {
-        // Play video stream
         videoPlayer->play();
     }
     else if (mode == ERROR ) {
-        // TODO: Error image shown on screen
+        // TODO: "Webcam not found" image shown on screen
+        handleError();
     }
 
     // Prepare view for display
@@ -89,6 +92,11 @@ void WebcamView::resize() {
  */
 void WebcamView::setMode(WebcamView::Mode mode) {
     this->mode = mode;
+
+    if (mode == ERROR) {
+        // TODO: "Webcam not found" image shown on screen
+        scene->clear();
+    }
 }
 
 WebcamView::Mode WebcamView::getMode() {
@@ -108,5 +116,13 @@ void WebcamView::playVideo() {
  */
 void WebcamView::stopVideo() {
     setMode(SNAPSHOT);
+    videoPlayer->stop();
+}
+
+/*
+ * Changes to error mode and stops video player
+ */
+void WebcamView::handleError() {
+    setMode(ERROR);
     videoPlayer->stop();
 }

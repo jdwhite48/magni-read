@@ -38,6 +38,8 @@ void WebcamPlayer::run() {
         bool isRead = capture.read(frame);
         if (!isRead) {
             stop();
+            emit readError();
+            break;
         }
         // Switch from OpenCV's BGR to RGB format & convert to QImage
         if (frame.channels() == 3) {

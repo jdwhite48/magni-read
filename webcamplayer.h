@@ -43,6 +43,7 @@ public:
 
 signals:
     void processedImage(const QImage & image);
+    void readError();
 };
 
 #endif // WEBCAMPLAYER_H

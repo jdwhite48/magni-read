@@ -40,6 +40,7 @@ protected:
     void setMode(Mode mode);
 
 protected slots:
+    void handleError();
     void updateImage(QImage img);
 
 public:
