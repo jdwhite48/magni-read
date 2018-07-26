@@ -88,6 +88,15 @@ QFormLayout * SettingsDialog::createSettingsLayout() {
     }
     webcamBox->addItems(webcamNames);
 
+    // Spin box for max zoom multiplier (2-20, default 5x)
+    maxZoomBox = new QSpinBox(this);
+    maxZoomBox->setRange(2, 20);
+    int curZoom = (settings.contains("image/maxZoom")) ? settings.value("image/maxZoom").toInt() : DEFAULT_ZOOM;
+    maxZoomBox->setValue(curZoom);
+    maxZoomBox->setSingleStep(1);
+    maxZoomBox->setSuffix("x");
+
+
     // Set default to previously used webcam, or to system's default webcam, or first index if else
     if (settings.contains("webcam/deviceIndex") && settings.value("webcam/deviceIndex").toInt() < webcamBox->count()) {
         webcamBox->setCurrentIndex( settings.value("webcam/deviceIndex").toInt() );
@@ -101,6 +110,7 @@ QFormLayout * SettingsDialog::createSettingsLayout() {
     settingsLayout->addRow("Brightness:", brightnessSlider);
     settingsLayout->addRow("Contrast:", contrastSlider);
     settingsLayout->addRow("Webcam:", webcamBox);
+    settingsLayout->addRow("Max Zoom:", maxZoomBox);
 
     return settingsLayout;
 }
@@ -141,6 +151,7 @@ void SettingsDialog::restoreDefaults() {
     brightnessSlider->setSliderPosition( int(brightnessRange * DEFAULT_BRIGHTNESS) );
     int contrastRange = contrastSlider->maximum() - contrastSlider->minimum();
     contrastSlider->setSliderPosition( int(contrastRange * DEFAULT_CONTRAST) );
+    maxZoomBox->setValue(DEFAULT_ZOOM);
 }
 
 /*
@@ -171,9 +182,11 @@ void SettingsDialog::saveAndCloseDialog() {
     int brightnessRange = brightnessSlider->maximum() - brightnessSlider->minimum();
     int contrastRange = contrastSlider->maximum() - contrastSlider->minimum();
 
+    // Save settings in native format (Windows: registry, Other: config file)
     settings.setValue("webcam/deviceIndex", webcamBox->currentIndex());
     settings.setValue("image/brightness", double(brightnessSlider->value()) / brightnessRange );
     settings.setValue("image/contrast", double(contrastSlider->value()) / contrastRange );
+    settings.setValue("image/maxZoom", maxZoomBox->cleanText().toInt());
 
     // Emit "accepted" signal (settings changed) and hide window
     this->accept();

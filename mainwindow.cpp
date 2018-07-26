@@ -1,8 +1,6 @@
 #include "mainwindow.h"
 
-#include <cmath>
 #include <QSpacerItem>
-#include <QPainter>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -65,6 +63,8 @@ void MainWindow::switchWebcamMode() {
  * Layout for displaying interactive widgets that change the display
  */
 QVBoxLayout * MainWindow::createButtonLayout() {
+     QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "JDWhite", "MagniRead");
+
     QVBoxLayout * buttonLayout = new QVBoxLayout(this);
 
     QPushButton * fullscreenButton = new QPushButton(this);
@@ -99,10 +99,13 @@ QVBoxLayout * MainWindow::createButtonLayout() {
 
     zoomSlider->setTickPosition(QSlider::TicksBothSides);
     zoomSlider->setMinimum(0);
-    zoomSlider->setMaximum(100);
+    int maxZoom = (settings.contains("image/maxZoom")
+                   ? settings.value("image/maxZoom").toInt() * 100
+                   : 500);
+    zoomSlider->setMaximum(maxZoom);
     zoomSlider->setTickInterval( int((zoomSlider->maximum() - zoomSlider->minimum())/10) );
     zoomSlider->setSingleStep(1);
-    zoomSlider->setPageStep(10);
+    zoomSlider->setPageStep( int((zoomSlider->maximum() - zoomSlider->minimum())/10) );
     zoomSlider->setSliderPosition(zoomSlider->minimum());
     zoomSlider->setTracking(true);
 
@@ -176,6 +179,11 @@ void MainWindow::changeSettings() {
     if (settings.contains("webcam/deviceIndex")) {
         view->openWebcam(settings.value("webcam/deviceIndex").toInt());
     }
+    if (settings.contains("image/maxZoom")) {
+        zoomSlider->blockSignals(true);
+        zoomSlider->setMaximum(100 * settings.value("image/maxZoom").toInt());
+        zoomSlider->blockSignals(false);
+    }
 }
 
 /*
@@ -191,9 +199,9 @@ void MainWindow::resizeEvent(QResizeEvent * event) {
  * Zoom in image as a proportion of the slider
  */
 void MainWindow::zoomImage(int zoomValue) {
-    double zoomFactor = 1 + double(zoomValue) / (zoomSlider->maximum() - zoomSlider->minimum());
+    double zoomRatio = 1 + double(zoomValue)/100;
     QMatrix matrix;
-    matrix.scale(zoomFactor, zoomFactor);
+    matrix.scale(zoomRatio, zoomRatio);
     view->setMatrix(matrix);
 }
 
