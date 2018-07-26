@@ -28,6 +28,7 @@ void WebcamView::init(WebcamView::Mode mode, int device, QWidget * parent) {
     setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     setAlignment(Qt::AlignTop | Qt::AlignLeft);
+    setTransformationAnchor(QGraphicsView::AnchorViewCenter);
 
     // Attach scene
     scene = new QGraphicsScene(parent);
@@ -73,9 +74,6 @@ void WebcamView::updateImage(QImage img) {
                 static_cast<int>(this->size().width()),
                 static_cast<int>(this->size().height()),
                 Qt::KeepAspectRatioByExpanding, Qt::FastTransformation ));
-
-    // Make scene larger scene than viewport if necessary (allows scrolling of zoomed image)
-    scene->setSceneRect(0, 0, img.width(), img.height());
 
     scene->addItem(imageItem);
 
@@ -143,4 +141,15 @@ bool WebcamView::openWebcam(int device) {
     }
 
     return isOpened;
+}
+
+/*
+ * Zoom image in or out using scroll wheel
+ */
+void WebcamView::wheelEvent(QWheelEvent * event) {
+    int degrees = event->delta() / 8;
+    int steps = degrees / 15;
+    double factor = steps * 0.1;
+
+    this->scale(1+factor, 1+factor);
 }

@@ -5,6 +5,7 @@
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QSettings>
+#include <QWheelEvent>
 
 #include <opencv2/core.hpp>
 #include <opencv2/videoio.hpp>
@@ -40,6 +41,9 @@ private:
 protected slots:
     void handleError();
     void updateImage(QImage img);
+
+protected:
+    void wheelEvent( QWheelEvent * event);
 
 public:
 
