@@ -41,6 +41,7 @@ private slots:
     void updateWebcamMode();
     void changeSettings();
     void switchWebcamMode();
+    void zoomImage(int value);
 
 protected:
     void resizeEvent(QResizeEvent * event);

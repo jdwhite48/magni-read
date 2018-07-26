@@ -103,7 +103,7 @@ QVBoxLayout * MainWindow::createButtonLayout() {
     zoomSlider->setTickInterval( int((zoomSlider->maximum() - zoomSlider->minimum())/10) );
     zoomSlider->setSingleStep(1);
     zoomSlider->setPageStep(10);
-    zoomSlider->setSliderPosition( int((zoomSlider->maximum() - zoomSlider->minimum())/2) );
+    zoomSlider->setSliderPosition(zoomSlider->minimum());
     zoomSlider->setTracking(true);
 
     buttonLayout->addWidget(fullscreenButton);
@@ -117,6 +117,7 @@ QVBoxLayout * MainWindow::createButtonLayout() {
     // Change Mode from still image to video feed & vice versa
     connect(modeButton, SIGNAL (released()), this, SLOT (switchWebcamMode()));
     connect(view, SIGNAL (modeChanged()), this, SLOT (updateWebcamMode()));
+    connect(zoomSlider, SIGNAL  (valueChanged(int)), this, SLOT (zoomImage(int)));
 
     return buttonLayout;
 }
@@ -184,6 +185,16 @@ void MainWindow::resizeEvent(QResizeEvent * event) {
     QMainWindow::resizeEvent(event);
 
     view->resize();
+}
+
+/*
+ * Zoom in image as a proportion of the slider
+ */
+void MainWindow::zoomImage(int zoomValue) {
+    double zoomFactor = 1 + double(zoomValue) / (zoomSlider->maximum() - zoomSlider->minimum());
+    QMatrix matrix;
+    matrix.scale(zoomFactor, zoomFactor);
+    view->setMatrix(matrix);
 }
 
 MainWindow::~MainWindow()
