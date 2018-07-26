@@ -142,14 +142,3 @@ bool WebcamView::openWebcam(int device) {
 
     return isOpened;
 }
-
-/*
- * Zoom image in or out using scroll wheel
- */
-void WebcamView::wheelEvent(QWheelEvent * event) {
-    int degrees = event->delta() / 8;
-    int steps = degrees / 15;
-    double factor = steps * 0.1;
-
-    this->scale(1+factor, 1+factor);
-}

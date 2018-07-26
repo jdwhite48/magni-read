@@ -42,9 +42,6 @@ protected slots:
     void handleError();
     void updateImage(QImage img);
 
-protected:
-    void wheelEvent( QWheelEvent * event);
-
 public:
 
     Mode DEFAULT_MODE = PREVIEW;
