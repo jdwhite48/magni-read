@@ -3,19 +3,24 @@
 WebcamView::WebcamView(QWidget * parent)
     : QGraphicsView(parent)
 {
-    init(DEFAULT_MODE, parent);
+    QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "JDWhite", "MagniRead");
+    int device = (settings.contains("webcam/deviceIndex"))
+                  ? settings.value("webcam/deviceIndex").toInt()
+                  : DEFAULT_DEVICE;
+
+    init(DEFAULT_MODE, device, parent);
 }
 
-WebcamView::WebcamView(WebcamView::Mode mode, QWidget * parent)
+WebcamView::WebcamView(int device, QWidget * parent)
     : QGraphicsView(parent)
 {
-    init(mode, parent);
+    init(DEFAULT_MODE, device, parent);
 }
 
 /*
  * Initialization of WebcamView
  */
-void WebcamView::init(WebcamView::Mode mode, QWidget * parent) {
+void WebcamView::init(WebcamView::Mode mode, int device, QWidget * parent) {
     this->mode = mode;
 
     // Change viewport functionality & appearance
@@ -30,7 +35,7 @@ void WebcamView::init(WebcamView::Mode mode, QWidget * parent) {
 
     // Setup video capture and load video
     videoPlayer = new WebcamPlayer(this);
-    videoPlayer->open(0);
+    openWebcam(device);
     connect(videoPlayer, SIGNAL (processedImage(QImage)),
             this, SLOT (updateImage(QImage)));
     connect(videoPlayer, SIGNAL (readError()),
@@ -93,10 +98,14 @@ void WebcamView::resize() {
 void WebcamView::setMode(WebcamView::Mode mode) {
     this->mode = mode;
 
-    if (mode == ERROR) {
-        // TODO: "Webcam not found" image shown on screen
-        scene->clear();
+    if (mode == PREVIEW) {
+        videoPlayer->play();
     }
+    else if (mode == SNAPSHOT) {
+        videoPlayer->stop();
+    }
+
+    emit modeChanged();
 }
 
 WebcamView::Mode WebcamView::getMode() {
@@ -104,25 +113,34 @@ WebcamView::Mode WebcamView::getMode() {
 }
 
 /*
- * Changes to preview mode and plays video player
- */
-void WebcamView::playVideo() {
-    setMode(PREVIEW);
-    videoPlayer->play();
-}
-
-/*
- * Changes to snapshot mode and stops video player
- */
-void WebcamView::stopVideo() {
-    setMode(SNAPSHOT);
-    videoPlayer->stop();
-}
-
-/*
- * Changes to error mode and stops video player
+ * Changes to error mode and stops video player if playing
  */
 void WebcamView::handleError() {
     setMode(ERROR);
     videoPlayer->stop();
+}
+
+/*
+ * Change the webcam to the index of the device specified
+ */
+bool WebcamView::openWebcam(int device) {
+    bool isOpened = videoPlayer->open(device);
+    if (!isOpened) {
+        handleError();
+    }
+    else {
+        switch (mode) {
+            case PREVIEW:
+                videoPlayer->play();
+                break;
+            case SNAPSHOT:
+                break;
+            case ERROR:
+            default:
+                handleError();
+                break;
+        }
+    }
+
+    return isOpened;
 }

@@ -20,6 +20,8 @@ SettingsDialog::SettingsDialog(QWidget * parent)
  * Close dialog box without saving settings
  */
 void SettingsDialog::closeDialog() {
+    // Emit "rejected" signal (settings not changed) and hide window
+    this->reject();
     this->close();
 }
 
@@ -173,6 +175,7 @@ void SettingsDialog::saveAndCloseDialog() {
     settings.setValue("image/brightness", double(brightnessSlider->value()) / brightnessRange );
     settings.setValue("image/contrast", double(contrastSlider->value()) / contrastRange );
 
-    emit settingsChanged();
+    // Emit "accepted" signal (settings changed) and hide window
+    this->accept();
     this->close();
 }

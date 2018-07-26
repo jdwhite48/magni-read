@@ -30,7 +30,7 @@ private:
     const char * SNAPSHOT_TOOLTIP = "Preview camera";
     const char * PREVIEW_TOOLTIP = "Take a snapshot";
     const char * ERROR_TOOLTIP = "Cannot find camera";
-    const int BUTTON_SIZE = 150;
+    const int BUTTON_SIZE = 100;
 
     QGridLayout * createMainLayout();
     QVBoxLayout * createGraphicsLayout();
@@ -38,8 +38,9 @@ private:
 
 private slots:
     void openSettingsDialog();
+    void updateWebcamMode();
+    void changeSettings();
     void switchWebcamMode();
-    void processImage();
 
 protected:
     void resizeEvent(QResizeEvent * event);

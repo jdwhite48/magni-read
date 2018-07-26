@@ -45,9 +45,6 @@ private slots:
     void restoreDefaults();
     void restoreWebcamDefault();
 
-signals:
-    void settingsChanged();
-
 };
 
 #endif // SETTINGSDIALOG_H

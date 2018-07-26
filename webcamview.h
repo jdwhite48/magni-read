@@ -4,6 +4,7 @@
 #include <QGraphicsPixmapItem>
 #include <QGraphicsScene>
 #include <QGraphicsView>
+#include <QSettings>
 
 #include <opencv2/core.hpp>
 #include <opencv2/videoio.hpp>
@@ -36,9 +37,6 @@ private:
     // Graphical representation of image in view
     QGraphicsPixmapItem * imageItem = nullptr;
 
-protected:
-    void setMode(Mode mode);
-
 protected slots:
     void handleError();
     void updateImage(QImage img);
@@ -46,15 +44,19 @@ protected slots:
 public:
 
     Mode DEFAULT_MODE = PREVIEW;
+    int DEFAULT_DEVICE = 0;
 
     WebcamView(QWidget * parent = nullptr);
-    WebcamView(Mode mode, QWidget * parent = nullptr);
+    WebcamView(int device = 0, QWidget * parent = nullptr);
 
-    void init(Mode mode, QWidget * parent);
+    void init(Mode mode, int device, QWidget * parent);
+    bool openWebcam(int device);
     Mode getMode();
-    void playVideo();
     void resize();
-    void stopVideo();
+    void setMode(Mode mode);
+
+signals:
+    void modeChanged();
 
 };
 
