@@ -40,9 +40,14 @@ QSlider::sub-page:vertical {
 }
 
 QPushButton#mainButton {
+    background: qradialgradient(cx: 0.5, cy: 0.5, radius: 0.5, fx: 0.5, fy: 0.5, stop: 0 transparent, stop: 1 lightgrey);
     padding: 15px;
     border: 1px solid #a0a0a0;
     border-radius: 25%;
     qproperty-iconSize: 100px;
+}
+QPushButton#mainButton:pressed {
+    background: qradialgradient(cx: 0.5, cy: 0.5, radius: 1, fx: 0.5, fy: 0.5, stop: 0 transparent, stop: 1 #a0a0a0);
+
 }
 
