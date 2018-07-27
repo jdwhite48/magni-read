@@ -1,7 +1,5 @@
 #include "mainwindow.h"
 
-#include <QSpacerItem>
-
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
@@ -41,7 +39,6 @@ void MainWindow::updateWebcamMode() {
             modeButton->setEnabled(false);
             break;
     }
-    modeButton->setIconSize(QSize(BUTTON_SIZE, BUTTON_SIZE));
 }
 
 void MainWindow::switchWebcamMode() {
@@ -79,41 +76,60 @@ QVBoxLayout * MainWindow::createButtonLayout() {
     // Give the mode button the appropriate icon && tooltip
     updateWebcamMode();
 
-    QSize buttonSize = QSize(BUTTON_SIZE, BUTTON_SIZE);
-
     fullscreenButton->setIcon(QIcon(":/media/icons/fullscreen.svg"));
     settingsButton->setIcon(QIcon(":/media/icons/gear.png"));
-    modeButton->setIconSize(buttonSize);
-    fullscreenButton->setIconSize(buttonSize);
-    settingsButton->setIconSize(buttonSize);
-    modeButton->setFixedWidth(BUTTON_SIZE);
-    fullscreenButton->setFixedWidth(BUTTON_SIZE);
-    settingsButton->setFixedWidth(BUTTON_SIZE);
-
-    // Customize buttons in stylesheet with "QPushButton#mainButton {...}"
-    fullscreenButton->setObjectName("mainButton");
-    modeButton->setObjectName("mainButton");
-    settingsButton->setObjectName("mainButton");
-
-
 
     zoomSlider->setTickPosition(QSlider::TicksBothSides);
     zoomSlider->setMinimum(0);
-    int maxZoom = (settings.contains("image/maxZoom")
+    int maxZoomPos = (settings.contains("image/maxZoom")
                    ? settings.value("image/maxZoom").toInt() * 100
                    : 500);
-    zoomSlider->setMaximum(maxZoom);
+    zoomSlider->setMaximum(maxZoomPos);
     zoomSlider->setTickInterval( int((zoomSlider->maximum() - zoomSlider->minimum())/10) );
     zoomSlider->setSingleStep(1);
     zoomSlider->setPageStep( int((zoomSlider->maximum() - zoomSlider->minimum())/10) );
     zoomSlider->setSliderPosition(zoomSlider->minimum());
+    // Track zoom Slider as it's moving
     zoomSlider->setTracking(true);
 
+    QLabel * zoomTitle = new QLabel("Zoom:", this);
+
+    QString label;
+    label += QString::number(maxZoomPos/100);
+    label += "x";
+    maxZoomLabel = new QLabel(label, this);
+
+    QLabel * minZoomLabel = new QLabel("1x", this);
+
     buttonLayout->addWidget(fullscreenButton);
+    buttonLayout->addWidget(zoomTitle);
+    buttonLayout->addWidget(maxZoomLabel);
     buttonLayout->addWidget(zoomSlider);
-    buttonLayout->setAlignment(zoomSlider,  Qt::AlignHCenter);
+    buttonLayout->addWidget(minZoomLabel);
     buttonLayout->addWidget(modeButton);
     buttonLayout->addWidget(settingsButton);
+
+    // Customize layout
+
+    //Align all widgets horizontally-centered
+    buttonLayout->setAlignment(fullscreenButton, Qt::AlignHCenter);
+    buttonLayout->setAlignment(zoomTitle, Qt::AlignHCenter);
+    buttonLayout->setAlignment(maxZoomLabel, Qt::AlignHCenter);
+    buttonLayout->setAlignment(zoomSlider, Qt::AlignHCenter);
+    buttonLayout->setAlignment(minZoomLabel, Qt::AlignHCenter);
+    buttonLayout->setAlignment(modeButton, Qt::AlignHCenter);
+    buttonLayout->setAlignment(settingsButton, Qt::AlignHCenter);
+
+    // Keep buttons fixed to their respective size (defined in stylesheet)
+    fullscreenButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    modeButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+    settingsButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+
+    // Additional customization in stylesheet with these object names
+    fullscreenButton->setObjectName("mainButton");
+    modeButton->setObjectName("mainButton");
+    settingsButton->setObjectName("mainButton");
+    zoomTitle->setObjectName("title");
 
     // "Settings" button opens dialog box for modifying advanced settings
     connect(settingsButton, SIGNAL (released()), this, SLOT (openSettingsDialog()));
@@ -121,6 +137,7 @@ QVBoxLayout * MainWindow::createButtonLayout() {
     connect(modeButton, SIGNAL (released()), this, SLOT (switchWebcamMode()));
     connect(view, SIGNAL (modeChanged()), this, SLOT (updateWebcamMode()));
     connect(zoomSlider, SIGNAL  (valueChanged(int)), this, SLOT (zoomImage(int)));
+    fullscreenButton->setEnabled(false);
 
     return buttonLayout;
 }
@@ -134,6 +151,9 @@ QVBoxLayout * MainWindow::createGraphicsLayout() {
     view = new WebcamView(this);
 
     graphicsLayout->addWidget(view);
+
+    // Take up as much screen as possible
+    view->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 
     return graphicsLayout;
 }
@@ -180,8 +200,14 @@ void MainWindow::changeSettings() {
         view->openWebcam(settings.value("webcam/deviceIndex").toInt());
     }
     if (settings.contains("image/maxZoom")) {
+        int maxZoomFactor = settings.value("image/maxZoom").toInt();
+        QString label;
+        label += QString::number(maxZoomFactor);
+        label += "x";
+        maxZoomLabel->setText(label);
+
         zoomSlider->blockSignals(true);
-        zoomSlider->setMaximum(100 * settings.value("image/maxZoom").toInt());
+        zoomSlider->setMaximum(100 * maxZoomFactor);
         zoomSlider->blockSignals(false);
     }
 }

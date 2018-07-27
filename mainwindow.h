@@ -24,13 +24,13 @@ private:
     WebcamView * view = nullptr;
     QPushButton * modeButton = nullptr;
     QSlider * zoomSlider = nullptr;
+    QLabel * maxZoomLabel;
 
     SettingsDialog * settingsDialog;
 
     const char * SNAPSHOT_TOOLTIP = "Preview camera";
     const char * PREVIEW_TOOLTIP = "Take a snapshot";
     const char * ERROR_TOOLTIP = "Cannot find camera";
-    const int BUTTON_SIZE = 100;
 
     QGridLayout * createMainLayout();
     QVBoxLayout * createGraphicsLayout();
