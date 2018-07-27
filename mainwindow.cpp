@@ -196,9 +196,12 @@ void MainWindow::changeSettings() {
     qDebug() << "Brightness: " << settings.value("image/brightness").toDouble();
     qDebug() << "Contrast: " << settings.value("image/contrast").toDouble();
 
+    // Update webcam
     if (settings.contains("webcam/deviceIndex")) {
         view->openWebcam(settings.value("webcam/deviceIndex").toInt());
     }
+
+    // Update max zoom label and limit
     if (settings.contains("image/maxZoom")) {
         int maxZoomFactor = settings.value("image/maxZoom").toInt();
         QString label;
@@ -209,6 +212,11 @@ void MainWindow::changeSettings() {
         zoomSlider->blockSignals(true);
         zoomSlider->setMaximum(100 * maxZoomFactor);
         zoomSlider->blockSignals(false);
+    }
+
+    // If previous webcam resulted in an error, try again
+    if (view->getMode() == WebcamView::ERROR) {
+        view->setMode(WebcamView::PREVIEW);
     }
 }
 
