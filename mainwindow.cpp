@@ -135,7 +135,7 @@ QVBoxLayout * MainWindow::createButtonLayout() {
     connect(settingsButton, SIGNAL (released()), this, SLOT (openSettingsDialog()));
     // Change Mode from still image to video feed & vice versa
     connect(modeButton, SIGNAL (released()), this, SLOT (switchWebcamMode()));
-    connect(view, SIGNAL (modeChanged()), this, SLOT (updateWebcamMode()));
+    connect(view, SIGNAL (modeChanged()), this, SLOT (updateWebcamMode()), Qt::QueuedConnection);
     connect(zoomSlider, SIGNAL  (valueChanged(int)), this, SLOT (zoomImage(int)));
     fullscreenButton->setEnabled(false);
 

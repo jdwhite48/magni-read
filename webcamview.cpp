@@ -65,17 +65,17 @@ void WebcamView::init(WebcamView::Mode mode, int device, QWidget * parent) {
 void WebcamView::updateImage(QImage img) {
 
     // Remove old image
-    scene->removeItem(imageItem);
-    delete imageItem;
-
     image = img;
     // Rescale new image so that it at least fills the viewport
-    imageItem = new QGraphicsPixmapItem(QPixmap::fromImage(img).scaled(
+    QPixmap pixmap = QPixmap::fromImage(img).scaled(
                 static_cast<int>(this->size().width()),
                 static_cast<int>(this->size().height()),
-                Qt::KeepAspectRatioByExpanding, Qt::FastTransformation ));
+                Qt::KeepAspectRatioByExpanding, Qt::FastTransformation );
+    imageItem.setPixmap(pixmap);
 
-    scene->addItem(imageItem);
+    if (scene->items().count() == 0) {
+        scene->addItem(&imageItem);
+    }
 
     // Prepare rescaled view for display
     this->show();

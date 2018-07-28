@@ -36,7 +36,7 @@ private:
     // Copy of current image/frame
     QImage image;
     // Graphical representation of image in view
-    QGraphicsPixmapItem * imageItem = nullptr;
+    QGraphicsPixmapItem imageItem;
 
 protected slots:
     void handleError();
