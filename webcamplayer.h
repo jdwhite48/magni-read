@@ -40,6 +40,7 @@ public:
     void play();
     void stop();
     bool isStopped() const;
+    bool useMaxResolution();
 
 signals:
     void processedImage(const QImage & image);
