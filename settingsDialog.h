@@ -34,8 +34,8 @@ private:
     QHBoxLayout * createButtonLayout();
 
 protected:
-    const double DEFAULT_BRIGHTNESS = 0.5;
-    const double DEFAULT_CONTRAST = 0.5;
+    const double DEFAULT_BRIGHTNESS = 0;
+    const double DEFAULT_CONTRAST = 1;
     const int DEFAULT_ZOOM = 5;
 
 public:

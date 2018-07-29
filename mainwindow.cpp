@@ -146,6 +146,8 @@ QVBoxLayout * MainWindow::createButtonLayout() {
  * Layout for displaying graphics and button for advanced image modifications
  */
 QVBoxLayout * MainWindow::createGraphicsLayout() {
+    QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "JDWhite", "MagniRead");
+
     QVBoxLayout * graphicsLayout = new QVBoxLayout(this);
 
     view = new WebcamView(this);
@@ -154,6 +156,15 @@ QVBoxLayout * MainWindow::createGraphicsLayout() {
 
     // Take up as much screen as possible
     view->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+
+    // Update brightness and contrast
+    if (settings.contains("image/brightness")) {
+        view->setBrightness(settings.value("image/brightness").toDouble());
+    }
+
+    if (settings.contains("image/contrast")) {
+        view->setContrast(settings.value("image/contrast").toDouble());
+    }
 
     return graphicsLayout;
 }
@@ -193,9 +204,6 @@ void MainWindow::openSettingsDialog() {
 void MainWindow::changeSettings() {
     QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "JDWhite", "MagniRead");
 
-    qDebug() << "Brightness: " << settings.value("image/brightness").toDouble();
-    qDebug() << "Contrast: " << settings.value("image/contrast").toDouble();
-
     // Update webcam
     if (settings.contains("webcam/deviceIndex")) {
         view->openWebcam(settings.value("webcam/deviceIndex").toInt());
@@ -212,6 +220,15 @@ void MainWindow::changeSettings() {
         zoomSlider->blockSignals(true);
         zoomSlider->setMaximum(100 * maxZoomFactor);
         zoomSlider->blockSignals(false);
+    }
+
+    // Update brightness and contrast
+    if (settings.contains("image/brightness")) {
+        view->setBrightness(settings.value("image/brightness").toDouble());
+    }
+
+    if (settings.contains("image/contrast")) {
+        view->setContrast(settings.value("image/contrast").toDouble());
     }
 
     // If previous webcam resulted in an error, try again

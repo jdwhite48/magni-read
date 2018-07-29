@@ -50,29 +50,31 @@ QFormLayout * SettingsDialog::createSettingsLayout() {
     // Create brightness and contrast sliders that vary from 1 to 100, ticks every quarter, starting in the middle.
     brightnessSlider = new QSlider(Qt::Horizontal, this);
     brightnessSlider->setTickPosition(QSlider::TicksAbove);
-    brightnessSlider->setMinimum(0);
-    brightnessSlider->setMaximum(100);
-    brightnessSlider->setTickInterval( int((brightnessSlider->maximum() - brightnessSlider->minimum())/4) );
+    brightnessSlider->setMinimum(-256);
+    brightnessSlider->setMaximum(256);
+    brightnessSlider->setTickInterval(64); // Every +-25%
     brightnessSlider->setSingleStep(1);
-    brightnessSlider->setPageStep(10);
+    brightnessSlider->setPageStep(64);
+
     // Set brightness slider to previous position, or default if else
     int brightnessSliderPos = ( settings.contains("image/brightness") )
-            ? int((brightnessSlider->maximum() - brightnessSlider->minimum()) * settings.value("image/brightness").toDouble())
-            : int((brightnessSlider->maximum() - brightnessSlider->minimum()) * DEFAULT_BRIGHTNESS);
+            ? int(settings.value("image/brightness").toDouble())
+            : int(DEFAULT_BRIGHTNESS);
     brightnessSlider->setSliderPosition( brightnessSliderPos );
     brightnessSlider->setTracking(true);
 
     contrastSlider = new QSlider(Qt::Horizontal, this);
     contrastSlider->setTickPosition(QSlider::TicksAbove);
     contrastSlider->setMinimum(0);
-    contrastSlider->setMaximum(100);
-    contrastSlider->setTickInterval( int((contrastSlider->maximum() - contrastSlider->minimum())/4) );
+    contrastSlider->setMaximum(500);
+    contrastSlider->setTickInterval(50); // Every 0.5x
     contrastSlider->setSingleStep(1);
-    contrastSlider->setPageStep(10);
+    contrastSlider->setPageStep(50);
+
     // Set contrast slider to previous position, or default if else
     int contrastSliderPos = ( settings.contains("image/contrast") )
-            ? int((contrastSlider->maximum() - contrastSlider->minimum()) * settings.value("image/contrast").toDouble())
-            : int((contrastSlider->maximum() - contrastSlider->minimum()) * DEFAULT_CONTRAST);
+            ? int(settings.value("image/contrast").toDouble() * 100)
+            : int(DEFAULT_CONTRAST * 100); // Multiply by 100 for slider scale
     contrastSlider->setSliderPosition( contrastSliderPos );
     contrastSlider->setTracking(true);
 
@@ -147,10 +149,8 @@ QHBoxLayout * SettingsDialog::createButtonLayout() {
 void SettingsDialog::restoreDefaults() {
     restoreWebcamDefault();
 
-    int brightnessRange = brightnessSlider->maximum() - brightnessSlider->minimum();
-    brightnessSlider->setSliderPosition( int(brightnessRange * DEFAULT_BRIGHTNESS) );
-    int contrastRange = contrastSlider->maximum() - contrastSlider->minimum();
-    contrastSlider->setSliderPosition( int(contrastRange * DEFAULT_CONTRAST) );
+    brightnessSlider->setSliderPosition( int(DEFAULT_BRIGHTNESS) );
+    contrastSlider->setSliderPosition( int(DEFAULT_CONTRAST * 100) );
     maxZoomBox->setValue(DEFAULT_ZOOM);
 }
 
@@ -184,8 +184,8 @@ void SettingsDialog::saveAndCloseDialog() {
 
     // Save settings in native format (Windows: registry, Other: config file)
     settings.setValue("webcam/deviceIndex", webcamBox->currentIndex());
-    settings.setValue("image/brightness", double(brightnessSlider->value()) / brightnessRange );
-    settings.setValue("image/contrast", double(contrastSlider->value()) / contrastRange );
+    settings.setValue("image/brightness", double(brightnessSlider->value()));
+    settings.setValue("image/contrast", double(contrastSlider->value()) / 100 );
     settings.setValue("image/maxZoom", maxZoomBox->cleanText().toInt());
 
     // Emit "accepted" signal (settings changed) and hide window
