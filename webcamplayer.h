@@ -28,6 +28,9 @@ private:
     VideoCapture capture;
     QImage img;
 
+    double contrast; // "Alpha" value as scaling factor (multiplication)
+    double brightness; // "Beta" value as image delta (addition)
+
 protected:
     void run();
 
@@ -41,6 +44,10 @@ public:
     void stop();
     bool isStopped() const;
     bool useMaxResolution();
+    void setBrightness(double b);
+    void setContrast(double a);
+    double getBrightness();
+    double getContrast();
 
 signals:
     void processedImage(const QImage & image);

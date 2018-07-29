@@ -3,6 +3,8 @@
 WebcamPlayer::WebcamPlayer(QObject * parent)
     : QThread(parent) {
     stop();
+    brightness = 0;
+    contrast = 1;
 }
 
 /*
@@ -43,12 +45,14 @@ void WebcamPlayer::run() {
             emit readError();
             break;
         }
+
+        frame.convertTo(frame, -1, contrast, brightness); // image' = contrast * image + brightness
+
         // Switch from OpenCV's BGR to RGB format & convert to QImage
         if (frame.channels() == 3) {
             cv::cvtColor(frame, RGBframe, CV_BGR2RGB);
             img = QImage( const_cast<unsigned char *>(RGBframe.data),
                 RGBframe.cols, RGBframe.rows, QImage::Format_RGB888);
-
         }
         else {
             img = QImage(const_cast<unsigned char *>(frame.data),
@@ -104,6 +108,38 @@ bool WebcamPlayer::useMaxResolution() {
     }
 
     return isResSet;
+}
+
+/*
+ * Set brightness (image delta) to a given value -256 < b < 256
+ */
+void WebcamPlayer::setBrightness(double b) {
+    if (b > 255)
+        brightness = 255;
+    else if (b < -255)
+        brightness = -255;
+    else
+        brightness = b;
+}
+
+/*
+ * Set contrast (scaling factor of image) to a given value > 0
+ */
+void WebcamPlayer::setContrast(double a) {
+    if (a <= 0) {
+        contrast = 0.001;
+    }
+    else {
+        contrast = a;
+    }
+}
+
+double WebcamPlayer::getContrast() {
+    return contrast;
+}
+
+double WebcamPlayer::getBrightness() {
+    return brightness;
 }
 
 WebcamPlayer::~WebcamPlayer() {

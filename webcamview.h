@@ -55,6 +55,10 @@ public:
     Mode getMode();
     void resize();
     void setMode(Mode mode);
+    void setContrast(double contrast);
+    void setBrightness(double brightness);
+    double getContrast();
+    double getBrightness();
 
 signals:
     void modeChanged();

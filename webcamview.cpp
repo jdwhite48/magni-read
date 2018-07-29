@@ -110,6 +110,21 @@ WebcamView::Mode WebcamView::getMode() {
     return mode;
 }
 
+void WebcamView::setBrightness(double brightness) {
+    videoPlayer->setBrightness(brightness);
+}
+
+double WebcamView::getBrightness() {
+    return videoPlayer->getBrightness();
+}
+
+void WebcamView::setContrast(double contrast) {
+    videoPlayer->setContrast(contrast);
+}
+double WebcamView::getContrast() {
+    return videoPlayer->getContrast();
+}
+
 /*
  * Changes to error mode and stops video player if playing
  */
