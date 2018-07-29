@@ -69,16 +69,16 @@ RESOURCES += resources.qrc
 
 ## TODO
 ### Upcoming
-* Fullscreen mode
-* Adjust image settings (brightness, contrast, filters, etc.)
+* Alternative to dragging: click and move mouse to move image
 
 ### Future Ideas
-* Alternative to dragging: click and move mouse to move image
 * Save snapshots to the user's computer
+* Add color filter options (e.g. grayscale, inverted)
 * Cross-platform compatibility (Linux && OS X)
 
 ### Known Bugs
-* When changing webcams, the new video footage may not appear immediately until preview mode is re-entered.
+* When changing webcams, the new video footage may not appear immediately. Re-enter preview mode to start viewing video
+* Can sometimes drag image too far && see whitespace
 
 ## Dependencies
 * [Qt 5.11.0](https://www.qt.io/) - An open-source framework for developing graphical user interface (GUI) applications.
