@@ -64,13 +64,13 @@ QVBoxLayout * MainWindow::createButtonLayout() {
 
     QVBoxLayout * buttonLayout = new QVBoxLayout(this);
 
-    QPushButton * fullscreenButton = new QPushButton(this);
+    fullscreenButton = new QPushButton(this);
     zoomSlider = new QSlider(this);
     modeButton = new QPushButton(this);
     QPushButton * settingsButton = new QPushButton(this);
 
     // Set tooltips and icons for buttons
-    fullscreenButton->setToolTip("Enter Fullscreen");
+    fullscreenButton->setToolTip(WINDOW_TOOLTIP);
     settingsButton->setToolTip("Settings");
 
     // Give the mode button the appropriate icon && tooltip
@@ -137,7 +137,7 @@ QVBoxLayout * MainWindow::createButtonLayout() {
     connect(modeButton, SIGNAL (released()), this, SLOT (switchWebcamMode()));
     connect(view, SIGNAL (modeChanged()), this, SLOT (updateWebcamMode()), Qt::QueuedConnection);
     connect(zoomSlider, SIGNAL  (valueChanged(int)), this, SLOT (zoomImage(int)));
-    fullscreenButton->setEnabled(false);
+    connect(fullscreenButton, SIGNAL (released()), this, SLOT (toggleFullscreen()));
 
     return buttonLayout;
 }
@@ -244,6 +244,24 @@ void MainWindow::resizeEvent(QResizeEvent * event) {
     QMainWindow::resizeEvent(event);
 
     view->resize();
+}
+
+/*
+ * Toggle between fullscreen and windowed mode
+ */
+void MainWindow::toggleFullscreen() {
+    // Toggle state
+    this->setWindowState(windowState() ^ Qt::WindowFullScreen);
+
+    // Set button to return to other state
+    if (this->isFullScreen()) {
+        fullscreenButton->setToolTip(FULLSCREEN_TOOLTIP);
+        fullscreenButton->setIcon(QIcon(":/media/icons/fullscreen-exit.png"));
+    }
+    else {
+        fullscreenButton->setToolTip(WINDOW_TOOLTIP);
+        fullscreenButton->setIcon(QIcon(":/media/icons/fullscreen.svg"));
+    }
 }
 
 /*

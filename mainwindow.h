@@ -22,7 +22,8 @@ class MainWindow : public QMainWindow
 private:
     QWidget * window = nullptr;
     WebcamView * view = nullptr;
-    QPushButton * modeButton = nullptr;
+    QPushButton * modeButton;
+    QPushButton * fullscreenButton;
     QSlider * zoomSlider = nullptr;
     QLabel * maxZoomLabel;
 
@@ -31,6 +32,8 @@ private:
     const char * SNAPSHOT_TOOLTIP = "Preview camera";
     const char * PREVIEW_TOOLTIP = "Take a snapshot";
     const char * ERROR_TOOLTIP = "Cannot find camera";
+    const char * FULLSCREEN_TOOLTIP = "Return to Window";
+    const char * WINDOW_TOOLTIP = "Enter Fullscreen";
 
     QGridLayout * createMainLayout();
     QVBoxLayout * createGraphicsLayout();
@@ -41,6 +44,7 @@ private slots:
     void updateWebcamMode();
     void changeSettings();
     void switchWebcamMode();
+    void toggleFullscreen();
     void zoomImage(int value);
 
 protected:
