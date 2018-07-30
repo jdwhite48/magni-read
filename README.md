@@ -4,29 +4,25 @@ An assistive reading application designed for individuals with impaired vision. 
 
 ## Pre-Requisites
 
-* Windows computer
-* A high-resolution webcam (recommended: 1080p or 4K) that can view reading material
+* Windows 7 or above (tested on Windows 7 and Windows 10)
+* A high-resolution webcam (recommended: 1080p or 4K, not interpolated) that can view reading material
 
 ## Installation
 
 ### Run
 
-If you only want to use the application, go to the "Releases" tab and download the latest version! To run the application, unzip the downloaded folder:
+If you only want to use the application, go to the "Releases" tab and download the latest version! To run the application, first extract the .zip file for its contents:
 
-*Windows 7 and above:*
 ```
-Right click > Extract all... > Choose folder
+Open "MagniRead.zip" > Extract all... > Choose folder to extract to
 ```
-*Windows Vista and below:*
-Install a file archiver such as 7-zip or WinRAR, then extract the files in a similar way
 
-Open the folder you just created and double-click the "MagniRead.exe" file to run the application. If you want to move the executible file somewhere else, create a shortcut:
+Open the folder you just extracted and double-click the "MagniRead.exe" file to run the application. If you want to move the file somewhere else, create a shortcut:
+
 ```
-Right click > Create Shortcut > Move shortcut
+Right click "MagniRead.exe" > Create Shortcut > Move shortcut
 ```
 __*WARNING:*__ Do NOT move the original file outside of this folder, otherwise the application will break. 
-
-*Release coming soon...*
 
 ### Modify
 ***NOTE:** only recommended if you want to modify or contribute code*
@@ -35,8 +31,8 @@ In order to build the program from source code, you will need to install the dep
 
 Windows:
 1. Download the Qt Open Source framework [here](https://www.qt.io/download). This will give you access to the QtCreator IDE and many other tools. During installation, be sure to include MinGW as a component. The installation may take a while.
-2. Download OpenCV source code [here](https://opencv.org/releases.html). Follow [these instructions](https://wiki.qt.io/How_to_setup_Qt_and_openCV_on_Windows) to compile, build, and install OpenCV from the source code.
-3. Create project in the QtCreator IDE by selecting the "Qt Widgets Application" option. Remove/delete every file except the .pro files.
+2. Download OpenCV source code [here](https://opencv.org/releases.html). Follow [these instructions](https://wiki.qt.io/How_to_setup_Qt_and_openCV_on_Windows) to compile, build, and install OpenCV from source code.
+3. Create project in the QtCreator IDE by selecting the "Qt Widgets Application" option. Remove/delete every file except the .pro file.
 4. Clone or download the application's source code from the [repository URL](https://github.com/jdwhite88/magni-read) to the project directory.
 5. Add these lines of code to the .pro file (where path\to\X is the location of the folder X):
 ```
@@ -48,6 +44,7 @@ LIBS += path\to\opencv-build\bin\libopencv_core320.dll
 LIBS += path\to\opencv-build\bin\libopencv_videoio320.dll
 LIBS += path\to\opencv-build\bin\libopencv_highgui320.dll
 LIBS += path\to\opencv-build\bin\libopencv_imgproc320.dll
+LIBS += path\to\opencv-build\bin\libopencv_imgcodecs320.dll
 
 SOURCES += \
     main.cpp \
@@ -72,6 +69,7 @@ RESOURCES += resources.qrc
 * Alternative to dragging: click and move mouse to move image
 
 ### Future Ideas
+* Create 64-bit version of the project
 * Save snapshots to the user's computer
 * Add color filter options (e.g. grayscale, inverted)
 * Cross-platform compatibility (Linux && OS X)
