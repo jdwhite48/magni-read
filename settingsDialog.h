@@ -7,13 +7,17 @@
 // Implementation classes
 #include <QCameraInfo>
 #include <QComboBox>
-#include <QFormLayout>
+#include <QGridLayout>
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QSettings>
 #include <QSpinBox>
 #include <QSlider>
 #include <QVBoxLayout>
+
+#include <QGuiApplication>
+#include <QLabel>
+#include <QScreen>
 
 class SettingsDialog : public QDialog {
 
@@ -30,7 +34,7 @@ private:
     QPushButton * cancelButton;
 
     QVBoxLayout * createDialogLayout();
-    QFormLayout * createSettingsLayout();
+    QGridLayout * createSettingsLayout();
     QHBoxLayout * createButtonLayout();
 
 protected:

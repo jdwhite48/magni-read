@@ -4,6 +4,7 @@
     </qresource>
     <qresource prefix="/">
         <file>stylesheet.css</file>
+        <file>media/icons/contrast.png</file>
     </qresource>
     <qresource prefix="/media/icons">
         <file alias="fullscreen.svg">media/icons/fullscreen.svg</file>

@@ -1,8 +1,5 @@
 #include "settingsDialog.h"
 
-#include <QGuiApplication>
-#include <QScreen>
-
 SettingsDialog::SettingsDialog() : QDialog()
 {
     SettingsDialog(nullptr);
@@ -31,7 +28,7 @@ void SettingsDialog::closeDialog() {
 QVBoxLayout * SettingsDialog::createDialogLayout() {
     QVBoxLayout * dialogLayout = new QVBoxLayout(this);
 
-    QFormLayout * settingsLayout = createSettingsLayout();
+    QGridLayout * settingsLayout = createSettingsLayout();
     QHBoxLayout * buttonLayout = createButtonLayout();
 
     dialogLayout->addLayout(settingsLayout);
@@ -43,18 +40,19 @@ QVBoxLayout * SettingsDialog::createDialogLayout() {
 /*
  * Design display for settings
  */
-QFormLayout * SettingsDialog::createSettingsLayout() {
-    QFormLayout * settingsLayout = new QFormLayout(this);
+QGridLayout * SettingsDialog::createSettingsLayout() {
+    QGridLayout * settingsLayout = new QGridLayout(this);
     QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "JDWhite", "MagniRead");
 
     // Create brightness and contrast sliders that vary from 1 to 100, ticks every quarter, starting in the middle.
     brightnessSlider = new QSlider(Qt::Horizontal, this);
     brightnessSlider->setTickPosition(QSlider::TicksAbove);
-    brightnessSlider->setMinimum(-256);
-    brightnessSlider->setMaximum(256);
-    brightnessSlider->setTickInterval(64); // Every +-25%
+    // Set range from very low to very high (as if percentage)
+    brightnessSlider->setMinimum(-200);
+    brightnessSlider->setMaximum(200);
+    brightnessSlider->setTickInterval(40); // i.e. 10 ticks
     brightnessSlider->setSingleStep(1);
-    brightnessSlider->setPageStep(64);
+    brightnessSlider->setPageStep(40);
 
     // Set brightness slider to previous position, or default if else
     int brightnessSliderPos = ( settings.contains("image/brightness") )
@@ -65,20 +63,21 @@ QFormLayout * SettingsDialog::createSettingsLayout() {
 
     contrastSlider = new QSlider(Qt::Horizontal, this);
     contrastSlider->setTickPosition(QSlider::TicksAbove);
-    contrastSlider->setMinimum(0);
-    contrastSlider->setMaximum(500);
-    contrastSlider->setTickInterval(50); // Every 0.5x
+    // Set range from 0.5x to 3x
+    contrastSlider->setMinimum(50);
+    contrastSlider->setMaximum(300);
+    contrastSlider->setTickInterval(50); // i.e. tick every x0.5
     contrastSlider->setSingleStep(1);
     contrastSlider->setPageStep(50);
 
     // Set contrast slider to previous position, or default if else
     int contrastSliderPos = ( settings.contains("image/contrast") )
             ? int(settings.value("image/contrast").toDouble() * 100)
-            : int(DEFAULT_CONTRAST * 100); // Multiply by 100 for slider scale
+            : int(DEFAULT_CONTRAST * 100); // Multiply by 100 to convert from double to int scale
     contrastSlider->setSliderPosition( contrastSliderPos );
     contrastSlider->setTracking(true);
 
-    // Drop-down box listing available webcams
+    // Drop-down list of available webcams
     webcamBox = new QComboBox(this);
     QList<QCameraInfo> webcams = QCameraInfo::availableCameras();
     QList<QString> webcamNames = {};
@@ -90,7 +89,7 @@ QFormLayout * SettingsDialog::createSettingsLayout() {
     }
     webcamBox->addItems(webcamNames);
 
-    // Spin box for max zoom multiplier (2-20, default 5x)
+    // Spin box for max zoom multiplier (2x-20x, default 5x)
     maxZoomBox = new QSpinBox(this);
     maxZoomBox->setRange(2, 20);
     int curZoom = (settings.contains("image/maxZoom")) ? settings.value("image/maxZoom").toInt() : DEFAULT_ZOOM;
@@ -107,12 +106,43 @@ QFormLayout * SettingsDialog::createSettingsLayout() {
         restoreWebcamDefault();
     }
 
+    // Construct UI layout for each row
 
-    // Add to layout
-    settingsLayout->addRow("Brightness:", brightnessSlider);
-    settingsLayout->addRow("Contrast:", contrastSlider);
-    settingsLayout->addRow("Webcam:", webcamBox);
-    settingsLayout->addRow("Max Zoom:", maxZoomBox);
+    // Row 1: Brightness
+    QLabel * brightnessLabel = new QLabel("Brightness: ", this);
+    QIcon brightnessIcon = QIcon(":/media/icons/sunny.png");
+    QLabel * brightnessIconLabel = new QLabel(this);
+    brightnessIconLabel->setPixmap(brightnessIcon.pixmap(QSize(75, 75)));
+    QLabel * minBrightnessLabel = new QLabel("0%", this);
+    QLabel * maxBrightnessLabel = new QLabel("100%", this);
+    settingsLayout->addWidget(brightnessLabel, 0, 0, Qt::AlignLeft);
+    settingsLayout->addWidget(brightnessIconLabel, 0, 1, Qt::AlignHCenter);
+    settingsLayout->addWidget(minBrightnessLabel, 0, 2, Qt::AlignHCenter);
+    settingsLayout->addWidget(brightnessSlider, 0, 3, 1, 10); // Span most of the row
+    settingsLayout->addWidget(maxBrightnessLabel, 0, 13, Qt::AlignHCenter);
+
+    // Row 2: Contrast
+    QLabel * contrastLabel = new QLabel("Contrast: ", this);
+    QIcon contrastIcon = QIcon(":/media/icons/contrast.png");
+    QLabel * contrastIconLabel = new QLabel(this);
+    contrastIconLabel->setPixmap(contrastIcon.pixmap(QSize(50, 50)));
+    QLabel * minContrastLabel = new QLabel("0.5x", this);
+    QLabel * maxContrastLabel = new QLabel("3x", this);
+    settingsLayout->addWidget(contrastLabel, 1, 0, Qt::AlignLeft);
+    settingsLayout->addWidget(contrastIconLabel, 1, 1, Qt::AlignHCenter);
+    settingsLayout->addWidget(minContrastLabel, 1, 2, Qt::AlignHCenter);
+    settingsLayout->addWidget(contrastSlider, 1, 3, 1, 10); // Span most of the row
+    settingsLayout->addWidget(maxContrastLabel, 1, 13, Qt::AlignHCenter);
+
+    // Row 3: Webcam
+    QLabel * webcamLabel = new QLabel("Webcam:", this);
+    settingsLayout->addWidget(webcamLabel, 2, 0, Qt::AlignLeft);
+    settingsLayout->addWidget(webcamBox, 2, 2, 1, 12); // Span the remaining part of the row
+
+    // Row 4: Zoom
+    QLabel * zoomLabel = new QLabel("Max Zoom:", this);
+    settingsLayout->addWidget(zoomLabel, 3, 0, Qt::AlignLeft);
+    settingsLayout->addWidget(maxZoomBox, 3, 2, 1, 12); // Span the remaining part of the row
 
     return settingsLayout;
 }
@@ -179,13 +209,10 @@ void SettingsDialog::restoreWebcamDefault() {
 void SettingsDialog::saveAndCloseDialog() {
     QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "JDWhite", "MagniRead");
 
-    int brightnessRange = brightnessSlider->maximum() - brightnessSlider->minimum();
-    int contrastRange = contrastSlider->maximum() - contrastSlider->minimum();
-
     // Save settings in native format (Windows: registry, Other: config file)
     settings.setValue("webcam/deviceIndex", webcamBox->currentIndex());
     settings.setValue("image/brightness", double(brightnessSlider->value()));
-    settings.setValue("image/contrast", double(contrastSlider->value()) / 100 );
+    settings.setValue("image/contrast", double(contrastSlider->value()) / 100 ); // Divide by 100 to convert from int scale to double
     settings.setValue("image/maxZoom", maxZoomBox->cleanText().toInt());
 
     // Emit "accepted" signal (settings changed) and hide window
