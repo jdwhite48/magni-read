@@ -59,13 +59,13 @@ void MainWindow::switchWebcamMode() {
 /*
  * Layout for displaying interactive widgets that change the display
  */
-QVBoxLayout * MainWindow::createButtonLayout() {
+QHBoxLayout * MainWindow::createButtonLayout() {
      QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "JDWhite", "MagniRead");
 
-    QVBoxLayout * buttonLayout = new QVBoxLayout(this);
+    QHBoxLayout * buttonLayout = new QHBoxLayout(this);
 
     fullscreenButton = new QPushButton(this);
-    zoomSlider = new QSlider(this);
+    zoomSlider = new QSlider(Qt::Horizontal, this);
     modeButton = new QPushButton(this);
     QPushButton * settingsButton = new QPushButton(this);
 
@@ -79,7 +79,9 @@ QVBoxLayout * MainWindow::createButtonLayout() {
     fullscreenButton->setIcon(QIcon(":/media/icons/fullscreen.svg"));
     settingsButton->setIcon(QIcon(":/media/icons/gear.png"));
 
+    // Artificially widens size alloted for widget for stylesheet
     zoomSlider->setTickPosition(QSlider::TicksBothSides);
+
     zoomSlider->setMinimum(0);
     int maxZoomPos = (settings.contains("image/maxZoom")
                    ? settings.value("image/maxZoom").toInt() * 100
@@ -103,22 +105,22 @@ QVBoxLayout * MainWindow::createButtonLayout() {
 
     buttonLayout->addWidget(fullscreenButton);
     buttonLayout->addWidget(zoomTitle);
-    buttonLayout->addWidget(maxZoomLabel);
-    buttonLayout->addWidget(zoomSlider);
     buttonLayout->addWidget(minZoomLabel);
+    buttonLayout->addWidget(zoomSlider);
+    buttonLayout->addWidget(maxZoomLabel);
     buttonLayout->addWidget(modeButton);
     buttonLayout->addWidget(settingsButton);
 
     // Customize layout
 
     //Align all widgets horizontally-centered
-    buttonLayout->setAlignment(fullscreenButton, Qt::AlignHCenter);
-    buttonLayout->setAlignment(zoomTitle, Qt::AlignHCenter);
-    buttonLayout->setAlignment(maxZoomLabel, Qt::AlignHCenter);
-    buttonLayout->setAlignment(zoomSlider, Qt::AlignHCenter);
-    buttonLayout->setAlignment(minZoomLabel, Qt::AlignHCenter);
-    buttonLayout->setAlignment(modeButton, Qt::AlignHCenter);
-    buttonLayout->setAlignment(settingsButton, Qt::AlignHCenter);
+//    buttonLayout->setAlignment(fullscreenButton, Qt::AlignHCenter);
+//    buttonLayout->setAlignment(zoomTitle, Qt::AlignHCenter);
+//    buttonLayout->setAlignment(maxZoomLabel, Qt::AlignHCenter);
+//    buttonLayout->setAlignment(zoomSlider, Qt::AlignHCenter);
+//    buttonLayout->setAlignment(minZoomLabel, Qt::AlignHCenter);
+//    buttonLayout->setAlignment(modeButton, Qt::AlignHCenter);
+//    buttonLayout->setAlignment(settingsButton, Qt::AlignHCenter);
 
     // Keep buttons fixed to their respective size (defined in stylesheet)
     fullscreenButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -126,9 +128,9 @@ QVBoxLayout * MainWindow::createButtonLayout() {
     settingsButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 
     // Additional customization in stylesheet with these object names
-    fullscreenButton->setObjectName("mainButton");
-    modeButton->setObjectName("mainButton");
-    settingsButton->setObjectName("mainButton");
+    fullscreenButton->setObjectName("main");
+    modeButton->setObjectName("main");
+    settingsButton->setObjectName("main");
     zoomTitle->setObjectName("title");
 
     // "Settings" button opens dialog box for modifying advanced settings
@@ -176,12 +178,17 @@ QGridLayout * MainWindow::createMainLayout() {
     QGridLayout * mainLayout = new QGridLayout(this);
 
     QVBoxLayout * graphicsLayout = createGraphicsLayout();
-    QVBoxLayout * buttonLayout = createButtonLayout();
+    QHBoxLayout * buttonLayout = createButtonLayout();
 
     // Image layout spans 7 of 8 columns, and all rows
-    mainLayout->addLayout(graphicsLayout, 0, 0, 10, 7);
+//    mainLayout->addLayout(graphicsLayout, 0, 0, 10, 7);
     // Button layout spans last column, and all rows
-    mainLayout->addLayout(buttonLayout, 0, 7, 10, 1);
+//    mainLayout->addLayout(buttonLayout, 0, 7, 10, 1);
+
+    // Graphics layout spans across most of the window
+    mainLayout->addLayout(graphicsLayout, 0, 0, 10, 1);
+    // Button layout spans across last row
+    mainLayout->addLayout(buttonLayout, 10, 0, 1, 1);
 
     return mainLayout;
 }

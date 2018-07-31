@@ -37,7 +37,7 @@ private:
 
     QGridLayout * createMainLayout();
     QVBoxLayout * createGraphicsLayout();
-    QVBoxLayout * createButtonLayout();
+    QHBoxLayout * createButtonLayout();
 
 private slots:
     void openSettingsDialog();

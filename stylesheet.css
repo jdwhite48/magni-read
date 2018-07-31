@@ -2,51 +2,45 @@
  * CSS Spreadsheet is used for widgets that cannot be styled in its layout
 */
 
-QSlider::groove:horizontal {
-}
-QSlider::handle:horizontal {
-}
-
 QLabel#title {
     font-weight: bold;
 }
 
-/* Background of a vertical slider */
-QSlider::groove:vertical {
+/* Background of a horizontal slider */
+QSlider::groove:horizontal {
         background: white;
         border: 1px solid #424242;
 }
 
-/* Handle of a vertical slider */
-QSlider::handle:vertical {
-	height: 40px;
+/* Handle of a horizontal slider */
+QSlider::handle:horizontal {
+        width: 40px;
         border: 1px solid black;
 	background-color: #696969;
 }
 
-/* Area of the groove under the handle of a vertical slider */
-QSlider::add-page:vertical {
-    /* Slight white gradient on bottom */
-    background: qlineargradient(x1: 0, x2: 0, y1: 3, y2: 0, stop: 0.2 white, stop: 1 dodgerBlue);
-    border: 2px solid royalblue;
-
+/* Area of the groove left of the handle of a horizontal slider */
+QSlider::sub-page:horizontal {
+    /* Slight white gradient on top */
+    background: qradialgradient(cx: 0.5, cy: 0.5, radius: 3, fx: 0.5, fy: 0, stop: 0 dodgerBlue, stop: 1 white);
+    border: 1px solid dodgerBlue;
 }
 
-/* Area of the groove above the handle of a vertical slider */
-QSlider::sub-page:vertical {
-    /* Slight grey shadow around edges */
-    background: qradialgradient(cx: 0.5, cy: 0.5, radius: 5, fx: 0.5, fy: 1, stop: 0 white , stop: 1 #424242);
-    border: 2px solid lightgrey
+/* Area of the groove right of the handle of a horizontal slider */
+QSlider::add-page:horizontal {
+    /* Slight grey shadow on bottom */
+    background: qradialgradient(cx: 0.5, cy: 0.5, radius: 5, fx: 0.5, fy: 0, stop: 0 white, stop: 1 #424242);
+    border: 2px solid lightgrey;
 }
 
-QPushButton#mainButton {
+QPushButton#main {
     background: qradialgradient(cx: 0.5, cy: 0.5, radius: 0.5, fx: 0.5, fy: 0.5, stop: 0 transparent, stop: 1 lightgrey);
     padding: 15px;
     border: 1px solid #a0a0a0;
     border-radius: 25%;
-    qproperty-iconSize: 100px;
+    qproperty-iconSize: 80px;
 }
-QPushButton#mainButton:pressed {
+QPushButton#main:pressed {
     background: qradialgradient(cx: 0.5, cy: 0.5, radius: 1, fx: 0.5, fy: 0.5, stop: 0 transparent, stop: 1 #a0a0a0);
 
 }
