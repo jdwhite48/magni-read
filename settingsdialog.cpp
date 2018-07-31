@@ -250,6 +250,7 @@ void SettingsDialog::restoreDefaults() {
     contrastSlider->setSliderPosition( int(DEFAULT_CONTRAST * 100) );
     maxZoomBox->setValue(DEFAULT_ZOOM);
     colorFilterBox->setCurrentIndex( colorFilterBox->findText(DEFAULT_FILTER) );
+    clickDragBox->setCheckState( (DEFAULT_CLICK_TO_DRAG) ? Qt::Checked : Qt::Unchecked);
 }
 
 /*
