@@ -252,6 +252,10 @@ void MainWindow::trySettings() {
     if (settings.contains("image/tempContrast")) {
         view->setContrast( settings.value("image/tempContrast").toDouble() );
     }
+
+    if (settings.contains("image/tempColorFilter")) {
+        view->setFilter( settings.value("image/tempColorFilter").toString().toStdString() );
+    }
 }
 
 /*

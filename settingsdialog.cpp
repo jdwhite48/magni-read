@@ -20,6 +20,7 @@ void SettingsDialog::changeTempImageSettings() {
     QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "JDWhite", "MagniRead");
     settings.setValue("image/tempBrightness", double(brightnessSlider->value()) );
     settings.setValue("image/tempContrast", double(contrastSlider->value()) / 100 );
+    settings.setValue("image/tempColorFilter", colorFilterBox->currentText() );
 
     emit tempSettingsChanged();
 }
@@ -36,6 +37,10 @@ void SettingsDialog::closeDialog() {
 
     if (settings.contains("image/contrast")) {
         settings.setValue("image/tempContrast", settings.value("image/contrast").toDouble() );
+    }
+
+    if (settings.contains("image/colorFilter")) {
+        settings.setValue("image/tempColorFilter", settings.value("image/colorFilter").toString() );
     }
 
     emit tempSettingsChanged();
@@ -187,11 +192,12 @@ QGridLayout * SettingsDialog::createSettingsLayout() {
     settingsLayout->addWidget(zoomLabel, 4, 0, Qt::AlignLeft);
     settingsLayout->addWidget(maxZoomBox, 4, 2, 1, 12); // Span the remaining part of the row
 
-    // Modify settings dynamically with slider movement
+    // Modify settings dynamically when value changes
     brightnessSlider->setTracking(true);
     contrastSlider->setTracking(true);
-    connect(brightnessSlider, SIGNAL (valueChanged(int)), this, SLOT (changeTempImageSettings()));
-    connect(contrastSlider, SIGNAL (valueChanged(int)), this, SLOT (changeTempImageSettings()));
+    connect(brightnessSlider, SIGNAL (valueChanged(int)), this, SLOT (changeTempImageSettings()), Qt::QueuedConnection );
+    connect(contrastSlider, SIGNAL (valueChanged(int)), this, SLOT (changeTempImageSettings()), Qt::QueuedConnection );
+    connect(colorFilterBox, SIGNAL (currentTextChanged(QString)), this, SLOT (changeTempImageSettings()), Qt::QueuedConnection );
 
     return settingsLayout;
 }
