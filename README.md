@@ -1,6 +1,6 @@
 # MagniRead
 
-An assistive reading application designed for individuals with impaired vision. MagniRead can take a snapshot of the webcam's live video footage, giving users a stable image that they can comfortably read from. Unlike many other assistive readers, it isn't necessary to physically move the camera or reading material to read magnified text on the screen. Just take a snapshot, then zoom and drag the image! MagniRead also includes settings for modifying the image's brightness, contrast, etc.
+An assistive reading application designed for individuals with impaired vision. MagniRead can take a snapshot of the webcam's live video footage, giving users a stable image that they can comfortably read from. Unlike many other assistive readers, it isn't necessary to physically move the camera or reading material to read magnified text on the screen. Just take a snapshot, then zoom and drag the image! MagniRead also includes settings for modifying the image's brightness, contrast, and filters.
 
 ## Pre-Requisites
 
@@ -66,13 +66,12 @@ RESOURCES += resources.qrc
 
 ## TODO
 ### Upcoming
-* Add color filter options for the camera (i.e. Black & White, greyscale)
 * Allow user to sharpen image
 * Alternative to dragging: click and move mouse to move image
 
 ### Future Ideas
 * Save snapshots to the user's computer
-* Add color filter options (e.g. grayscale, inverted)
+* Add color filters for those with colorblindness
 * Cross-platform compatibility (Linux && OS X)
 
 ### Known Bugs
