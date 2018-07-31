@@ -5,6 +5,8 @@
 #include <QThread>
 
 // Implementation classes
+#include <string>
+
 #include <QImage>
 #include <QMutex>
 
@@ -24,12 +26,15 @@ private:
     bool stopped;
     QMutex mutex;
     Mat frame;
-    Mat RGBframe;
+    Mat RGBFrame;
+    Mat greyFrame;
+    Mat monoFrame;
     VideoCapture capture;
     QImage img;
 
     double contrast; // "Alpha" value as scaling factor (multiplication)
     double brightness; // "Beta" value as image delta (addition)
+    std::string filter; // Image filter to be applied
 
 protected:
     void run();
@@ -46,8 +51,10 @@ public:
     bool useMaxResolution();
     void setBrightness(double b);
     void setContrast(double a);
+    void setFilter(std::string filter);
     double getBrightness();
     double getContrast();
+    std::string getFilter();
 
 signals:
     void processedImage(const QImage & image);

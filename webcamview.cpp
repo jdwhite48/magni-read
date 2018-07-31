@@ -121,8 +121,17 @@ double WebcamView::getBrightness() {
 void WebcamView::setContrast(double contrast) {
     videoPlayer->setContrast(contrast);
 }
+
 double WebcamView::getContrast() {
     return videoPlayer->getContrast();
+}
+
+void WebcamView::setFilter(std::string filter) {
+    videoPlayer->setFilter(filter);
+}
+
+std::string WebcamView::getFilter() {
+    return videoPlayer->getFilter();
 }
 
 /*

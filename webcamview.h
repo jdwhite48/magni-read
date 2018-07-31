@@ -1,6 +1,8 @@
 #ifndef WEBCAMVIEW_H
 #define WEBCAMVIEW_H
 
+#include <string>
+
 #include <QGraphicsPixmapItem>
 #include <QGraphicsScene>
 #include <QGraphicsView>
@@ -57,8 +59,10 @@ public:
     void setMode(Mode mode);
     void setContrast(double contrast);
     void setBrightness(double brightness);
+    void setFilter(std::string filter);
     double getContrast();
     double getBrightness();
+    std::string getFilter();
 
 signals:
     void modeChanged();

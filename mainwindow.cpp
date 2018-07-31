@@ -159,6 +159,10 @@ QVBoxLayout * MainWindow::createGraphicsLayout() {
         view->setContrast(settings.value("image/contrast").toDouble());
     }
 
+    if (settings.contains("image/colorFilter")) {
+        view->setFilter(settings.value("image/colorFilter").toString().toStdString());
+    }
+
     return graphicsLayout;
 }
 
@@ -226,7 +230,7 @@ void MainWindow::saveSettings() {
     }
 
     if (settings.contains("image/colorFilter")) {
-        qDebug() << settings.value("image/colorFilter").toString();
+        view->setFilter(settings.value("image/colorFilter").toString().toStdString());
     }
 
     // If previous webcam resulted in an error, try again

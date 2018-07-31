@@ -50,9 +50,24 @@ void WebcamPlayer::run() {
 
         // Switch from OpenCV's BGR to RGB format & convert to QImage
         if (frame.channels() == 3) {
-            cv::cvtColor(frame, RGBframe, CV_BGR2RGB);
-            img = QImage( const_cast<unsigned char *>(RGBframe.data),
-                RGBframe.cols, RGBframe.rows, QImage::Format_RGB888);
+            cv::cvtColor(frame, RGBFrame, CV_BGR2RGB);
+
+            if (filter == "Greyscale") {
+                cv::cvtColor(RGBFrame, greyFrame, CV_RGB2GRAY);
+                img = QImage( const_cast<unsigned char *>(greyFrame.data),
+                              greyFrame.cols, greyFrame.rows, QImage::Format_Grayscale8);
+            }
+            else if (filter == "Black and White") {
+                cv::cvtColor(RGBFrame, greyFrame, CV_RGB2GRAY);
+                cv::threshold(greyFrame, monoFrame, 100, 255, THRESH_BINARY );
+                // Use Grayscale format, Mono forms scan lines
+                img = QImage( const_cast<unsigned char *>(monoFrame.data),
+                              monoFrame.cols, monoFrame.rows, QImage::Format_Grayscale8);
+            }
+            else { // filter == "None"
+                img = QImage( const_cast<unsigned char *>(RGBFrame.data),
+                    RGBFrame.cols, RGBFrame.rows, QImage::Format_RGB888);
+            }
         }
         else {
             img = QImage(const_cast<unsigned char *>(frame.data),
@@ -134,12 +149,28 @@ void WebcamPlayer::setContrast(double a) {
     }
 }
 
+/*
+ * Set color filter to an identifiable filter
+ */
+void WebcamPlayer::setFilter(std::string filter) {
+    if ( filter == "Black and White" || filter == "Greyscale") {
+        this->filter = filter;
+    }
+    else {
+        this->filter = "None";
+    }
+}
+
 double WebcamPlayer::getContrast() {
     return contrast;
 }
 
 double WebcamPlayer::getBrightness() {
     return brightness;
+}
+
+std::string WebcamPlayer::getFilter() {
+    return filter;
 }
 
 WebcamPlayer::~WebcamPlayer() {
