@@ -129,6 +129,11 @@ QGridLayout * SettingsDialog::createSettingsLayout() {
     maxZoomBox->setSingleStep(1);
     maxZoomBox->setSuffix("x");  
 
+    clickDragBox = new QCheckBox(this);
+    bool isClickToDrag = (settings.contains("controls/clickToDrag")) ? settings.value("controls/clickToDrag").toBool() : DEFAULT_CLICK_TO_DRAG;
+    clickDragBox->setCheckState( (isClickToDrag) ? Qt::Checked : Qt::Unchecked);
+
+
 
     // Set default to previously used webcam, or to system's default webcam, or first index if else
     if (settings.contains("webcam/deviceIndex") && settings.value("webcam/deviceIndex").toInt() < webcamBox->count()) {
@@ -191,6 +196,11 @@ QGridLayout * SettingsDialog::createSettingsLayout() {
     QLabel * zoomLabel = new QLabel("Max Zoom:", this);
     settingsLayout->addWidget(zoomLabel, 4, 0, Qt::AlignLeft);
     settingsLayout->addWidget(maxZoomBox, 4, 2, 1, 12); // Span the remaining part of the row
+
+    // Row 5: Click to drag
+    QLabel * clickDragLabel = new QLabel("Click to Drag Image:", this);
+    settingsLayout->addWidget(clickDragLabel, 5, 0, 1, 2, Qt::AlignLeft);
+    settingsLayout->addWidget(clickDragBox, 5, 2, 1, 12);
 
     // Modify settings dynamically when value changes
     brightnessSlider->setTracking(true);
@@ -267,13 +277,24 @@ void SettingsDialog::restoreWebcamDefault() {
 void SettingsDialog::saveAndCloseDialog() {
     QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "JDWhite", "MagniRead");
 
+    bool isClickToDragChecked;
+    switch (clickDragBox->checkState()) {
+        case Qt::Checked:
+            isClickToDragChecked = true;
+            break;
+        case Qt::Unchecked:
+        default:
+            isClickToDragChecked = false;
+            break;
+    }
+
     // Save settings in native format (Windows: registry, Other: config file)
     settings.setValue("webcam/deviceIndex", webcamBox->currentIndex());
     settings.setValue("image/brightness", double(brightnessSlider->value()));
     settings.setValue("image/contrast", double(contrastSlider->value()) / 100 ); // Divide by 100 to convert from int scale to double
     settings.setValue("image/maxZoom", maxZoomBox->cleanText().toInt());
     settings.setValue("image/colorFilter", colorFilterBox->currentText());
-
+    settings.setValue("controls/clickToDrag", isClickToDragChecked);
     // Emit "accepted" signal (settings changed) and hide window
     this->accept();
     this->close();

@@ -6,6 +6,7 @@
 
 // Implementation classes
 #include <QCameraInfo>
+#include <QCheckBox>
 #include <QComboBox>
 #include <QGridLayout>
 #include <QHBoxLayout>
@@ -30,6 +31,7 @@ private:
     QComboBox * webcamBox;
     QComboBox * colorFilterBox;
     QSpinBox * maxZoomBox;
+    QCheckBox * clickDragBox;
 
     QPushButton * defaultButton;
     QPushButton * okButton;
@@ -44,6 +46,7 @@ protected:
     const double DEFAULT_CONTRAST = 1;
     const int DEFAULT_ZOOM = 5;
     const QString DEFAULT_FILTER = "None";
+    const bool DEFAULT_CLICK_TO_DRAG = false;
 
 public:
     SettingsDialog();

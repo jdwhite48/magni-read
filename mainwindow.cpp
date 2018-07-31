@@ -233,6 +233,10 @@ void MainWindow::saveSettings() {
         view->setFilter(settings.value("image/colorFilter").toString().toStdString());
     }
 
+    if (settings.contains("controls/clickToDrag")) {
+        view->setClickToDragEnabled( settings.value("controls/clickToDrag").toBool() );
+    }
+
     // If previous webcam resulted in an error, try again
     if (view->getMode() == WebcamView::ERROR) {
         view->setMode(WebcamView::PREVIEW);

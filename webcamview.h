@@ -3,11 +3,12 @@
 
 #include <string>
 
+#include <QEvent>
 #include <QGraphicsPixmapItem>
 #include <QGraphicsScene>
 #include <QGraphicsView>
+#include <QMouseEvent>
 #include <QSettings>
-#include <QWheelEvent>
 
 #include <opencv2/core.hpp>
 #include <opencv2/videoio.hpp>
@@ -35,6 +36,11 @@ private:
     WebcamPlayer * videoPlayer;
     QGraphicsScene * scene = nullptr;
 
+    bool isClickToDrag = false;
+    bool dragging = false;
+    int mouseOriginX;
+    int mouseOriginY;
+
     // Copy of current image/frame
     QImage image;
     // Graphical representation of image in view
@@ -43,6 +49,14 @@ private:
 protected slots:
     void handleError();
     void updateImage(QImage img);
+
+protected:
+    void mousePressEvent(QMouseEvent * event);
+    void mouseMoveEvent(QMouseEvent * event);
+    void leaveEvent(QEvent * event);
+
+    void setDragging(bool isDragging);
+    bool isDragging();
 
 public:
 
@@ -58,6 +72,8 @@ public:
     void resize();
     void setMode(Mode mode);
     void setContrast(double contrast);
+    void setClickToDragEnabled(bool isClickToDrag);
+    bool isClickToDragEnabled();
     void setBrightness(double brightness);
     void setFilter(std::string filter);
     double getContrast();

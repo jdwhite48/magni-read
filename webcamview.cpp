@@ -8,6 +8,10 @@ WebcamView::WebcamView(QWidget * parent)
                   ? settings.value("webcam/deviceIndex").toInt()
                   : DEFAULT_DEVICE;
 
+    if (settings.contains("controls/clickToDrag")) {
+        setClickToDragEnabled( settings.value("controls/clickToDrag").toBool() );
+    }
+
     init(DEFAULT_MODE, device, parent);
 }
 
@@ -24,11 +28,12 @@ void WebcamView::init(WebcamView::Mode mode, int device, QWidget * parent) {
     this->mode = mode;
 
     // Change viewport functionality & appearance
-    setDragMode(QGraphicsView::ScrollHandDrag);
+    setCursor(Qt::OpenHandCursor);
     setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     setAlignment(Qt::AlignTop | Qt::AlignLeft);
     setTransformationAnchor(QGraphicsView::AnchorViewCenter);
+    this->setMouseTracking(true);
 
     // Attach scene
     scene = new QGraphicsScene(parent);
@@ -135,11 +140,109 @@ std::string WebcamView::getFilter() {
 }
 
 /*
+ * Change whether they want click to start and stop dragging, or hold to drag and drop
+ */
+void WebcamView::setClickToDragEnabled(bool isClickToDrag) {
+    this->isClickToDrag = isClickToDrag;
+    if (isClickToDrag) {
+        // Use custom drag functions (click to start dragging, move mouse to move image, click to stop dragging)
+        setDragMode(QGraphicsView::NoDrag);
+    }
+    else {
+        // Hold mouse button down to drag and release to drop instead
+        setDragMode(QGraphicsView::ScrollHandDrag);
+    }
+}
+
+bool WebcamView::isClickToDragEnabled() {
+    return isClickToDrag;
+}
+
+/*
+ * If currently dragging using clickToDrag
+ */
+void WebcamView::setDragging(bool isDragging) {
+    this->dragging = isDragging;
+
+}
+
+bool WebcamView::isDragging() {
+    return dragging;
+}
+
+/*
  * Changes to error mode and stops video player if playing
  */
 void WebcamView::handleError() {
     setMode(ERROR);
     videoPlayer->stop();
+}
+
+/*
+ * Left click to start dragging just by moving the mouse. Left click again to stop
+ */
+void WebcamView::mousePressEvent(QMouseEvent * event) {
+    QGraphicsView::mousePressEvent(event);
+
+    if (!isClickToDrag) {
+        return;
+    }
+
+    if (event->button() == Qt::LeftButton) {
+        mouseOriginX = event->x();
+        mouseOriginY = event->y();
+
+        // Turn off dragging to prevent resetting cursor
+
+        dragging = !dragging;
+        if (isDragging()) {
+            setCursor(Qt::ClosedHandCursor);
+        }
+        else {
+            setCursor(Qt::OpenHandCursor);
+        }
+    }
+}
+
+/*
+ * Move image with the mouse if dragging
+ */
+void WebcamView::mouseMoveEvent(QMouseEvent * event) {
+    QGraphicsView::mouseMoveEvent(event);
+
+    if (!isClickToDrag) {
+        return;
+    }
+
+    // Move image to center on where the mouse is on the image
+    if (isDragging()) {
+        QPointF oldPt = mapToScene(mouseOriginX, mouseOriginY);
+        QPointF newPt = mapToScene(event->pos());
+        QPointF delta = newPt - oldPt;
+
+        // Translate relative to mouse
+        ViewportAnchor anchor = transformationAnchor();
+        setTransformationAnchor(QGraphicsView::NoAnchor);
+        translate(delta.x(), delta.y());
+
+        // Reset transformation anchor
+        setTransformationAnchor(anchor);
+
+        mouseOriginX = event->x();
+        mouseOriginY = event->y();
+    }
+}
+
+/*
+ * Stop dragging image if mouse leaves view
+ */
+void WebcamView::leaveEvent(QEvent * event) {
+    QGraphicsView::leaveEvent(event);
+
+    if (isClickToDrag) {
+        setDragging(false);
+        setCursor(Qt::OpenHandCursor);
+    }
 }
 
 /*
