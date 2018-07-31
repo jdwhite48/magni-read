@@ -14,9 +14,32 @@ SettingsDialog::SettingsDialog(QWidget * parent)
 }
 
 /*
- * Close dialog box without saving settings
+ * Save temporary settings for dynamically modifying image settings
+ */
+void SettingsDialog::changeTempImageSettings() {
+    QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "JDWhite", "MagniRead");
+    settings.setValue("image/tempBrightness", double(brightnessSlider->value()) );
+    settings.setValue("image/tempContrast", double(contrastSlider->value()) / 100 );
+
+    emit tempSettingsChanged();
+}
+
+/*
+ * Revert unsaved chantes and close dialog box
  */
 void SettingsDialog::closeDialog() {
+    // Revert unsaved changes
+    QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "JDWhite", "MagniRead");
+    if (settings.contains("image/brightness")) {
+        settings.setValue("image/tempBrightness", settings.value("image/brightness").toDouble() );
+    }
+
+    if (settings.contains("image/contrast")) {
+        settings.setValue("image/tempContrast", settings.value("image/contrast").toDouble() );
+    }
+
+    emit tempSettingsChanged();
+
     // Emit "rejected" signal (settings not changed) and hide window
     this->reject();
     this->close();
@@ -50,16 +73,15 @@ QGridLayout * SettingsDialog::createSettingsLayout() {
     // Set range from very low to very high (as if percentage)
     brightnessSlider->setMinimum(-200);
     brightnessSlider->setMaximum(200);
-    brightnessSlider->setTickInterval(40); // i.e. 10 ticks
+    brightnessSlider->setTickInterval( int((brightnessSlider->maximum() - brightnessSlider->minimum()) / 10) ); // i.e. 10%
     brightnessSlider->setSingleStep(1);
-    brightnessSlider->setPageStep(40);
+    brightnessSlider->setPageStep( int((brightnessSlider->maximum() - brightnessSlider->minimum()) / 10) );
 
     // Set brightness slider to previous position, or default if else
     int brightnessSliderPos = ( settings.contains("image/brightness") )
             ? int(settings.value("image/brightness").toDouble())
             : int(DEFAULT_BRIGHTNESS);
     brightnessSlider->setSliderPosition( brightnessSliderPos );
-    brightnessSlider->setTracking(true);
 
     contrastSlider = new QSlider(Qt::Horizontal, this);
     contrastSlider->setTickPosition(QSlider::TicksAbove);
@@ -75,7 +97,6 @@ QGridLayout * SettingsDialog::createSettingsLayout() {
             ? int(settings.value("image/contrast").toDouble() * 100)
             : int(DEFAULT_CONTRAST * 100); // Multiply by 100 to convert from double to int scale
     contrastSlider->setSliderPosition( contrastSliderPos );
-    contrastSlider->setTracking(true);
 
     // Drop-down list of available webcams
     webcamBox = new QComboBox(this);
@@ -144,8 +165,16 @@ QGridLayout * SettingsDialog::createSettingsLayout() {
     settingsLayout->addWidget(zoomLabel, 3, 0, Qt::AlignLeft);
     settingsLayout->addWidget(maxZoomBox, 3, 2, 1, 12); // Span the remaining part of the row
 
+    // Modify settings dynamically with slider movement
+    brightnessSlider->setTracking(true);
+    contrastSlider->setTracking(true);
+    connect(brightnessSlider, SIGNAL (valueChanged(int)), this, SLOT (changeTempImageSettings()));
+    connect(contrastSlider, SIGNAL (valueChanged(int)), this, SLOT (changeTempImageSettings()));
+
     return settingsLayout;
 }
+
+
 
 /*
  * Design display for buttons

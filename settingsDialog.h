@@ -46,7 +46,12 @@ public:
     SettingsDialog();
     SettingsDialog(QWidget * parent);
 
+signals:
+    // Indicates when temporary image display values change
+    void tempSettingsChanged();
+
 private slots:
+    void changeTempImageSettings();
     void closeDialog();
     void saveAndCloseDialog();
     void restoreDefaults();

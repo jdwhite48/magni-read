@@ -192,16 +192,17 @@ QGridLayout * MainWindow::createMainLayout() {
 void MainWindow::openSettingsDialog() {
     settingsDialog = new SettingsDialog(this);
 
-    connect( settingsDialog, SIGNAL (accepted()), this, SLOT (changeSettings()) );
+    connect( settingsDialog, SIGNAL (tempSettingsChanged()), this, SLOT (trySettings()) );
+    connect( settingsDialog, SIGNAL (accepted()), this, SLOT (saveSettings()) );
 
-    // Prevent main window from being interacted with until dialog closed (i.e. make it modal)
+    // Prevent main window from being intseracted with until dialog closed (i.e. make it modal)
     settingsDialog->exec();
 }
 
 /*
  * Change settings based on values selected from settings window
  */
-void MainWindow::changeSettings() {
+void MainWindow::saveSettings() {
     QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "JDWhite", "MagniRead");
 
     // Update webcam
@@ -235,6 +236,22 @@ void MainWindow::changeSettings() {
     if (view->getMode() == WebcamView::ERROR) {
         view->setMode(WebcamView::PREVIEW);
     }
+}
+
+/*
+ * Dynamically change image settings while the values are being changed
+ */
+void MainWindow::trySettings() {
+    QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "JDWhite", "MagniRead");
+
+    if (settings.contains("image/tempBrightness")) {
+        view->setBrightness( settings.value("image/tempBrightness").toDouble() );
+    }
+
+    if (settings.contains("image/tempContrast")) {
+        view->setContrast( settings.value("image/tempContrast").toDouble() );
+    }
+
 }
 
 /*

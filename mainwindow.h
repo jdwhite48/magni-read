@@ -42,9 +42,10 @@ private:
 private slots:
     void openSettingsDialog();
     void updateWebcamMode();
-    void changeSettings();
+    void saveSettings();
     void switchWebcamMode();
     void toggleFullscreen();
+    void trySettings();
     void zoomImage(int value);
 
 protected:
