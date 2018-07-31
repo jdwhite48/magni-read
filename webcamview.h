@@ -10,11 +10,6 @@
 #include <QMouseEvent>
 #include <QSettings>
 
-#include <opencv2/core.hpp>
-#include <opencv2/videoio.hpp>
-#include <opencv2/video.hpp>
-#include <opencv2/highgui.hpp>
-
 #include "webcamplayer.h"
 
 class WebcamView : public QGraphicsView {
@@ -79,6 +74,7 @@ public:
     double getContrast();
     double getBrightness();
     std::string getFilter();
+    int getWebcam();
 
 signals:
     void modeChanged();

@@ -13,6 +13,8 @@ WebcamPlayer::WebcamPlayer(QObject * parent)
 bool WebcamPlayer::open(int device) {
     release();
 
+    curWebcam = device;
+
     // Open new webcam && return result
     return capture.open(device);
 }
@@ -171,6 +173,10 @@ double WebcamPlayer::getBrightness() {
 
 std::string WebcamPlayer::getFilter() {
     return filter;
+}
+
+int WebcamPlayer::getWebcam() {
+    return curWebcam;
 }
 
 WebcamPlayer::~WebcamPlayer() {

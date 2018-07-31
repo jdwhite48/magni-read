@@ -139,6 +139,10 @@ std::string WebcamView::getFilter() {
     return videoPlayer->getFilter();
 }
 
+int WebcamView::getWebcam() {
+    return videoPlayer->getWebcam();
+}
+
 /*
  * Change whether they want click to start and stop dragging, or hold to drag and drop
  */

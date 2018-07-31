@@ -210,7 +210,11 @@ void MainWindow::saveSettings() {
 
     // Update webcam
     if (settings.contains("webcam/deviceIndex")) {
-        view->openWebcam(settings.value("webcam/deviceIndex").toInt());
+        int newWebcam = settings.value("webcam/deviceIndex").toInt();
+        if (newWebcam != curWebcam) {
+            curWebcam = newWebcam;
+            view->openWebcam(newWebcam);
+        }
     }
 
     // Update max zoom label and limit

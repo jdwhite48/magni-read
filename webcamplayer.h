@@ -23,6 +23,7 @@ class WebcamPlayer : public QThread {
     Q_OBJECT
 
 private:
+    int curWebcam = 0;
     bool stopped;
     QMutex mutex;
     Mat frame;
@@ -55,6 +56,7 @@ public:
     double getBrightness();
     double getContrast();
     std::string getFilter();
+    int getWebcam();
 
 signals:
     void processedImage(const QImage & image);
