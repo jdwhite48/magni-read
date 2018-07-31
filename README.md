@@ -66,10 +66,11 @@ RESOURCES += resources.qrc
 
 ## TODO
 ### Upcoming
+* Add color filter options for the camera (i.e. Black & White, greyscale)
+* Allow user to sharpen image
 * Alternative to dragging: click and move mouse to move image
 
 ### Future Ideas
-* Create 64-bit version of the project
 * Save snapshots to the user's computer
 * Add color filter options (e.g. grayscale, inverted)
 * Cross-platform compatibility (Linux && OS X)
