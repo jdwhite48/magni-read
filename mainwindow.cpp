@@ -83,9 +83,9 @@ QHBoxLayout * MainWindow::createButtonLayout() {
     zoomSlider->setTickPosition(QSlider::TicksBothSides);
 
     zoomSlider->setMinimum(0);
-    int maxZoomPos = (settings.contains("image/maxZoom")
+    int maxZoomPos = (settings.contains("image/maxZoom"))
                    ? settings.value("image/maxZoom").toInt() * 100
-                   : 500);
+                   : 500;
     zoomSlider->setMaximum(maxZoomPos);
     zoomSlider->setTickInterval( int((zoomSlider->maximum() - zoomSlider->minimum())/10) );
     zoomSlider->setSingleStep(1);
@@ -112,15 +112,6 @@ QHBoxLayout * MainWindow::createButtonLayout() {
     buttonLayout->addWidget(settingsButton);
 
     // Customize layout
-
-    //Align all widgets horizontally-centered
-//    buttonLayout->setAlignment(fullscreenButton, Qt::AlignHCenter);
-//    buttonLayout->setAlignment(zoomTitle, Qt::AlignHCenter);
-//    buttonLayout->setAlignment(maxZoomLabel, Qt::AlignHCenter);
-//    buttonLayout->setAlignment(zoomSlider, Qt::AlignHCenter);
-//    buttonLayout->setAlignment(minZoomLabel, Qt::AlignHCenter);
-//    buttonLayout->setAlignment(modeButton, Qt::AlignHCenter);
-//    buttonLayout->setAlignment(settingsButton, Qt::AlignHCenter);
 
     // Keep buttons fixed to their respective size (defined in stylesheet)
     fullscreenButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -180,11 +171,6 @@ QGridLayout * MainWindow::createMainLayout() {
     QVBoxLayout * graphicsLayout = createGraphicsLayout();
     QHBoxLayout * buttonLayout = createButtonLayout();
 
-    // Image layout spans 7 of 8 columns, and all rows
-//    mainLayout->addLayout(graphicsLayout, 0, 0, 10, 7);
-    // Button layout spans last column, and all rows
-//    mainLayout->addLayout(buttonLayout, 0, 7, 10, 1);
-
     // Graphics layout spans across most of the window
     mainLayout->addLayout(graphicsLayout, 0, 0, 10, 1);
     // Button layout spans across last row
@@ -239,6 +225,10 @@ void MainWindow::saveSettings() {
         view->setContrast(settings.value("image/contrast").toDouble());
     }
 
+    if (settings.contains("image/colorFilter")) {
+        qDebug() << settings.value("image/colorFilter").toString();
+    }
+
     // If previous webcam resulted in an error, try again
     if (view->getMode() == WebcamView::ERROR) {
         view->setMode(WebcamView::PREVIEW);
@@ -258,7 +248,6 @@ void MainWindow::trySettings() {
     if (settings.contains("image/tempContrast")) {
         view->setContrast( settings.value("image/tempContrast").toDouble() );
     }
-
 }
 
 /*

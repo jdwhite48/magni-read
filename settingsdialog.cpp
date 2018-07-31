@@ -110,13 +110,19 @@ QGridLayout * SettingsDialog::createSettingsLayout() {
     }
     webcamBox->addItems(webcamNames);
 
+    // Spin box for color filter choice
+    colorFilterBox = new QComboBox(this);
+    colorFilterBox->addItem("None");
+    colorFilterBox->addItem("Greyscale");
+    colorFilterBox->addItem("Black and White");
+
     // Spin box for max zoom multiplier (2x-20x, default 5x)
     maxZoomBox = new QSpinBox(this);
     maxZoomBox->setRange(2, 20);
     int curZoom = (settings.contains("image/maxZoom")) ? settings.value("image/maxZoom").toInt() : DEFAULT_ZOOM;
     maxZoomBox->setValue(curZoom);
     maxZoomBox->setSingleStep(1);
-    maxZoomBox->setSuffix("x");
+    maxZoomBox->setSuffix("x");  
 
 
     // Set default to previously used webcam, or to system's default webcam, or first index if else
@@ -126,6 +132,17 @@ QGridLayout * SettingsDialog::createSettingsLayout() {
     else {
         restoreWebcamDefault();
     }
+
+    // Set default to previously used filter or to default filter.
+    QString curFilter;
+    if (settings.contains("image/colorFilter")) {
+        curFilter = settings.value("image/colorFilter").toString();
+    }
+    else {
+        curFilter = DEFAULT_FILTER;
+    }
+    int curFilterIndex = colorFilterBox->findText(curFilter);
+    colorFilterBox->setCurrentIndex( curFilterIndex );
 
     // Construct UI layout for each row
 
@@ -160,10 +177,15 @@ QGridLayout * SettingsDialog::createSettingsLayout() {
     settingsLayout->addWidget(webcamLabel, 2, 0, Qt::AlignLeft);
     settingsLayout->addWidget(webcamBox, 2, 2, 1, 12); // Span the remaining part of the row
 
+    // Row 5: Color Filter
+    QLabel * filterLabel = new QLabel("Color Filter:", this);
+    settingsLayout->addWidget(filterLabel, 3, 0, Qt::AlignLeft);
+    settingsLayout->addWidget(colorFilterBox, 3, 2, 1, 12); // Span the remaining part of the row
+
     // Row 4: Zoom
     QLabel * zoomLabel = new QLabel("Max Zoom:", this);
-    settingsLayout->addWidget(zoomLabel, 3, 0, Qt::AlignLeft);
-    settingsLayout->addWidget(maxZoomBox, 3, 2, 1, 12); // Span the remaining part of the row
+    settingsLayout->addWidget(zoomLabel, 4, 0, Qt::AlignLeft);
+    settingsLayout->addWidget(maxZoomBox, 4, 2, 1, 12); // Span the remaining part of the row
 
     // Modify settings dynamically with slider movement
     brightnessSlider->setTracking(true);
@@ -211,6 +233,7 @@ void SettingsDialog::restoreDefaults() {
     brightnessSlider->setSliderPosition( int(DEFAULT_BRIGHTNESS) );
     contrastSlider->setSliderPosition( int(DEFAULT_CONTRAST * 100) );
     maxZoomBox->setValue(DEFAULT_ZOOM);
+    colorFilterBox->setCurrentIndex( colorFilterBox->findText(DEFAULT_FILTER) );
 }
 
 /*
@@ -243,6 +266,7 @@ void SettingsDialog::saveAndCloseDialog() {
     settings.setValue("image/brightness", double(brightnessSlider->value()));
     settings.setValue("image/contrast", double(contrastSlider->value()) / 100 ); // Divide by 100 to convert from int scale to double
     settings.setValue("image/maxZoom", maxZoomBox->cleanText().toInt());
+    settings.setValue("image/colorFilter", colorFilterBox->currentText());
 
     // Emit "accepted" signal (settings changed) and hide window
     this->accept();

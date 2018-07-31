@@ -14,6 +14,7 @@
 #include <QSpinBox>
 #include <QSlider>
 #include <QVBoxLayout>
+#include <string>
 
 #include <QGuiApplication>
 #include <QLabel>
@@ -27,6 +28,7 @@ private:
     QSlider * brightnessSlider;
     QSlider * contrastSlider;
     QComboBox * webcamBox;
+    QComboBox * colorFilterBox;
     QSpinBox * maxZoomBox;
 
     QPushButton * defaultButton;
@@ -41,6 +43,7 @@ protected:
     const double DEFAULT_BRIGHTNESS = 0;
     const double DEFAULT_CONTRAST = 1;
     const int DEFAULT_ZOOM = 5;
+    const QString DEFAULT_FILTER = "None";
 
 public:
     SettingsDialog();
