@@ -10,7 +10,6 @@
 #include <QPushButton>
 #include <QSlider>
 #include <QResizeEvent>
-#include <QDragMoveEvent>
 
 #include "webcamview.h"
 #include "settingsDialog.h"
@@ -24,6 +23,7 @@ private:
     WebcamView * view = nullptr;
     QPushButton * modeButton;
     QPushButton * fullscreenButton;
+    QPushButton * settingsButton;
     QSlider * zoomSlider = nullptr;
     QLabel * maxZoomLabel;
 

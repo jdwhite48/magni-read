@@ -41,13 +41,19 @@ void MainWindow::updateWebcamMode() {
     }
 }
 
+/*
+ * Switch from preview (video) to snapshot (image) mode, or vice versa
+ * Disable accessing settings when in snapshot mode
+ */
 void MainWindow::switchWebcamMode() {
     switch (view->getMode()) {
         case WebcamView::SNAPSHOT :
             view->setMode(WebcamView::PREVIEW);
+            settingsButton->setEnabled(true);
             break;
         case WebcamView::PREVIEW :
             view->setMode(WebcamView::SNAPSHOT);
+            settingsButton->setEnabled(false);
             break;
         case WebcamView::ERROR :
         default :
@@ -67,7 +73,7 @@ QHBoxLayout * MainWindow::createButtonLayout() {
     fullscreenButton = new QPushButton(this);
     zoomSlider = new QSlider(Qt::Horizontal, this);
     modeButton = new QPushButton(this);
-    QPushButton * settingsButton = new QPushButton(this);
+    settingsButton = new QPushButton(this);
 
     // Set tooltips and icons for buttons
     fullscreenButton->setToolTip(WINDOW_TOOLTIP);
