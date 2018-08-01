@@ -41,17 +41,14 @@ QT       += multimedia
 INCLUDEPATH += path\to\opencv-build\install\include
 
 LIBS += path\to\opencv-build\bin\libopencv_core320.dll
-LIBS += path\to\opencv-build\bin\libopencv_videoio320.dll
 LIBS += path\to\opencv-build\bin\libopencv_highgui320.dll
 LIBS += path\to\opencv-build\bin\libopencv_imgproc320.dll
-LIBS += path\to\opencv-build\bin\libopencv_imgcodecs320.dll
 
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
     webcamview.cpp \
     settingsdialog.cpp \
-    webcamsettings.cpp \
     webcamplayer.cpp
 
 HEADERS += \
@@ -66,17 +63,18 @@ RESOURCES += resources.qrc
 
 ## TODO
 ### Upcoming
-* Allow user to sharpen image
-* Alternative to dragging: click and move mouse to move image
+* Performance improvements and bug fixes
 
 ### Future Ideas
+* Allow user to sharpen and denoise image
 * Save snapshots to the user's computer
 * Add color filters for those with colorblindness
 * Cross-platform compatibility (Linux && OS X)
 
 ### Known Bugs
-* When changing webcams, the new video footage may not appear immediately. Re-enter preview mode to start viewing video
+* When changing webcams, the application acts unpredictably (changes video footage as intended, stops, or crashes). If the video footage stops, re-enter preview mode to get video from new webcam
 * Can sometimes drag image too far && see whitespace
+* Tooltips use system-dependent font size instead of application-defined font size
 
 ## Dependencies
 * [Qt 5.11.0](https://www.qt.io/) - An open-source framework for developing graphical user interface (GUI) applications.
