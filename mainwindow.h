@@ -6,6 +6,7 @@
 #include <QBoxLayout>
 #include <QGridLayout>
 #include <QFormLayout>
+#include <QKeyEvent>
 #include <QLabel>
 #include <QPushButton>
 #include <QSlider>
@@ -51,6 +52,7 @@ private slots:
 
 protected:
     void resizeEvent(QResizeEvent * event);
+    void keyPressEvent(QKeyEvent * event);
 
 public:
     MainWindow(QWidget * parent = nullptr);

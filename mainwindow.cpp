@@ -282,6 +282,17 @@ void MainWindow::resizeEvent(QResizeEvent * event) {
 }
 
 /*
+ * Leave Fullscreen mode if Esc key pressed
+ */
+void MainWindow::keyPressEvent(QKeyEvent * event) {
+    QMainWindow::keyPressEvent(event);
+
+    if (this->isFullScreen() && event->key() == Qt::Key_Escape) {
+        toggleFullscreen();
+    }
+}
+
+/*
  * Toggle between fullscreen and windowed mode
  */
 void MainWindow::toggleFullscreen() {
