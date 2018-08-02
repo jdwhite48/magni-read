@@ -1,6 +1,6 @@
 # MagniRead
 
-An assistive reading application designed for individuals with impaired vision. MagniRead can take a snapshot of the webcam's live video footage, giving users a stable image that they can comfortably read from. Unlike many other assistive readers, it isn't necessary to physically move the camera or reading material to read magnified text on the screen. Just take a snapshot, then zoom and drag the image! MagniRead also includes settings for modifying the image's brightness, contrast, and filters.
+An assistive reading application designed for individuals with impaired vision. MagniRead can take a snapshot of the webcam's live video footage, giving users a stable image that they can comfortably read from. Unlike many other assistive readers, it isn't necessary to physically move the camera or reading material to read magnified text on the screen. Just take a snapshot, then zoom and drag the image! MagniRead can also modify the image's brightness, contrast, filters, and other settings to enhance readability.
 
 ## Pre-Requisites
 
@@ -41,8 +41,10 @@ QT       += multimedia
 INCLUDEPATH += path\to\opencv-build\install\include
 
 LIBS += path\to\opencv-build\bin\libopencv_core320.dll
+LIBS += path\to\opencv-build\bin\libopencv_videoio320.dll
 LIBS += path\to\opencv-build\bin\libopencv_highgui320.dll
 LIBS += path\to\opencv-build\bin\libopencv_imgproc320.dll
+LIBS += path\to\opencv-build\bin\libopencv_imgcodecs320.dll
 
 SOURCES += \
     main.cpp \
@@ -68,17 +70,21 @@ win32 {
 ## TODO
 ### Upcoming
 * Performance improvements and bug fixes
+* Pinch on touchscreen to zoom image in and out
+* Add horizontal guide bar over image to help users read
 
 ### Future Ideas
 * Allow user to sharpen and denoise image
 * Save snapshots to the user's computer
+* Choose resolution of image
 * Add color filters for those with colorblindness
 * Cross-platform compatibility (Linux && OS X)
 
 ### Known Bugs
 * When changing webcams, the application acts unpredictably (changes video footage as intended, stops, or crashes). If the video footage stops, re-enter preview mode to get video from new webcam
-* Can sometimes drag image too far && see whitespace
+* Can sometimes drag image too far && see whitespace past image
 * Tooltips use system-dependent font size instead of application-defined font size
+* If the available webcams change, the selected webcam isn't always correct
 
 ## Dependencies
 * [Qt 5.11.0](https://www.qt.io/) - An open-source framework for developing graphical user interface (GUI) applications.
