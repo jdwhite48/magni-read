@@ -16,7 +16,9 @@ bool WebcamPlayer::open(int device) {
     curWebcam = device;
 
     // Open new webcam && return result
-    return capture.open(device);
+    int isOpened = capture.open(device);
+    useMaxResolution();
+    return isOpened;
 }
 
 /*
@@ -27,8 +29,6 @@ void WebcamPlayer::play() {
         if (isStopped()) {
             stopped = false;
         }
-
-        useMaxResolution();
 
         // Start running thread
         start(LowPriority);
