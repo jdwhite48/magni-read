@@ -58,6 +58,10 @@ HEADERS += \
     webcamplayer.h
 
 RESOURCES += resources.qrc
+
+win32 {
+	RC_FILE = MagniRead.rc
+}
 ```
 6. Now you should be able to modify and run the project's source code from the QtCreator IDE
 
