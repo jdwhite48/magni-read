@@ -71,10 +71,12 @@ public:
     bool isClickToDragEnabled();
     void setBrightness(double brightness);
     void setFilter(std::string filter);
+    void setRotation(int angle);
     double getContrast();
     double getBrightness();
     std::string getFilter();
     int getWebcam();
+    int getRotation();
 
 signals:
     void modeChanged();

@@ -156,7 +156,7 @@ QVBoxLayout * MainWindow::createGraphicsLayout() {
     // Take up as much screen as possible
     view->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
 
-    // Update brightness and contrast
+    // Update view settings
     if (settings.contains("image/brightness")) {
         view->setBrightness(settings.value("image/brightness").toDouble());
     }
@@ -167,6 +167,10 @@ QVBoxLayout * MainWindow::createGraphicsLayout() {
 
     if (settings.contains("image/colorFilter")) {
         view->setFilter(settings.value("image/colorFilter").toString().toStdString());
+    }
+
+    if (settings.contains("image/angle")) {
+        view->setRotation( settings.value("image/angle").toInt() );
     }
 
     return graphicsLayout;
@@ -230,7 +234,7 @@ void MainWindow::saveSettings() {
         zoomSlider->blockSignals(false);
     }
 
-    // Update brightness and contrast
+    // Update view settings
     if (settings.contains("image/brightness")) {
         view->setBrightness(settings.value("image/brightness").toDouble());
     }
@@ -245,6 +249,10 @@ void MainWindow::saveSettings() {
 
     if (settings.contains("controls/clickToDrag")) {
         view->setClickToDragEnabled( settings.value("controls/clickToDrag").toBool() );
+    }
+
+    if (settings.contains("image/angle")) {
+        view->setRotation( settings.value("image/angle").toInt() );
     }
 
     // If previous webcam resulted in an error, try again
@@ -269,6 +277,10 @@ void MainWindow::trySettings() {
 
     if (settings.contains("image/tempColorFilter")) {
         view->setFilter( settings.value("image/tempColorFilter").toString().toStdString() );
+    }
+
+    if (settings.contains("image/tempAngle")) {
+        view->setRotation( settings.value("image/tempAngle").toInt() );
     }
 }
 

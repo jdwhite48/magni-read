@@ -30,6 +30,7 @@ private:
     QSlider * contrastSlider;
     QComboBox * webcamBox;
     QComboBox * colorFilterBox;
+    QSpinBox * rotateAngleBox;
     QSpinBox * maxZoomBox;
     QCheckBox * clickDragBox;
 
@@ -46,6 +47,7 @@ protected:
     const double DEFAULT_CONTRAST = 1;
     const int DEFAULT_ZOOM = 5;
     const QString DEFAULT_FILTER = "None";
+    const int DEFAULT_ANGLE = 0;
     const bool DEFAULT_CLICK_TO_DRAG = false;
 
 public:

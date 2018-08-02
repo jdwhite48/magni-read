@@ -143,6 +143,14 @@ int WebcamView::getWebcam() {
     return videoPlayer->getWebcam();
 }
 
+void WebcamView::setRotation(int angle) {
+    videoPlayer->setRotation(angle);
+}
+
+int WebcamView::getRotation() {
+    return videoPlayer->getRotation();
+}
+
 /*
  * Change whether they want click to start and stop dragging, or hold to drag and drop
  */

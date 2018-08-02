@@ -21,6 +21,7 @@ void SettingsDialog::changeTempImageSettings() {
     settings.setValue("image/tempBrightness", double(brightnessSlider->value()) );
     settings.setValue("image/tempContrast", double(contrastSlider->value()) / 100 );
     settings.setValue("image/tempColorFilter", colorFilterBox->currentText() );
+    settings.setValue("image/tempAngle", rotateAngleBox->cleanText().toInt() );
 
     emit tempSettingsChanged();
 }
@@ -41,6 +42,10 @@ void SettingsDialog::closeDialog() {
 
     if (settings.contains("image/colorFilter")) {
         settings.setValue("image/tempColorFilter", settings.value("image/colorFilter").toString() );
+    }
+
+    if (settings.contains("image/angle")) {
+        settings.setValue("image/tempAngle", settings.value("image/angle").toInt() );
     }
 
     emit tempSettingsChanged();
@@ -121,6 +126,13 @@ QGridLayout * SettingsDialog::createSettingsLayout() {
     colorFilterBox->addItem("Greyscale");
     colorFilterBox->addItem("Black and White");
 
+    rotateAngleBox = new QSpinBox(this);
+    rotateAngleBox->setRange(0, 360);
+    int curAngle = (settings.contains("image/angle")) ? settings.value("image/angle").toInt() : DEFAULT_ANGLE;
+    rotateAngleBox->setValue(curAngle);
+    rotateAngleBox->setSingleStep(5);
+    rotateAngleBox->setSuffix("°");
+
     // Spin box for max zoom multiplier (2x-20x, default 5x)
     maxZoomBox = new QSpinBox(this);
     maxZoomBox->setRange(2, 20);
@@ -187,20 +199,25 @@ QGridLayout * SettingsDialog::createSettingsLayout() {
     settingsLayout->addWidget(webcamLabel, 2, 0, Qt::AlignLeft);
     settingsLayout->addWidget(webcamBox, 2, 2, 1, 12); // Span the remaining part of the row
 
-    // Row 5: Color Filter
+    // Row 4: Color Filter
     QLabel * filterLabel = new QLabel("Color Filter:", this);
     settingsLayout->addWidget(filterLabel, 3, 0, Qt::AlignLeft);
     settingsLayout->addWidget(colorFilterBox, 3, 2, 1, 12); // Span the remaining part of the row
 
-    // Row 4: Zoom
-    QLabel * zoomLabel = new QLabel("Max Zoom:", this);
-    settingsLayout->addWidget(zoomLabel, 4, 0, Qt::AlignLeft);
-    settingsLayout->addWidget(maxZoomBox, 4, 2, 1, 12); // Span the remaining part of the row
+    // Row 5: Rotation angle
+    QLabel * angleLabel = new QLabel("Image Rotation:", this);
+    settingsLayout->addWidget(angleLabel, 4, 0, Qt::AlignLeft);
+    settingsLayout->addWidget(rotateAngleBox, 4, 2, 1, 12);
 
-    // Row 5: Click to drag
+    // Row 6: Zoom
+    QLabel * zoomLabel = new QLabel("Max Zoom:", this);
+    settingsLayout->addWidget(zoomLabel, 5, 0, Qt::AlignLeft);
+    settingsLayout->addWidget(maxZoomBox, 5, 2, 1, 12); // Span the remaining part of the row
+
+    // Row 7: Click to drag
     QLabel * clickDragLabel = new QLabel("Click to Drag Image:", this);
-    settingsLayout->addWidget(clickDragLabel, 5, 0, 1, 2, Qt::AlignLeft);
-    settingsLayout->addWidget(clickDragBox, 5, 2, 1, 12);
+    settingsLayout->addWidget(clickDragLabel, 6, 0, 1, 2, Qt::AlignLeft);
+    settingsLayout->addWidget(clickDragBox, 6, 2, 1, 12);
 
     // Modify settings dynamically when value changes
     brightnessSlider->setTracking(true);
@@ -208,6 +225,7 @@ QGridLayout * SettingsDialog::createSettingsLayout() {
     connect(brightnessSlider, SIGNAL (valueChanged(int)), this, SLOT (changeTempImageSettings()), Qt::QueuedConnection );
     connect(contrastSlider, SIGNAL (valueChanged(int)), this, SLOT (changeTempImageSettings()), Qt::QueuedConnection );
     connect(colorFilterBox, SIGNAL (currentTextChanged(QString)), this, SLOT (changeTempImageSettings()), Qt::QueuedConnection );
+    connect(rotateAngleBox, SIGNAL (valueChanged(int)), this, SLOT (changeTempImageSettings()), Qt::QueuedConnection );
 
     return settingsLayout;
 }
@@ -223,6 +241,10 @@ QHBoxLayout * SettingsDialog::createButtonLayout() {
     defaultButton = new QPushButton("Restore Defaults", this);
     okButton = new QPushButton("OK", this);
     cancelButton = new QPushButton("Cancel", this);
+
+    defaultButton->setToolTip("Restore all settings to default values");
+    okButton->setToolTip("Save new settings");
+    cancelButton->setToolTip("Use old settings");
 
     // Add to layout, with "Restore Defaults" on the left, and "Cancel" and "OK" on the right
     buttonLayout->addWidget(defaultButton, 1, Qt::AlignBottom | Qt::AlignLeft);
@@ -248,6 +270,7 @@ void SettingsDialog::restoreDefaults() {
 
     brightnessSlider->setSliderPosition( int(DEFAULT_BRIGHTNESS) );
     contrastSlider->setSliderPosition( int(DEFAULT_CONTRAST * 100) );
+    rotateAngleBox->setValue(DEFAULT_ANGLE);
     maxZoomBox->setValue(DEFAULT_ZOOM);
     colorFilterBox->setCurrentIndex( colorFilterBox->findText(DEFAULT_FILTER) );
     clickDragBox->setCheckState( (DEFAULT_CLICK_TO_DRAG) ? Qt::Checked : Qt::Unchecked);
@@ -293,6 +316,7 @@ void SettingsDialog::saveAndCloseDialog() {
     settings.setValue("webcam/deviceIndex", webcamBox->currentIndex());
     settings.setValue("image/brightness", double(brightnessSlider->value()));
     settings.setValue("image/contrast", double(contrastSlider->value()) / 100 ); // Divide by 100 to convert from int scale to double
+    settings.setValue("image/angle", rotateAngleBox->cleanText().toInt());
     settings.setValue("image/maxZoom", maxZoomBox->cleanText().toInt());
     settings.setValue("image/colorFilter", colorFilterBox->currentText());
     settings.setValue("controls/clickToDrag", isClickToDragChecked);

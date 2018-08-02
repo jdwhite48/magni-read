@@ -48,7 +48,13 @@ void WebcamPlayer::run() {
             break;
         }
 
-        frame.convertTo(frame, -1, contrast, brightness); // image' = contrast * image + brightness
+        // image' = contrast * image + brightness
+        frame.convertTo(frame, -1, contrast, brightness);
+
+        // Rotate clockwise by the specified amount of degrees
+        Point2f frameCenter(frame.cols/2.0F, frame.rows/2.0F);
+        Mat rotMatrix = getRotationMatrix2D(frameCenter, -angle, 1.0);
+        warpAffine(frame, frame, rotMatrix, frame.size());
 
         // Switch from OpenCV's BGR to RGB format & convert to QImage
         if (frame.channels() == 3) {
@@ -163,6 +169,13 @@ void WebcamPlayer::setFilter(std::string filter) {
     }
 }
 
+/*
+ * Set angle of rotation for image
+ */
+void WebcamPlayer::setRotation(int angle) {
+    this->angle = angle % 360;
+}
+
 double WebcamPlayer::getContrast() {
     return contrast;
 }
@@ -177,6 +190,10 @@ std::string WebcamPlayer::getFilter() {
 
 int WebcamPlayer::getWebcam() {
     return curWebcam;
+}
+
+int WebcamPlayer::getRotation() {
+    return angle;
 }
 
 WebcamPlayer::~WebcamPlayer() {
