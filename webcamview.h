@@ -41,6 +41,8 @@ private:
     // Graphical representation of image in view
     QGraphicsPixmapItem imageItem;
 
+    QPen pen;
+
 protected slots:
     void handleError();
     void updateImage(QImage img);
@@ -49,6 +51,7 @@ protected:
     void mousePressEvent(QMouseEvent * event);
     void mouseMoveEvent(QMouseEvent * event);
     void leaveEvent(QEvent * event);
+    void paintEvent(QPaintEvent * event);
 
     void setDragging(bool isDragging);
     bool isDragging();
@@ -60,6 +63,7 @@ public:
 
     WebcamView(QWidget * parent = nullptr);
     WebcamView(int device = 0, QWidget * parent = nullptr);
+    ~WebcamView();
 
     void init(Mode mode, int device, QWidget * parent);
     bool openWebcam(int device);

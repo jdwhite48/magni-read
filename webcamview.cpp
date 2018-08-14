@@ -60,6 +60,9 @@ void WebcamView::init(WebcamView::Mode mode, int device, QWidget * parent) {
         handleError();
     }
 
+    // Initialize pen for drawing guiding line
+    pen = QPen(Qt::red, 5, Qt::DashDotLine);
+
     // Prepare view for display
     this->show();
 }
@@ -76,6 +79,10 @@ void WebcamView::updateImage(QImage img) {
                 static_cast<int>(this->size().width()),
                 static_cast<int>(this->size().height()),
                 Qt::KeepAspectRatioByExpanding, Qt::FastTransformation );
+
+    // Create painter for pixmap (unused, but guiding line jitters less when paintEvent called)
+    QPainter painter(&pixmap);
+
     imageItem.setPixmap(pixmap);
 
     if (scene->items().count() == 0) {
@@ -258,6 +265,18 @@ void WebcamView::leaveEvent(QEvent * event) {
 }
 
 /*
+ * Draw dotted line across viewport to guide reading
+ */
+void WebcamView::paintEvent(QPaintEvent * event) {
+    QGraphicsView::paintEvent(event);
+
+    QPainter painter(viewport());
+    painter.setPen(pen);
+    painter.setRenderHint(QPainter::Antialiasing);
+    painter.drawLine(QPointF(0, viewport()->height() / 2.0), QPointF(viewport()->width(), viewport()->height() / 2.0));
+}
+
+/*
  * Change the webcam to the index of the device specified
  */
 bool WebcamView::openWebcam(int device) {
@@ -281,3 +300,8 @@ bool WebcamView::openWebcam(int device) {
 
     return isOpened;
 }
+
+WebcamView::~WebcamView() {
+}
+
+
