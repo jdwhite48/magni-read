@@ -49,11 +49,9 @@ void MainWindow::switchWebcamMode() {
     switch (view->getMode()) {
         case WebcamView::SNAPSHOT :
             view->setMode(WebcamView::PREVIEW);
-            settingsButton->setEnabled(true);
             break;
         case WebcamView::PREVIEW :
             view->setMode(WebcamView::SNAPSHOT);
-            settingsButton->setEnabled(false);
             break;
         case WebcamView::ERROR :
         default :
@@ -269,6 +267,9 @@ void MainWindow::saveSettings() {
         if (color.isValid()) {
             view->setGuidingLineColor(color);
         }
+    }
+
+    if (view->getMode() == WebcamView::SNAPSHOT) {
     }
 
     // If previous webcam resulted in an error, try again

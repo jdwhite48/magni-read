@@ -58,7 +58,7 @@ void WebcamView::init(WebcamView::Mode mode, int device, QWidget * parent) {
     // Setup video capture and load video
     videoPlayer = new WebcamPlayer(this);
     openWebcam(device);
-    connect(videoPlayer, SIGNAL (processedImage(QImage)),
+    connect(videoPlayer, SIGNAL (imageProcessed(QImage)),
             this, SLOT (updateImage(QImage)));
     connect(videoPlayer, SIGNAL (readError()),
             this, SLOT (handleError()));

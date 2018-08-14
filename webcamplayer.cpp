@@ -41,12 +41,28 @@ void WebcamPlayer::play() {
 void WebcamPlayer::run() {
     while (!stopped) {
         // Get next frame of video
-        bool isRead = capture.read(frame);
+        bool isRead = capture.read(rawFrame);
         if (!isRead) {
             stop();
             emit readError();
             break;
         }
+
+        // Get raw image
+        if (rawFrame.channels() == 3) {
+            cv::cvtColor(rawFrame, rawRGBFrame, CV_BGR2RGB);
+            rawImage = QImage( const_cast<unsigned char *>(rawRGBFrame.data),
+                rawRGBFrame.cols, rawRGBFrame.rows, QImage::Format_RGB888);
+        }
+        else {
+            rawImage = QImage(const_cast<unsigned char *>(rawFrame.data),
+                rawFrame.cols, rawFrame.rows, QImage::Format_Indexed8);
+        }\
+        emit imageRead(rawImage);
+
+        // Get processed image
+
+        rawFrame.copyTo(frame);
 
         // image' = contrast * image + brightness
         frame.convertTo(frame, -1, contrast, brightness);
@@ -62,27 +78,27 @@ void WebcamPlayer::run() {
 
             if (filter == "Greyscale") {
                 cv::cvtColor(RGBFrame, greyFrame, CV_RGB2GRAY);
-                img = QImage( const_cast<unsigned char *>(greyFrame.data),
+                processedImage = QImage( const_cast<unsigned char *>(greyFrame.data),
                               greyFrame.cols, greyFrame.rows, QImage::Format_Grayscale8);
             }
             else if (filter == "Black and White") {
                 cv::cvtColor(RGBFrame, greyFrame, CV_RGB2GRAY);
                 cv::threshold(greyFrame, monoFrame, 100, 255, THRESH_BINARY );
                 // Use Grayscale format, Mono forms scan lines
-                img = QImage( const_cast<unsigned char *>(monoFrame.data),
+                processedImage = QImage( const_cast<unsigned char *>(monoFrame.data),
                               monoFrame.cols, monoFrame.rows, QImage::Format_Grayscale8);
             }
             else { // filter == "None"
-                img = QImage( const_cast<unsigned char *>(RGBFrame.data),
+                processedImage = QImage( const_cast<unsigned char *>(RGBFrame.data),
                     RGBFrame.cols, RGBFrame.rows, QImage::Format_RGB888);
             }
         }
         else {
-            img = QImage(const_cast<unsigned char *>(frame.data),
+            processedImage = QImage(const_cast<unsigned char *>(frame.data),
                 frame.cols, frame.rows, QImage::Format_Indexed8);
         }
 
-        emit processedImage(img);
+        emit imageProcessed(processedImage);
     }
 }
 

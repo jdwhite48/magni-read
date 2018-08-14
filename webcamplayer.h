@@ -27,12 +27,18 @@ private:
     int angle = 0;
     bool stopped;
     QMutex mutex;
+    // Processed
     Mat frame;
     Mat RGBFrame;
     Mat greyFrame;
     Mat monoFrame;
+    QImage processedImage;
+    // Raw
+    Mat rawFrame;
+    Mat rawRGBFrame;
+    QImage rawImage;
+
     VideoCapture capture;
-    QImage img;
 
     double contrast; // "Alpha" value as scaling factor (multiplication)
     double brightness; // "Beta" value as image delta (addition)
@@ -62,7 +68,8 @@ public:
     int getRotation();
 
 signals:
-    void processedImage(const QImage & image);
+    void imageRead(const QImage & image);
+    void imageProcessed(const QImage & image);
     void readError();
 };
 
