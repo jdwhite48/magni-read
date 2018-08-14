@@ -36,12 +36,14 @@ private:
     int mouseOriginX;
     int mouseOriginY;
 
+    bool guidingLineEnabled = false;
+    double guidingLinePos = 0.5;
+    QColor guidingLineColor = Qt::black;
+
     // Copy of current image/frame
     QImage image;
     // Graphical representation of image in view
     QGraphicsPixmapItem imageItem;
-
-    QPen pen;
 
 protected slots:
     void handleError();
@@ -76,11 +78,15 @@ public:
     void setBrightness(double brightness);
     void setFilter(std::string filter);
     void setRotation(int angle);
+    void setGuidingLineEnabled(bool guidingLineEnabled);
+    void setGuidingLinePos(double percent);
+    void setGuidingLineColor(QColor color);
     double getContrast();
     double getBrightness();
     std::string getFilter();
     int getWebcam();
     int getRotation();
+    bool isGuidingLineEnabled();
 
 signals:
     void modeChanged();

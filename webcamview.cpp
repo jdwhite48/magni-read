@@ -12,6 +12,22 @@ WebcamView::WebcamView(QWidget * parent)
         setClickToDragEnabled( settings.value("controls/clickToDrag").toBool() );
     }
 
+    if (settings.contains("controls/isLineDrawn")) {
+        setGuidingLineEnabled( settings.value("controls/isLineDrawn").toBool() );
+    }
+
+    if (settings.contains("controls/linePos")) {
+        // Change percentage to fraction of position down the screen
+        setGuidingLinePos( settings.value("controls/linePos").toDouble() / 100 );
+    }
+
+    if (settings.contains("controls/lineColor")) {
+        QColor color = QColor( settings.value("controls/lineColor").toString() );
+        if (color.isValid()) {
+            setGuidingLineColor(color);
+        }
+    }
+
     init(DEFAULT_MODE, device, parent);
 }
 
@@ -59,9 +75,6 @@ void WebcamView::init(WebcamView::Mode mode, int device, QWidget * parent) {
         // TODO: "Webcam not found" image shown on screen
         handleError();
     }
-
-    // Initialize pen for drawing guiding line
-    pen = QPen(Qt::red, 5, Qt::DashDotLine);
 
     // Prepare view for display
     this->show();
@@ -189,6 +202,32 @@ bool WebcamView::isDragging() {
     return dragging;
 }
 
+void WebcamView::setGuidingLineEnabled(bool guidingLineEnabled) {
+    this->guidingLineEnabled = guidingLineEnabled;
+}
+
+void WebcamView::setGuidingLineColor(QColor color) {
+    this->guidingLineColor = color;
+}
+
+/*
+ * Set position of guiding line as percentage of height (0% is bottom, 100% is top)
+ */
+void WebcamView::setGuidingLinePos(double percent) {
+    if (percent < 0) {
+        percent = 0;
+    }
+    else if (percent > 1) {
+        percent = 1;
+    }
+
+    this->guidingLinePos = 1-percent;
+}
+
+bool WebcamView::isGuidingLineEnabled() {
+    return guidingLineEnabled;
+}
+
 /*
  * Changes to error mode and stops video player if playing
  */
@@ -270,10 +309,13 @@ void WebcamView::leaveEvent(QEvent * event) {
 void WebcamView::paintEvent(QPaintEvent * event) {
     QGraphicsView::paintEvent(event);
 
-    QPainter painter(viewport());
-    painter.setPen(pen);
-    painter.setRenderHint(QPainter::Antialiasing);
-    painter.drawLine(QPointF(0, viewport()->height() / 2.0), QPointF(viewport()->width(), viewport()->height() / 2.0));
+    if (guidingLineEnabled) {
+        QPainter painter(viewport());
+        QPen pen(guidingLineColor, 10, Qt::SolidLine);
+        painter.setPen(pen);
+        painter.setRenderHint(QPainter::Antialiasing);
+        painter.drawLine(QPointF(0, viewport()->height() * guidingLinePos ), QPointF(viewport()->width(), viewport()->height() * guidingLinePos) );
+    }
 }
 
 /*

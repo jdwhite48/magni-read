@@ -255,6 +255,22 @@ void MainWindow::saveSettings() {
         view->setRotation( settings.value("image/angle").toInt() );
     }
 
+    if (settings.contains("controls/isLineDrawn")) {
+        view->setGuidingLineEnabled( settings.value("controls/isLineDrawn").toBool() );
+    }
+
+    if (settings.contains("controls/linePos")) {
+        // Change percentage to fraction of position down the screen
+        view->setGuidingLinePos( settings.value("controls/linePos").toDouble() / 100 );
+    }
+
+    if (settings.contains("controls/lineColor")) {
+        QColor color = QColor( settings.value("controls/lineColor").toString() );
+        if (color.isValid()) {
+            view->setGuidingLineColor(color);
+        }
+    }
+
     // If previous webcam resulted in an error, try again
     if (view->getMode() == WebcamView::ERROR) {
         view->setMode(WebcamView::PREVIEW);
