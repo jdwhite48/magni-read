@@ -24,14 +24,21 @@ void ColorButton::chooseColor() {
     }
 }
 
+/*
+ * Draw a color swatch inside the button, padding the sides
+ */
 void ColorButton::paintEvent(QPaintEvent * event) {
     QPushButton::paintEvent(event);
 
-    QRect rect = event->rect();
+    QRect swatch = event->rect();
     QPainter painter( this );
+    // Make swatch less opaque if button is disabled
+    if (!isEnabled()) {
+        painter.setOpacity(0.5);
+    }
     painter.setBrush( QBrush(currentColor) );
     painter.setPen(Qt::lightGray);
-    rect.adjust(colorPadding, colorPadding, -1-colorPadding, -1-colorPadding);
-    painter.drawRect(rect);
+    swatch.adjust(colorPadding, colorPadding, -1-colorPadding, -1-colorPadding);
+    painter.drawRect(swatch);
 
 }

@@ -26,7 +26,7 @@ public slots:
 
 private:
     QColor currentColor;
-    int colorPadding = 5;
+    int colorPadding = 15;
 
 };
 
