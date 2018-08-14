@@ -14,6 +14,25 @@ SettingsDialog::SettingsDialog(QWidget * parent)
 }
 
 /*
+ * Enable/disable other guiding line settings before changing temp state
+ */
+void SettingsDialog::changeLineEnabled(int state) {
+    switch (state) {
+        case Qt::Checked :
+            linePosBox->setEnabled(true);
+            lineColorButton->setEnabled(true);
+            break;
+        case Qt::Unchecked :
+        default:
+            linePosBox->setEnabled(false);
+            lineColorButton->setEnabled(false);
+            break;
+    }
+
+    changeTempImageSettings();
+}
+
+/*
  * Save temporary settings for dynamically modifying image settings
  */
 void SettingsDialog::changeTempImageSettings() {
@@ -145,7 +164,32 @@ QGridLayout * SettingsDialog::createSettingsLayout() {
     bool isClickToDrag = (settings.contains("controls/clickToDrag")) ? settings.value("controls/clickToDrag").toBool() : DEFAULT_CLICK_TO_DRAG;
     clickDragBox->setCheckState( (isClickToDrag) ? Qt::Checked : Qt::Unchecked);
 
+    // Check box whether guiding line is on or off
+    guidingLineBox = new QCheckBox(this);
+    bool isLineDrawn = (settings.contains("controls/isLineDrawn")) ? settings.value("controls/isLineDrawn").toBool() : DEFAULT_IS_LINE_DRAWN;
+    guidingLineBox->setCheckState( (isLineDrawn) ? Qt::Checked : Qt::Unchecked);
 
+    // Position of guiding line
+    linePosBox = new QSpinBox(this);
+    linePosBox->setRange(0, 100);
+    int curLinePos = (settings.contains("controls/linePos")) ? settings.value("controls/linePos").toInt() : DEFAULT_LINE_POS;
+    linePosBox->setValue(curLinePos);
+    linePosBox->setSingleStep(1);
+    linePosBox->setSuffix("%");
+    if (!isLineDrawn) {
+        linePosBox->setEnabled(false);
+    }
+
+    // Button that chooses color of guiding line
+    QString curLineColorName = (settings.contains("controls/lineColor")) ? settings.value("controls/lineColor").toString() : DEFAULT_LINE_COLOR.name();
+    QColor curColor = QColor(curLineColorName);
+    if (!curColor.isValid()) {
+        curColor = DEFAULT_LINE_COLOR;
+    }
+    lineColorButton = new ColorButton(curColor, this);
+    if (!isLineDrawn) {
+        lineColorButton->setEnabled(false);
+    }
 
     // Set default to previously used webcam, or to system's default webcam, or first index if else
     if (settings.contains("webcam/deviceIndex") && settings.value("webcam/deviceIndex").toInt() < webcamBox->count()) {
@@ -219,6 +263,19 @@ QGridLayout * SettingsDialog::createSettingsLayout() {
     settingsLayout->addWidget(clickDragLabel, 6, 0, 1, 2, Qt::AlignLeft);
     settingsLayout->addWidget(clickDragBox, 6, 2, 1, 12);
 
+    // Row 8-10: Horizontal guiding line
+    QLabel * lineDrawnLabel = new QLabel("Draw Guiding Line:", this);
+    settingsLayout->addWidget(lineDrawnLabel, 7, 0, 1, 2, Qt::AlignLeft);
+    settingsLayout->addWidget(guidingLineBox, 7, 2, 1, 12);
+
+    QLabel * linePosLabel = new QLabel("Guiding Line Position:", this);
+    settingsLayout->addWidget(linePosLabel, 8, 0, 1, 2, Qt::AlignLeft);
+    settingsLayout->addWidget(linePosBox, 8, 2, 1, 12);
+
+    QLabel * lineColorLabel = new QLabel("Guiding Line Color:", this);
+    settingsLayout->addWidget(lineColorLabel, 9, 0, 1, 2, Qt::AlignLeft);
+    settingsLayout->addWidget(lineColorButton, 9, 2, 1, 12);
+
     // Modify settings dynamically when value changes
     brightnessSlider->setTracking(true);
     contrastSlider->setTracking(true);
@@ -226,6 +283,9 @@ QGridLayout * SettingsDialog::createSettingsLayout() {
     connect(contrastSlider, SIGNAL (valueChanged(int)), this, SLOT (changeTempImageSettings()), Qt::QueuedConnection );
     connect(colorFilterBox, SIGNAL (currentTextChanged(QString)), this, SLOT (changeTempImageSettings()), Qt::QueuedConnection );
     connect(rotateAngleBox, SIGNAL (valueChanged(int)), this, SLOT (changeTempImageSettings()), Qt::QueuedConnection );
+    connect(guidingLineBox, SIGNAL (stateChanged(int)), this, SLOT (changeLineEnabled(int)), Qt::QueuedConnection );
+    connect(linePosBox, SIGNAL (valueChanged(int)), this, SLOT (changeTempImageSettings()), Qt::QueuedConnection );
+    connect(lineColorButton, SIGNAL (colorChanged(QColor)), this, SLOT (changeTempImageSettings()), Qt::QueuedConnection );
 
     return settingsLayout;
 }
@@ -274,6 +334,9 @@ void SettingsDialog::restoreDefaults() {
     maxZoomBox->setValue(DEFAULT_ZOOM);
     colorFilterBox->setCurrentIndex( colorFilterBox->findText(DEFAULT_FILTER) );
     clickDragBox->setCheckState( (DEFAULT_CLICK_TO_DRAG) ? Qt::Checked : Qt::Unchecked);
+    guidingLineBox->setCheckState( (DEFAULT_IS_LINE_DRAWN) ? Qt::Checked : Qt::Unchecked);
+    linePosBox->setValue(DEFAULT_LINE_POS);
+    lineColorButton->setColor(DEFAULT_LINE_COLOR);
 }
 
 /*
@@ -312,6 +375,17 @@ void SettingsDialog::saveAndCloseDialog() {
             break;
     }
 
+    bool isLineDrawn;
+    switch (guidingLineBox->checkState()) {
+        case Qt::Checked:
+            isLineDrawn = true;
+            break;
+        case Qt::Unchecked:
+        default:
+            isLineDrawn = false;
+        break;
+    }
+
     // Save settings in native format (Windows: registry, Other: config file)
     settings.setValue("webcam/deviceIndex", webcamBox->currentIndex());
     settings.setValue("image/brightness", double(brightnessSlider->value()));
@@ -320,6 +394,11 @@ void SettingsDialog::saveAndCloseDialog() {
     settings.setValue("image/maxZoom", maxZoomBox->cleanText().toInt());
     settings.setValue("image/colorFilter", colorFilterBox->currentText());
     settings.setValue("controls/clickToDrag", isClickToDragChecked);
+    settings.setValue("controls/isLineDrawn", isLineDrawn);
+    settings.setValue("controls/linePos", linePosBox->cleanText().toInt());
+    settings.setValue("controls/lineColor", lineColorButton->getColor().name());
+
+
     // Emit "accepted" signal (settings changed) and hide window
     this->accept();
     this->close();

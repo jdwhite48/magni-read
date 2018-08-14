@@ -7,6 +7,7 @@
 // Implementation classes
 #include <QCameraInfo>
 #include <QCheckBox>
+#include <QColorDialog>
 #include <QComboBox>
 #include <QGridLayout>
 #include <QHBoxLayout>
@@ -21,6 +22,8 @@
 #include <QLabel>
 #include <QScreen>
 
+#include "colorbutton.h"
+
 class SettingsDialog : public QDialog {
 
     Q_OBJECT
@@ -33,6 +36,10 @@ private:
     QSpinBox * rotateAngleBox;
     QSpinBox * maxZoomBox;
     QCheckBox * clickDragBox;
+    QCheckBox * guidingLineBox;
+    QSpinBox * linePosBox;
+    ColorButton * lineColorButton;
+
 
     QPushButton * defaultButton;
     QPushButton * okButton;
@@ -49,6 +56,9 @@ protected:
     const QString DEFAULT_FILTER = "None";
     const int DEFAULT_ANGLE = 0;
     const bool DEFAULT_CLICK_TO_DRAG = false;
+    const bool DEFAULT_IS_LINE_DRAWN = false;
+    const int DEFAULT_LINE_POS = 50;
+    const QColor DEFAULT_LINE_COLOR = Qt::red;
 
 public:
     SettingsDialog();
@@ -59,6 +69,7 @@ signals:
     void tempSettingsChanged();
 
 private slots:
+    void changeLineEnabled(int state);
     void changeTempImageSettings();
     void closeDialog();
     void saveAndCloseDialog();
