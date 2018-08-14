@@ -316,6 +316,10 @@ void MainWindow::trySettings() {
         }
     }
 
+    if (view->getMode() == WebcamView::SNAPSHOT) {
+        view->processSnapshotImage();
+    }
+
 }
 
 /*

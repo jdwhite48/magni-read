@@ -57,26 +57,16 @@ void WebcamPlayer::run() {
         else {
             rawImage = QImage(const_cast<unsigned char *>(rawFrame.data),
                 rawFrame.cols, rawFrame.rows, QImage::Format_Indexed8);
-        }\
+        }
         emit imageRead(rawImage);
 
-        // Get processed image
-
-        rawFrame.copyTo(frame);
-
-        // image' = contrast * image + brightness
-        frame.convertTo(frame, -1, contrast, brightness);
-
-        // Rotate clockwise by the specified amount of degrees
-        Point2f frameCenter(frame.cols/2.0F, frame.rows/2.0F);
-        Mat rotMatrix = getRotationMatrix2D(frameCenter, -angle, 1.0);
-        warpAffine(frame, frame, rotMatrix, frame.size());
+        frame = processImage(rawFrame);
 
         // Switch from OpenCV's BGR to RGB format & convert to QImage
         if (frame.channels() == 3) {
             cv::cvtColor(frame, RGBFrame, CV_BGR2RGB);
 
-            if (filter == "Greyscale") {
+            if (filter == "Greyscale" || filter == "Grayscale") {
                 cv::cvtColor(RGBFrame, greyFrame, CV_RGB2GRAY);
                 processedImage = QImage( const_cast<unsigned char *>(greyFrame.data),
                               greyFrame.cols, greyFrame.rows, QImage::Format_Grayscale8);
@@ -101,6 +91,50 @@ void WebcamPlayer::run() {
         emit imageProcessed(processedImage);
     }
 }
+
+/*
+ * Change contrast, brightness, and rotation of image
+ */
+Mat WebcamPlayer::processImage(Mat img) {
+    // image' = contrast * image + brightness
+    img.convertTo(img, -1, contrast, brightness);
+
+    // Rotate clockwise by the specified amount of degrees
+    Point2f frameCenter(img.cols/2.0F, img.rows/2.0F);
+    Mat rotMatrix = getRotationMatrix2D(frameCenter, -angle, 1.0);
+    warpAffine(img, img, rotMatrix, img.size());
+
+    return img;
+
+}
+
+/*
+ * Creates a Mat that is a deep copy of the QImage
+ */
+Mat WebcamPlayer::convertQImageToMat(QImage img) {
+    Mat cvImg;
+    switch (img.format()) {
+        case QImage::Format_RGB888 :
+            cvImg = cv::Mat(img.height(), img.width(),
+                              CV_8UC3, const_cast<uchar*>(img.bits()), uint(img.bytesPerLine())).clone();
+            break;
+        case QImage::Format_Grayscale8 :
+            cvImg = cv::Mat(img.height(), img.width(),
+                              CV_8UC1, const_cast<uchar*>(img.bits()), uint(img.bytesPerLine())).clone();
+            break;
+        case QImage::Format_Indexed8 :
+            cvImg = cv::Mat(img.height(), img.width(),
+                              CV_8U, const_cast<uchar*>(img.bits()), uint(img.bytesPerLine())).clone();
+            break;
+        default:
+            break;
+    }
+
+    cv::cvtColor(cvImg, cvImg, CV_RGB2BGR);
+    return cvImg;
+}
+
+
 
 bool WebcamPlayer::isStopped() const {
     return stopped;

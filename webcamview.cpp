@@ -58,6 +58,8 @@ void WebcamView::init(WebcamView::Mode mode, int device, QWidget * parent) {
     // Setup video capture and load video
     videoPlayer = new WebcamPlayer(this);
     openWebcam(device);
+    connect(videoPlayer, SIGNAL (imageRead(QImage)),
+            this, SLOT (setSnapshotImage(QImage)));
     connect(videoPlayer, SIGNAL (imageProcessed(QImage)),
             this, SLOT (updateImage(QImage)));
     connect(videoPlayer, SIGNAL (readError()),
@@ -87,6 +89,7 @@ void WebcamView::updateImage(QImage img) {
 
     // Remove old image
     image = img;
+
     // Rescale new image so that it at least fills the viewport
     QPixmap pixmap = QPixmap::fromImage(img).scaled(
                 static_cast<int>(this->size().width()),
@@ -104,6 +107,18 @@ void WebcamView::updateImage(QImage img) {
 
     // Prepare rescaled view for display
     this->show();
+}
+
+void WebcamView::setSnapshotImage(const QImage & img) {
+    snapshotImage = img;
+}
+
+QImage WebcamView::processSnapshotImage() {
+    if (!snapshotImage.isNull()) {
+        cv::Mat cvImage = videoPlayer->convertQImageToMat(snapshotImage);
+        cvImage = videoPlayer->processImage(cvImage);
+        // TODO: Convert to QImage, add filters
+    }
 }
 
 /*

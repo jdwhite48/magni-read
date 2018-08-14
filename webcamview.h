@@ -42,12 +42,14 @@ private:
 
     // Copy of current image/frame
     QImage image;
+    QImage snapshotImage;
     // Graphical representation of image in view
     QGraphicsPixmapItem imageItem;
 
 protected slots:
     void handleError();
     void updateImage(QImage img);
+    void setSnapshotImage(const QImage & img);
 
 protected:
     void mousePressEvent(QMouseEvent * event);
@@ -87,6 +89,7 @@ public:
     int getWebcam();
     int getRotation();
     bool isGuidingLineEnabled();
+    QImage processSnapshotImage();
 
 signals:
     void modeChanged();

@@ -66,6 +66,8 @@ public:
     std::string getFilter();
     int getWebcam();
     int getRotation();
+    Mat processImage(Mat img);
+    Mat convertQImageToMat(QImage img);
 
 signals:
     void imageRead(const QImage & image);
