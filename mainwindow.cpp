@@ -298,6 +298,23 @@ void MainWindow::trySettings() {
     if (settings.contains("image/tempAngle")) {
         view->setRotation( settings.value("image/tempAngle").toInt() );
     }
+
+    if (settings.contains("controls/tempIsLineDrawn")) {
+        view->setGuidingLineEnabled( settings.value("controls/tempIsLineDrawn").toBool() );
+    }
+
+    if (settings.contains("controls/tempLinePos")) {
+        // Change percentage to fraction of position down the screen
+        view->setGuidingLinePos( settings.value("controls/tempLinePos").toDouble() / 100 );
+    }
+
+    if (settings.contains("controls/tempLineColor")) {
+        QColor color = QColor( settings.value("controls/tempLineColor").toString() );
+        if (color.isValid()) {
+            view->setGuidingLineColor(color);
+        }
+    }
+
 }
 
 /*

@@ -36,11 +36,26 @@ void SettingsDialog::changeLineEnabled(int state) {
  * Save temporary settings for dynamically modifying image settings
  */
 void SettingsDialog::changeTempImageSettings() {
+
+    bool isLineDrawn;
+    switch (guidingLineBox->checkState()) {
+        case Qt::Checked:
+            isLineDrawn = true;
+            break;
+        case Qt::Unchecked:
+        default:
+            isLineDrawn = false;
+        break;
+    }
+
     QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "JDWhite", "MagniRead");
     settings.setValue("image/tempBrightness", double(brightnessSlider->value()) );
     settings.setValue("image/tempContrast", double(contrastSlider->value()) / 100 );
     settings.setValue("image/tempColorFilter", colorFilterBox->currentText() );
     settings.setValue("image/tempAngle", rotateAngleBox->cleanText().toInt() );
+    settings.setValue("controls/tempIsLineDrawn", isLineDrawn);
+    settings.setValue("controls/tempLinePos", linePosBox->cleanText().toInt());
+    settings.setValue("controls/tempLineColor", lineColorButton->getColor().name());
 
     emit tempSettingsChanged();
 }
@@ -49,7 +64,7 @@ void SettingsDialog::changeTempImageSettings() {
  * Revert unsaved chantes and close dialog box
  */
 void SettingsDialog::closeDialog() {
-    // Revert unsaved changes
+
     QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "JDWhite", "MagniRead");
     if (settings.contains("image/brightness")) {
         settings.setValue("image/tempBrightness", settings.value("image/brightness").toDouble() );
@@ -65,6 +80,18 @@ void SettingsDialog::closeDialog() {
 
     if (settings.contains("image/angle")) {
         settings.setValue("image/tempAngle", settings.value("image/angle").toInt() );
+    }
+
+    if (settings.contains("controls/isLineDrawn")) {
+        settings.setValue("controls/tempIsLineDrawn", settings.value("controls/isLineDrawn").toBool() );
+    }
+
+    if (settings.contains("controls/linePos")) {
+        settings.setValue("controls/tempLinePos", settings.value("controls/linePos").toInt() );
+    }
+
+    if (settings.contains("controls/lineColor")) {
+        settings.setValue("controls/tempLineColor", settings.value("controls/lineColor").toString() );
     }
 
     emit tempSettingsChanged();
@@ -174,7 +201,7 @@ QGridLayout * SettingsDialog::createSettingsLayout() {
     linePosBox->setRange(0, 100);
     int curLinePos = (settings.contains("controls/linePos")) ? settings.value("controls/linePos").toInt() : DEFAULT_LINE_POS;
     linePosBox->setValue(curLinePos);
-    linePosBox->setSingleStep(1);
+    linePosBox->setSingleStep(5);
     linePosBox->setSuffix("%");
     if (!isLineDrawn) {
         linePosBox->setEnabled(false);
