@@ -29,13 +29,13 @@ private:
     QMutex mutex;
     // Processed
     Mat frame;
-    Mat RGBFrame;
-    Mat greyFrame;
-    Mat monoFrame;
+//    Mat RGBFrame;
+//    Mat greyFrame;
+//    Mat monoFrame;
     QImage processedImage;
     // Raw
-    Mat rawFrame;
-    Mat rawRGBFrame;
+//    Mat rawFrame;
+//    Mat rawRGBFrame;
     QImage rawImage;
 
     VideoCapture capture;
@@ -67,7 +67,8 @@ public:
     int getWebcam();
     int getRotation();
     Mat processImage(Mat img);
-    Mat convertQImageToMat(QImage img);
+    Mat convertQImageToMat(QImage QImg);
+    QImage convertMatToQImage(Mat cvImg);
 
 signals:
     void imageRead(const QImage & image);

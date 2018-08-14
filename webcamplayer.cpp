@@ -41,97 +41,124 @@ void WebcamPlayer::play() {
 void WebcamPlayer::run() {
     while (!stopped) {
         // Get next frame of video
-        bool isRead = capture.read(rawFrame);
+        bool isRead = capture.read(frame);
         if (!isRead) {
             stop();
             emit readError();
             break;
         }
 
-        // Get raw image
-        if (rawFrame.channels() == 3) {
-            cv::cvtColor(rawFrame, rawRGBFrame, CV_BGR2RGB);
-            rawImage = QImage( const_cast<unsigned char *>(rawRGBFrame.data),
-                rawRGBFrame.cols, rawRGBFrame.rows, QImage::Format_RGB888);
-        }
-        else {
-            rawImage = QImage(const_cast<unsigned char *>(rawFrame.data),
-                rawFrame.cols, rawFrame.rows, QImage::Format_Indexed8);
-        }
+        // Save unmodified image
+        rawImage = convertMatToQImage(frame);
         emit imageRead(rawImage);
 
-        frame = processImage(rawFrame);
-
-        // Switch from OpenCV's BGR to RGB format & convert to QImage
-        if (frame.channels() == 3) {
-            cv::cvtColor(frame, RGBFrame, CV_BGR2RGB);
-
-            if (filter == "Greyscale" || filter == "Grayscale") {
-                cv::cvtColor(RGBFrame, greyFrame, CV_RGB2GRAY);
-                processedImage = QImage( const_cast<unsigned char *>(greyFrame.data),
-                              greyFrame.cols, greyFrame.rows, QImage::Format_Grayscale8);
-            }
-            else if (filter == "Black and White") {
-                cv::cvtColor(RGBFrame, greyFrame, CV_RGB2GRAY);
-                cv::threshold(greyFrame, monoFrame, 100, 255, THRESH_BINARY );
-                // Use Grayscale format, Mono forms scan lines
-                processedImage = QImage( const_cast<unsigned char *>(monoFrame.data),
-                              monoFrame.cols, monoFrame.rows, QImage::Format_Grayscale8);
-            }
-            else { // filter == "None"
-                processedImage = QImage( const_cast<unsigned char *>(RGBFrame.data),
-                    RGBFrame.cols, RGBFrame.rows, QImage::Format_RGB888);
-            }
-        }
-        else {
-            processedImage = QImage(const_cast<unsigned char *>(frame.data),
-                frame.cols, frame.rows, QImage::Format_Indexed8);
-        }
-
+        // Process frame and save modified image
+        frame = processImage(frame);
+        processedImage = convertMatToQImage(frame);
         emit imageProcessed(processedImage);
     }
 }
 
 /*
- * Change contrast, brightness, and rotation of image
+ * Change contrast, brightness, and rotation of image. Convert colors depending on filter string
  */
-Mat WebcamPlayer::processImage(Mat img) {
+Mat WebcamPlayer::processImage(Mat cvImg) {
     // image' = contrast * image + brightness
-    img.convertTo(img, -1, contrast, brightness);
+    cvImg.convertTo(cvImg, -1, contrast, brightness);
 
     // Rotate clockwise by the specified amount of degrees
-    Point2f frameCenter(img.cols/2.0F, img.rows/2.0F);
+    Point2f frameCenter(cvImg.cols/2.0F, cvImg.rows/2.0F);
     Mat rotMatrix = getRotationMatrix2D(frameCenter, -angle, 1.0);
-    warpAffine(img, img, rotMatrix, img.size());
+    warpAffine(cvImg, cvImg, rotMatrix, cvImg.size());
 
-    return img;
+    if (cvImg.channels() == 3) {
+        if (filter == "Greyscale" || filter == "Grayscale") {
+            Mat greyFrame;
+
+            // Convert BGR to single color channel (CV_8UC3 -> CV_8UC1)
+            cv::cvtColor(cvImg, greyFrame, CV_BGR2GRAY);
+
+            return greyFrame;
+        }
+        else if (filter == "Black and White") {
+            Mat monoFrame;
+
+            // Convert BGR to single color channel (CV_8UC3 -> CV_8UC1)
+            cv::cvtColor(cvImg, monoFrame, CV_BGR2GRAY);
+            // Make any pixel >= 100 white, else black (changing brightness/contrast affects this threshhold)
+            cv::threshold(monoFrame, monoFrame, 100, 255, THRESH_BINARY );
+
+            return monoFrame;
+        }
+        else { // filter == "None"
+
+            return cvImg;
+        }
+    }
+    else {
+
+        return cvImg;
+    }
 
 }
 
 /*
  * Creates a Mat that is a deep copy of the QImage
  */
-Mat WebcamPlayer::convertQImageToMat(QImage img) {
+Mat WebcamPlayer::convertQImageToMat(QImage QImg) {
     Mat cvImg;
-    switch (img.format()) {
+    switch (QImg.format()) {
         case QImage::Format_RGB888 :
-            cvImg = cv::Mat(img.height(), img.width(),
-                              CV_8UC3, const_cast<uchar*>(img.bits()), uint(img.bytesPerLine())).clone();
+            cvImg = cv::Mat(QImg.height(), QImg.width(),
+                              CV_8UC3, const_cast<uchar*>(QImg.bits()), uint(QImg.bytesPerLine())).clone();
             break;
         case QImage::Format_Grayscale8 :
-            cvImg = cv::Mat(img.height(), img.width(),
-                              CV_8UC1, const_cast<uchar*>(img.bits()), uint(img.bytesPerLine())).clone();
+        case QImage::Format_Indexed8 : {
+            cvImg = cv::Mat(QImg.height(), QImg.width(),
+                              CV_8UC1, const_cast<uchar*>(QImg.bits()), uint(QImg.bytesPerLine())).clone();
             break;
-        case QImage::Format_Indexed8 :
-            cvImg = cv::Mat(img.height(), img.width(),
-                              CV_8U, const_cast<uchar*>(img.bits()), uint(img.bytesPerLine())).clone();
-            break;
+        }
         default:
             break;
     }
 
-    cv::cvtColor(cvImg, cvImg, CV_RGB2BGR);
-    return cvImg;
+    // Switch from Qt's RGB format to OpenCV's BGR format
+    if (frame.channels() == 3) {
+        Mat cvBGRImg;
+        cv::cvtColor(cvImg, cvBGRImg, CV_RGB2BGR);
+        return cvBGRImg;
+    }
+    else {
+        return cvImg;
+    }
+}
+
+QImage WebcamPlayer::convertMatToQImage(Mat cvImg) {
+    QImage QImg;
+    if (cvImg.channels() == 3) {
+
+        // Switch from OpenCV's BGR format to Qt's RGB format
+        Mat RGBImg;
+        cv::cvtColor(cvImg, RGBImg, CV_BGR2RGB);
+
+        switch (RGBImg.type()) {
+            case CV_8UC3 :
+                QImg = QImage( const_cast<unsigned char *>(RGBImg.data),
+                    RGBImg.cols, RGBImg.rows, QImage::Format_RGB888).copy();
+                break;
+            case CV_8UC1 : // or CV_8U
+                QImg = QImage( const_cast<unsigned char *>(RGBImg.data),
+                    RGBImg.cols, RGBImg.rows, QImage::Format_Grayscale8).copy();
+                break;
+
+        }
+    }
+    else {
+        QImg = QImage( const_cast<unsigned char *>(cvImg.data),
+            cvImg.cols, cvImg.rows, QImage::Format_Indexed8).copy();
+    }
+
+    return QImg;
 }
 
 

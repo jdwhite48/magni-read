@@ -87,7 +87,7 @@ void WebcamView::init(WebcamView::Mode mode, int device, QWidget * parent) {
  */
 void WebcamView::updateImage(QImage img) {
 
-    // Remove old image
+    // Replace old image
     image = img;
 
     // Rescale new image so that it at least fills the viewport
@@ -113,11 +113,17 @@ void WebcamView::setSnapshotImage(const QImage & img) {
     snapshotImage = img;
 }
 
-QImage WebcamView::processSnapshotImage() {
+/*
+ * Manually process snapshot image and update viewport to show processed image
+ */
+void WebcamView::processSnapshotImage() {
+    QImage processedImage;
+
     if (!snapshotImage.isNull()) {
         cv::Mat cvImage = videoPlayer->convertQImageToMat(snapshotImage);
         cvImage = videoPlayer->processImage(cvImage);
-        // TODO: Convert to QImage, add filters
+        processedImage = videoPlayer->convertMatToQImage(cvImage);
+        updateImage(processedImage);
     }
 }
 

@@ -89,7 +89,7 @@ public:
     int getWebcam();
     int getRotation();
     bool isGuidingLineEnabled();
-    QImage processSnapshotImage();
+    void processSnapshotImage();
 
 signals:
     void modeChanged();
