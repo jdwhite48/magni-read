@@ -28,6 +28,7 @@ private:
     QSlider * zoomSlider = nullptr;
     QLabel * maxZoomLabel;
     int curWebcam = 0;
+    QString curWebcamName = "";
 
     SettingsDialog * settingsDialog;
 

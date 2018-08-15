@@ -437,6 +437,7 @@ void SettingsDialog::saveAndCloseDialog() {
 
     // Save settings in native format (Windows: registry, Other: config file)
     settings.setValue("webcam/deviceIndex", webcamBox->currentIndex());
+    settings.setValue("webcam/deviceName", webcamBox->currentText());
     settings.setValue("image/brightness", double(brightnessSlider->value()));
     settings.setValue("image/contrast", double(contrastSlider->value()) / 100 ); // Divide by 100 to convert from int scale to double
     settings.setValue("image/angle", rotateAngleBox->cleanText().toInt());

@@ -211,10 +211,13 @@ void MainWindow::saveSettings() {
     QSettings settings(QSettings::NativeFormat, QSettings::UserScope, "JDWhite", "MagniRead");
 
     // Update webcam
-    if (settings.contains("webcam/deviceIndex")) {
+    if (settings.contains("webcam/deviceIndex") && settings.contains("webcam/deviceName")) {
         int newWebcam = settings.value("webcam/deviceIndex").toInt();
-        if (newWebcam != curWebcam) {
+        QString newWebcamName = settings.value("webcam/deviceName").toString();
+        if (curWebcamName != newWebcamName || curWebcam != newWebcam) {
             curWebcam = newWebcam;
+            curWebcamName = newWebcamName;
+
             view->openWebcam(newWebcam);
         }
     }
