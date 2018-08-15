@@ -250,6 +250,14 @@ void WebcamView::setGuidingLinePos(double percent) {
     this->guidingLinePos = 1-percent;
 }
 
+void WebcamView::setGuidingLineThickness(int px) {
+    if (px < 1) {
+        px = 1;
+    }
+
+    this->guidingLineThickness = px;
+}
+
 bool WebcamView::isGuidingLineEnabled() {
     return guidingLineEnabled;
 }
@@ -338,7 +346,7 @@ void WebcamView::paintEvent(QPaintEvent * event) {
 
     if (guidingLineEnabled) {
         QPainter painter(viewport());
-        QPen pen(guidingLineColor, 10, Qt::SolidLine);
+        QPen pen(guidingLineColor, guidingLineThickness, Qt::SolidLine);
         painter.setPen(pen);
         painter.setRenderHint(QPainter::Antialiasing);
         painter.drawLine(QPointF(0, viewport()->height() * guidingLinePos ), QPointF(viewport()->width(), viewport()->height() * guidingLinePos) );

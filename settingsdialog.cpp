@@ -21,11 +21,13 @@ void SettingsDialog::changeLineEnabled(int state) {
         case Qt::Checked :
             linePosBox->setEnabled(true);
             lineColorButton->setEnabled(true);
+            lineThicknessBox->setEnabled(true);
             break;
         case Qt::Unchecked :
         default:
             linePosBox->setEnabled(false);
             lineColorButton->setEnabled(false);
+            lineThicknessBox->setEnabled(false);
             break;
     }
 
@@ -55,6 +57,7 @@ void SettingsDialog::changeTempImageSettings() {
     settings.setValue("image/tempAngle", rotateAngleBox->cleanText().toInt() );
     settings.setValue("controls/tempIsLineDrawn", isLineDrawn);
     settings.setValue("controls/tempLinePos", linePosBox->cleanText().toInt());
+    settings.setValue("controls/tempLineThickness", lineThicknessBox->cleanText().toInt());
     settings.setValue("controls/tempLineColor", lineColorButton->getColor().name());
 
     emit tempSettingsChanged();
@@ -88,6 +91,10 @@ void SettingsDialog::closeDialog() {
 
     if (settings.contains("controls/linePos")) {
         settings.setValue("controls/tempLinePos", settings.value("controls/linePos").toInt() );
+    }
+
+    if (settings.contains("controls/lineThickness")) {
+        settings.setValue("controls/tempLineThickness", settings.value("controls/lineThickness").toString() );
     }
 
     if (settings.contains("controls/lineColor")) {
@@ -203,9 +210,20 @@ QGridLayout * SettingsDialog::createSettingsLayout() {
     linePosBox->setValue(curLinePos);
     linePosBox->setSingleStep(5);
     linePosBox->setSuffix("%");
-    if (!isLineDrawn) {
+    if (!isLineDrawn || !guidingLineBox->isEnabled()) {
         linePosBox->setEnabled(false);
     }
+
+    lineThicknessBox = new QSpinBox(this);
+    lineThicknessBox->setRange(1, 50);
+    int curLineThickness = (settings.contains("controls/lineThickness")) ? settings.value("controls/lineThickness").toInt() : DEFAULT_LINE_THICKNESS;
+    lineThicknessBox->setValue(curLineThickness);
+    lineThicknessBox->setSingleStep(1);
+    lineThicknessBox->setSuffix(" pixels");
+    if (!isLineDrawn || !guidingLineBox->isEnabled()) {
+        linePosBox->setEnabled(false);
+    }
+
 
     // Button that chooses color of guiding line
     QString curLineColorName = (settings.contains("controls/lineColor")) ? settings.value("controls/lineColor").toString() : DEFAULT_LINE_COLOR.name();
@@ -214,7 +232,7 @@ QGridLayout * SettingsDialog::createSettingsLayout() {
         curColor = DEFAULT_LINE_COLOR;
     }
     lineColorButton = new ColorButton(curColor, this);
-    if (!isLineDrawn) {
+    if (!isLineDrawn || !guidingLineBox->isEnabled()) {
         lineColorButton->setEnabled(false);
     }
 
@@ -290,7 +308,7 @@ QGridLayout * SettingsDialog::createSettingsLayout() {
     settingsLayout->addWidget(clickDragLabel, 6, 0, 1, 2, Qt::AlignLeft);
     settingsLayout->addWidget(clickDragBox, 6, 2, 1, 12);
 
-    // Row 8-10: Horizontal guiding line
+    // Row 8-11: Horizontal guiding line
     QLabel * lineDrawnLabel = new QLabel("Draw Guiding Line:", this);
     settingsLayout->addWidget(lineDrawnLabel, 7, 0, 1, 2, Qt::AlignLeft);
     settingsLayout->addWidget(guidingLineBox, 7, 2, 1, 12);
@@ -303,6 +321,10 @@ QGridLayout * SettingsDialog::createSettingsLayout() {
     settingsLayout->addWidget(lineColorLabel, 9, 0, 1, 2, Qt::AlignLeft);
     settingsLayout->addWidget(lineColorButton, 9, 2, 1, 12);
 
+    QLabel * lineThicknessLabel = new QLabel("Guiding Line Thickness:", this);
+    settingsLayout->addWidget(lineThicknessLabel, 10, 0, 1, 2, Qt::AlignLeft);
+    settingsLayout->addWidget(lineThicknessBox, 10, 2, 1, 12);
+
     // Modify settings dynamically when value changes
     brightnessSlider->setTracking(true);
     contrastSlider->setTracking(true);
@@ -312,6 +334,7 @@ QGridLayout * SettingsDialog::createSettingsLayout() {
     connect(rotateAngleBox, SIGNAL (valueChanged(int)), this, SLOT (changeTempImageSettings()), Qt::QueuedConnection );
     connect(guidingLineBox, SIGNAL (stateChanged(int)), this, SLOT (changeLineEnabled(int)), Qt::QueuedConnection );
     connect(linePosBox, SIGNAL (valueChanged(int)), this, SLOT (changeTempImageSettings()), Qt::QueuedConnection );
+    connect(lineThicknessBox, SIGNAL (valueChanged(int)), this, SLOT (changeTempImageSettings()), Qt::QueuedConnection );
     connect(lineColorButton, SIGNAL (colorChanged(QColor)), this, SLOT (changeTempImageSettings()), Qt::QueuedConnection );
 
     return settingsLayout;
@@ -335,10 +358,8 @@ QHBoxLayout * SettingsDialog::createButtonLayout() {
 
     // Add to layout, with "Restore Defaults" on the left, and "Cancel" and "OK" on the right
     buttonLayout->addWidget(defaultButton, 1, Qt::AlignBottom | Qt::AlignLeft);
-    // Add spacing equal to 5% the current screen
-    buttonLayout->addSpacing( int(QGuiApplication::primaryScreen()->availableGeometry().width() * 0.05));
-    buttonLayout->addWidget(cancelButton, 1, Qt::AlignBottom | Qt::AlignRight);
-    buttonLayout->addWidget(okButton, 0, Qt:: AlignBottom | Qt::AlignRight);
+    buttonLayout->addWidget(okButton, 1, Qt::AlignBottom | Qt::AlignRight);
+    buttonLayout->addWidget(cancelButton, 0, Qt:: AlignBottom | Qt::AlignRight);
 
     // Perform action when buttons pressed
     connect( okButton, SIGNAL (released()), this, SLOT (saveAndCloseDialog()) );
@@ -363,6 +384,7 @@ void SettingsDialog::restoreDefaults() {
     clickDragBox->setCheckState( (DEFAULT_CLICK_TO_DRAG) ? Qt::Checked : Qt::Unchecked);
     guidingLineBox->setCheckState( (DEFAULT_IS_LINE_DRAWN) ? Qt::Checked : Qt::Unchecked);
     linePosBox->setValue(DEFAULT_LINE_POS);
+    lineThicknessBox->setValue(DEFAULT_LINE_THICKNESS);
     lineColorButton->setColor(DEFAULT_LINE_COLOR);
 }
 
@@ -423,6 +445,7 @@ void SettingsDialog::saveAndCloseDialog() {
     settings.setValue("controls/clickToDrag", isClickToDragChecked);
     settings.setValue("controls/isLineDrawn", isLineDrawn);
     settings.setValue("controls/linePos", linePosBox->cleanText().toInt());
+    settings.setValue("controls/lineThickness", lineThicknessBox->cleanText().toInt());
     settings.setValue("controls/lineColor", lineColorButton->getColor().name());
 
 

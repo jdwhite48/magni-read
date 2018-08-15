@@ -18,9 +18,7 @@
 #include <QVBoxLayout>
 #include <string>
 
-#include <QGuiApplication>
 #include <QLabel>
-#include <QScreen>
 
 #include "colorbutton.h"
 
@@ -38,6 +36,7 @@ private:
     QCheckBox * clickDragBox;
     QCheckBox * guidingLineBox;
     QSpinBox * linePosBox;
+    QSpinBox * lineThicknessBox;
     ColorButton * lineColorButton;
 
 
@@ -58,6 +57,7 @@ protected:
     const bool DEFAULT_CLICK_TO_DRAG = false;
     const bool DEFAULT_IS_LINE_DRAWN = false;
     const int DEFAULT_LINE_POS = 50;
+    const int DEFAULT_LINE_THICKNESS = 10;
     const QColor DEFAULT_LINE_COLOR = Qt::red;
 
 public:

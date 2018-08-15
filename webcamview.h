@@ -38,6 +38,7 @@ private:
 
     bool guidingLineEnabled = false;
     double guidingLinePos = 0.5;
+    int guidingLineThickness = 10;
     QColor guidingLineColor = Qt::black;
 
     // Copy of current image/frame
@@ -82,6 +83,7 @@ public:
     void setRotation(int angle);
     void setGuidingLineEnabled(bool guidingLineEnabled);
     void setGuidingLinePos(double percent);
+    void setGuidingLineThickness(int px);
     void setGuidingLineColor(QColor color);
     double getContrast();
     double getBrightness();

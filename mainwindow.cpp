@@ -262,6 +262,10 @@ void MainWindow::saveSettings() {
         view->setGuidingLinePos( settings.value("controls/linePos").toDouble() / 100 );
     }
 
+    if (settings.contains("controls/lineThickness")) {
+        view->setGuidingLineThickness( settings.value("controls/lineThickness").toInt() );
+    }
+
     if (settings.contains("controls/lineColor")) {
         QColor color = QColor( settings.value("controls/lineColor").toString() );
         if (color.isValid()) {
@@ -307,6 +311,10 @@ void MainWindow::trySettings() {
     if (settings.contains("controls/tempLinePos")) {
         // Change percentage to fraction of position down the screen
         view->setGuidingLinePos( settings.value("controls/tempLinePos").toDouble() / 100 );
+    }
+
+    if (settings.contains("controls/tempLineThickness")) {
+        view->setGuidingLineThickness( settings.value("controls/tempLineThickness").toInt() );
     }
 
     if (settings.contains("controls/tempLineColor")) {
