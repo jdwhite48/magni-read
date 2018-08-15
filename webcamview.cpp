@@ -44,11 +44,16 @@ void WebcamView::init(WebcamView::Mode mode, int device, QWidget * parent) {
     this->mode = mode;
 
     // Change viewport functionality & appearance
+
     setCursor(Qt::OpenHandCursor);
     setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     setAlignment(Qt::AlignTop | Qt::AlignLeft);
+    // To zoom from center of the image
     setTransformationAnchor(QGraphicsView::AnchorViewCenter);
+    // To fully update everything that is drawn in paint event
+    setViewportUpdateMode(QGraphicsView::FullViewportUpdate);
+    // To always track mouse, not just when clicking
     this->setMouseTracking(true);
 
     // Attach scene
@@ -328,6 +333,7 @@ void WebcamView::leaveEvent(QEvent * event) {
  * Draw dotted line across viewport to guide reading
  */
 void WebcamView::paintEvent(QPaintEvent * event) {
+
     QGraphicsView::paintEvent(event);
 
     if (guidingLineEnabled) {
