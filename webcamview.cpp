@@ -21,6 +21,10 @@ WebcamView::WebcamView(QWidget * parent)
         setGuidingLinePos( settings.value("controls/linePos").toDouble() / 100 );
     }
 
+    if (settings.contains("controls/lineThickness")) {
+        setGuidingLineThickness( settings.value("controls/lineThickness").toInt() );
+    }
+
     if (settings.contains("controls/lineColor")) {
         QColor color = QColor( settings.value("controls/lineColor").toString() );
         if (color.isValid()) {
