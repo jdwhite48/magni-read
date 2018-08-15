@@ -69,7 +69,13 @@ Mat WebcamPlayer::processImage(Mat cvImg) {
     // Rotate clockwise by the specified amount of degrees
     Point2f frameCenter(cvImg.cols/2.0F, cvImg.rows/2.0F);
     Mat rotMatrix = getRotationMatrix2D(frameCenter, -angle, 1.0);
-    warpAffine(cvImg, cvImg, rotMatrix, cvImg.size());
+    // Determine bounding rectangle
+    Rect2f boundsBox = cv::RotatedRect(cv::Point2f(), cvImg.size(), -angle).boundingRect2f();
+    // Adjust transformation matrix to fit full image
+    rotMatrix.at<double>(0,2) += boundsBox.width/2.0 - cvImg.cols/2.0;
+    rotMatrix.at<double>(1,2) += boundsBox.height/2.0 - cvImg.rows/2.0;
+
+    warpAffine(cvImg, cvImg, rotMatrix, cvImg.size(), INTER_NEAREST);
 
     if (cvImg.channels() == 3) {
         if (filter == "Greyscale" || filter == "Grayscale") {
