@@ -75,14 +75,16 @@ Mat WebcamPlayer::processImage(Mat cvImg) {
     rotMatrix.at<double>(0,2) += boundsBox.width/2.0 - cvImg.cols/2.0;
     rotMatrix.at<double>(1,2) += boundsBox.height/2.0 - cvImg.rows/2.0;
 
-    warpAffine(cvImg, cvImg, rotMatrix, cvImg.size(), INTER_NEAREST);
+    Mat largerImg(boundsBox.size(), cvImg.type());
+    cvImg.copyTo(largerImg);
+    warpAffine(largerImg, largerImg, rotMatrix, boundsBox.size());
 
-    if (cvImg.channels() == 3) {
+    if (largerImg.channels() == 3) {
         if (filter == "Greyscale" || filter == "Grayscale") {
             Mat greyFrame;
 
             // Convert BGR to single color channel (CV_8UC3 -> CV_8UC1)
-            cv::cvtColor(cvImg, greyFrame, CV_BGR2GRAY);
+            cv::cvtColor(largerImg, greyFrame, CV_BGR2GRAY);
 
             return greyFrame;
         }
@@ -90,7 +92,7 @@ Mat WebcamPlayer::processImage(Mat cvImg) {
             Mat monoFrame;
 
             // Convert BGR to single color channel (CV_8UC3 -> CV_8UC1)
-            cv::cvtColor(cvImg, monoFrame, CV_BGR2GRAY);
+            cv::cvtColor(largerImg, monoFrame, CV_BGR2GRAY);
             // Make any pixel >= 100 white, else black (changing brightness/contrast affects this threshhold)
             cv::threshold(monoFrame, monoFrame, 100, 255, THRESH_BINARY );
 
@@ -98,12 +100,12 @@ Mat WebcamPlayer::processImage(Mat cvImg) {
         }
         else { // filter == "None"
 
-            return cvImg;
+            return largerImg;
         }
     }
     else {
 
-        return cvImg;
+        return largerImg;
     }
 
 }
@@ -150,18 +152,18 @@ QImage WebcamPlayer::convertMatToQImage(Mat cvImg) {
         switch (RGBImg.type()) {
             case CV_8UC3 :
                 QImg = QImage( const_cast<unsigned char *>(RGBImg.data),
-                    RGBImg.cols, RGBImg.rows, QImage::Format_RGB888).copy();
+                    RGBImg.cols, RGBImg.rows, RGBImg.step, QImage::Format_RGB888).copy();
                 break;
             case CV_8UC1 : // or CV_8U
                 QImg = QImage( const_cast<unsigned char *>(RGBImg.data),
-                    RGBImg.cols, RGBImg.rows, QImage::Format_Grayscale8).copy();
+                    RGBImg.cols, RGBImg.rows, RGBImg.step, QImage::Format_Grayscale8).copy();
                 break;
 
         }
     }
     else {
         QImg = QImage( const_cast<unsigned char *>(cvImg.data),
-            cvImg.cols, cvImg.rows, QImage::Format_Indexed8).copy();
+            cvImg.cols, cvImg.rows, cvImg.step, QImage::Format_Indexed8).copy();
     }
 
     return QImg;

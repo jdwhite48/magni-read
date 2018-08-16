@@ -221,7 +221,7 @@ QGridLayout * SettingsDialog::createSettingsLayout() {
     lineThicknessBox->setSingleStep(1);
     lineThicknessBox->setSuffix(" pixels");
     if (!isLineDrawn || !guidingLineBox->isEnabled()) {
-        linePosBox->setEnabled(false);
+        lineThicknessBox->setEnabled(false);
     }
 
 
