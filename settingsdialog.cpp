@@ -187,10 +187,21 @@ QGridLayout * SettingsDialog::createSettingsLayout() {
     rotateAngleBox->setSuffix("°");
 
     // Spin box for max zoom multiplier (2x-20x, default 5x)
+
+    minZoomBox = new QDoubleSpinBox(this);
+    minZoomBox->setRange(0.1,1.0);
+    double curMinZoom = (settings.contains("image/minZoom")) ? settings.value("image/minZoom").toDouble() : DEFAULT_MIN_ZOOM;
+    qDebug() << "Current Min Zoom: " << curMinZoom << "x";
+    qDebug() << settings.value("image/minZoom").toDouble() << "x";
+    minZoomBox->setValue( curMinZoom );
+    minZoomBox->setDecimals(1);
+    minZoomBox->setSingleStep(0.1);
+    minZoomBox->setSuffix("x");
+
     maxZoomBox = new QSpinBox(this);
     maxZoomBox->setRange(2, 20);
-    int curZoom = (settings.contains("image/maxZoom")) ? settings.value("image/maxZoom").toInt() : DEFAULT_ZOOM;
-    maxZoomBox->setValue(curZoom);
+    int curMaxZoom = (settings.contains("image/maxZoom")) ? settings.value("image/maxZoom").toInt() : int(DEFAULT_MAX_ZOOM);
+    maxZoomBox->setValue(curMaxZoom);
     maxZoomBox->setSingleStep(1);
     maxZoomBox->setSuffix("x");  
 
@@ -298,32 +309,36 @@ QGridLayout * SettingsDialog::createSettingsLayout() {
     settingsLayout->addWidget(angleLabel, 4, 0, Qt::AlignLeft);
     settingsLayout->addWidget(rotateAngleBox, 4, 2, 1, 12);
 
-    // Row 6: Zoom
-    QLabel * zoomLabel = new QLabel("Max Zoom:", this);
-    settingsLayout->addWidget(zoomLabel, 5, 0, Qt::AlignLeft);
-    settingsLayout->addWidget(maxZoomBox, 5, 2, 1, 12); // Span the remaining part of the row
+    // Row 6-7: Zoom
+    QLabel * minZoomLabel = new QLabel("Min Zoom:", this);
+    settingsLayout->addWidget(minZoomLabel, 5, 0, Qt::AlignLeft);
+    settingsLayout->addWidget(minZoomBox, 5, 2, 1, 12); // Span the remaining part of the row
 
-    // Row 7: Click to drag
+    QLabel * maxZoomLabel = new QLabel("Max Zoom:", this);
+    settingsLayout->addWidget(maxZoomLabel, 6, 0, Qt::AlignLeft);
+    settingsLayout->addWidget(maxZoomBox, 6, 2, 1, 12); // Span the remaining part of the row
+
+    // Row 8: Click to drag
     QLabel * clickDragLabel = new QLabel("Click to Drag Image:", this);
-    settingsLayout->addWidget(clickDragLabel, 6, 0, 1, 2, Qt::AlignLeft);
-    settingsLayout->addWidget(clickDragBox, 6, 2, 1, 12);
+    settingsLayout->addWidget(clickDragLabel, 7, 0, 1, 2, Qt::AlignLeft);
+    settingsLayout->addWidget(clickDragBox, 7, 2, 1, 12);
 
-    // Row 8-11: Horizontal guiding line
+    // Row 9-12: Horizontal guiding line
     QLabel * lineDrawnLabel = new QLabel("Draw Guiding Line:", this);
-    settingsLayout->addWidget(lineDrawnLabel, 7, 0, 1, 2, Qt::AlignLeft);
-    settingsLayout->addWidget(guidingLineBox, 7, 2, 1, 12);
+    settingsLayout->addWidget(lineDrawnLabel, 8, 0, 1, 2, Qt::AlignLeft);
+    settingsLayout->addWidget(guidingLineBox, 8, 2, 1, 12);
 
     QLabel * linePosLabel = new QLabel("Guiding Line Position:", this);
-    settingsLayout->addWidget(linePosLabel, 8, 0, 1, 2, Qt::AlignLeft);
-    settingsLayout->addWidget(linePosBox, 8, 2, 1, 12);
+    settingsLayout->addWidget(linePosLabel, 9, 0, 1, 2, Qt::AlignLeft);
+    settingsLayout->addWidget(linePosBox, 9, 2, 1, 12);
 
     QLabel * lineColorLabel = new QLabel("Guiding Line Color:", this);
-    settingsLayout->addWidget(lineColorLabel, 9, 0, 1, 2, Qt::AlignLeft);
-    settingsLayout->addWidget(lineColorButton, 9, 2, 1, 12);
+    settingsLayout->addWidget(lineColorLabel, 10, 0, 1, 2, Qt::AlignLeft);
+    settingsLayout->addWidget(lineColorButton, 10, 2, 1, 12);
 
     QLabel * lineThicknessLabel = new QLabel("Guiding Line Thickness:", this);
-    settingsLayout->addWidget(lineThicknessLabel, 10, 0, 1, 2, Qt::AlignLeft);
-    settingsLayout->addWidget(lineThicknessBox, 10, 2, 1, 12);
+    settingsLayout->addWidget(lineThicknessLabel, 11, 0, 1, 2, Qt::AlignLeft);
+    settingsLayout->addWidget(lineThicknessBox, 11, 2, 1, 12);
 
     // Modify settings dynamically when value changes
     brightnessSlider->setTracking(true);
@@ -379,7 +394,8 @@ void SettingsDialog::restoreDefaults() {
     brightnessSlider->setSliderPosition( int(DEFAULT_BRIGHTNESS) );
     contrastSlider->setSliderPosition( int(DEFAULT_CONTRAST * 100) );
     rotateAngleBox->setValue(DEFAULT_ANGLE);
-    maxZoomBox->setValue(DEFAULT_ZOOM);
+    minZoomBox->setValue( DEFAULT_MIN_ZOOM );
+    maxZoomBox->setValue( int(DEFAULT_MAX_ZOOM) );
     colorFilterBox->setCurrentIndex( colorFilterBox->findText(DEFAULT_FILTER) );
     clickDragBox->setCheckState( (DEFAULT_CLICK_TO_DRAG) ? Qt::Checked : Qt::Unchecked);
     guidingLineBox->setCheckState( (DEFAULT_IS_LINE_DRAWN) ? Qt::Checked : Qt::Unchecked);
@@ -441,7 +457,9 @@ void SettingsDialog::saveAndCloseDialog() {
     settings.setValue("image/brightness", double(brightnessSlider->value()));
     settings.setValue("image/contrast", double(contrastSlider->value()) / 100 ); // Divide by 100 to convert from int scale to double
     settings.setValue("image/angle", rotateAngleBox->cleanText().toInt());
-    settings.setValue("image/maxZoom", maxZoomBox->cleanText().toInt());
+    settings.setValue("image/minZoom", minZoomBox->cleanText().toDouble() );
+    qDebug() << "Saved Min Zoom: " << minZoomBox->cleanText().toDouble() << "x";
+    settings.setValue("image/maxZoom", maxZoomBox->cleanText().toDouble() );
     settings.setValue("image/colorFilter", colorFilterBox->currentText());
     settings.setValue("controls/clickToDrag", isClickToDragChecked);
     settings.setValue("controls/isLineDrawn", isLineDrawn);

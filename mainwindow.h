@@ -29,6 +29,7 @@ private:
     QPushButton * fullscreenButton;
     QPushButton * settingsButton;
     QSlider * zoomSlider = nullptr;
+    QLabel * minZoomLabel;
     QLabel * maxZoomLabel;
     int curWebcam = 0;
     QString curWebcamName = "";

@@ -86,26 +86,33 @@ QHBoxLayout * MainWindow::createButtonLayout() {
     // Artificially widens size alloted for widget for stylesheet
     zoomSlider->setTickPosition(QSlider::TicksBothSides);
 
-    zoomSlider->setMinimum(0);
+    double minZoomFactor = (settings.contains("image/minZoom"))
+            ? settings.value("image/minZoom").toDouble()
+            : 1.0;
+    qDebug() << "Initial Min Zoom: " << minZoomFactor << "x";
+    zoomSlider->setMinimum( int(-100 * (1-minZoomFactor)) );
     int maxZoomPos = (settings.contains("image/maxZoom"))
                    ? settings.value("image/maxZoom").toInt() * 100
-                   : 500;
+                   : 5 * 100;
     zoomSlider->setMaximum(maxZoomPos);
     zoomSlider->setTickInterval( int((zoomSlider->maximum() - zoomSlider->minimum())/10) );
     zoomSlider->setSingleStep(1);
     zoomSlider->setPageStep( int((zoomSlider->maximum() - zoomSlider->minimum())/10) );
-    zoomSlider->setSliderPosition(zoomSlider->minimum());
+    zoomSlider->setSliderPosition(0);
     // Track zoom Slider as it's moving
     zoomSlider->setTracking(true);
 
     QLabel * zoomTitle = new QLabel("Zoom:", this);
 
-    QString label;
-    label += QString::number(maxZoomPos/100);
-    label += "x";
-    maxZoomLabel = new QLabel(label, this);
+    QString minZoomText;
+    minZoomText += QString::number(minZoomFactor);
+    minZoomText += "x";
+    minZoomLabel = new QLabel(minZoomText, this);
 
-    QLabel * minZoomLabel = new QLabel("1x", this);
+    QString maxZoomText;
+    maxZoomText += QString::number(maxZoomPos/100);
+    maxZoomText += "x";
+    maxZoomLabel = new QLabel(maxZoomText, this);
 
     buttonLayout->addWidget(fullscreenButton);
     buttonLayout->addWidget(zoomTitle);
@@ -222,13 +229,26 @@ void MainWindow::saveSettings() {
         }
     }
 
-    // Update max zoom label and limit
+    // Updat zoom labels and limits
+    if (settings.contains("image/minZoom")) {
+        double minZoomFactor = settings.value("image/minZoom").toDouble();
+        qDebug() << "Min Zoom Label: " << minZoomFactor << "x";
+        QString minZoomText;
+        minZoomText += QString::number(minZoomFactor);
+        minZoomText += "x";
+        minZoomLabel->setText(minZoomText);
+
+        zoomSlider->blockSignals(true);
+        zoomSlider->setMinimum( int(-100 * (1-minZoomFactor)) );
+        zoomSlider->blockSignals(false);
+    }
+
     if (settings.contains("image/maxZoom")) {
         int maxZoomFactor = settings.value("image/maxZoom").toInt();
-        QString label;
-        label += QString::number(maxZoomFactor);
-        label += "x";
-        maxZoomLabel->setText(label);
+        QString maxZoomText;
+        maxZoomText += QString::number(maxZoomFactor);
+        maxZoomText += "x";
+        maxZoomLabel->setText(maxZoomText);
 
         zoomSlider->blockSignals(true);
         zoomSlider->setMaximum(100 * maxZoomFactor);

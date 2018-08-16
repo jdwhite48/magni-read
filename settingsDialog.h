@@ -9,6 +9,7 @@
 #include <QCheckBox>
 #include <QColorDialog>
 #include <QComboBox>
+#include <QDoubleSpinBox>
 #include <QGridLayout>
 #include <QHBoxLayout>
 #include <QLabel>
@@ -32,6 +33,7 @@ private:
     QComboBox * webcamBox;
     QComboBox * colorFilterBox;
     QSpinBox * rotateAngleBox;
+    QDoubleSpinBox * minZoomBox;
     QSpinBox * maxZoomBox;
     QCheckBox * clickDragBox;
     QCheckBox * guidingLineBox;
@@ -51,7 +53,8 @@ private:
 protected:
     const double DEFAULT_BRIGHTNESS = 0;
     const double DEFAULT_CONTRAST = 1;
-    const int DEFAULT_ZOOM = 5;
+    const double DEFAULT_MIN_ZOOM = 1.0;
+    const double DEFAULT_MAX_ZOOM = 5;
     const QString DEFAULT_FILTER = "None";
     const int DEFAULT_ANGLE = 0;
     const bool DEFAULT_CLICK_TO_DRAG = false;
