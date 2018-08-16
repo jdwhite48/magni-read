@@ -1,7 +1,7 @@
 #ifndef COLORBUTTON_H
 #define COLORBUTTON_H
 
-// Derived class
+// Parent class
 #include <QPushButton>
 
 // Implementation classes

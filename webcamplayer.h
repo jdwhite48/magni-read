@@ -27,15 +27,8 @@ private:
     int angle = 0;
     bool stopped;
     QMutex mutex;
-    // Processed
     Mat frame;
-//    Mat RGBFrame;
-//    Mat greyFrame;
-//    Mat monoFrame;
     QImage processedImage;
-    // Raw
-//    Mat rawFrame;
-//    Mat rawRGBFrame;
     QImage rawImage;
 
     VideoCapture capture;

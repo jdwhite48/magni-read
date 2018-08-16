@@ -1,7 +1,10 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+// Parent class
 #include <QMainWindow>
+
+// Implementation classes
 #include <QDialog>
 #include <QBoxLayout>
 #include <QGridLayout>
@@ -13,7 +16,7 @@
 #include <QResizeEvent>
 
 #include "webcamview.h"
-#include "settingsDialog.h"
+#include "settingsdialog.h"
 
 class MainWindow : public QMainWindow
 {

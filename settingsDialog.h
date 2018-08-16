@@ -11,14 +11,14 @@
 #include <QComboBox>
 #include <QGridLayout>
 #include <QHBoxLayout>
+#include <QLabel>
 #include <QPushButton>
 #include <QSettings>
 #include <QSpinBox>
 #include <QSlider>
 #include <QVBoxLayout>
-#include <string>
 
-#include <QLabel>
+#include <string>
 
 #include "colorbutton.h"
 

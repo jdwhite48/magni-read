@@ -1,14 +1,19 @@
 #ifndef WEBCAMVIEW_H
 #define WEBCAMVIEW_H
 
+// Parent class
+#include <QGraphicsView>
+
+// Implementation classes
 #include <string>
 
 #include <QEvent>
 #include <QGraphicsPixmapItem>
 #include <QGraphicsScene>
-#include <QGraphicsView>
 #include <QMouseEvent>
 #include <QSettings>
+
+#include <opencv2/core.hpp>
 
 #include "webcamplayer.h"
 
