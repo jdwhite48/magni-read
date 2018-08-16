@@ -89,7 +89,6 @@ QHBoxLayout * MainWindow::createButtonLayout() {
     double minZoomFactor = (settings.contains("image/minZoom"))
             ? settings.value("image/minZoom").toDouble()
             : 1.0;
-    qDebug() << "Initial Min Zoom: " << minZoomFactor << "x";
     zoomSlider->setMinimum( int(-100 * (1-minZoomFactor)) );
     int maxZoomPos = (settings.contains("image/maxZoom"))
                    ? settings.value("image/maxZoom").toInt() * 100
@@ -232,7 +231,6 @@ void MainWindow::saveSettings() {
     // Updat zoom labels and limits
     if (settings.contains("image/minZoom")) {
         double minZoomFactor = settings.value("image/minZoom").toDouble();
-        qDebug() << "Min Zoom Label: " << minZoomFactor << "x";
         QString minZoomText;
         minZoomText += QString::number(minZoomFactor);
         minZoomText += "x";

@@ -191,8 +191,6 @@ QGridLayout * SettingsDialog::createSettingsLayout() {
     minZoomBox = new QDoubleSpinBox(this);
     minZoomBox->setRange(0.1,1.0);
     double curMinZoom = (settings.contains("image/minZoom")) ? settings.value("image/minZoom").toDouble() : DEFAULT_MIN_ZOOM;
-    qDebug() << "Current Min Zoom: " << curMinZoom << "x";
-    qDebug() << settings.value("image/minZoom").toDouble() << "x";
     minZoomBox->setValue( curMinZoom );
     minZoomBox->setDecimals(1);
     minZoomBox->setSingleStep(0.1);
@@ -458,7 +456,6 @@ void SettingsDialog::saveAndCloseDialog() {
     settings.setValue("image/contrast", double(contrastSlider->value()) / 100 ); // Divide by 100 to convert from int scale to double
     settings.setValue("image/angle", rotateAngleBox->cleanText().toInt());
     settings.setValue("image/minZoom", minZoomBox->cleanText().toDouble() );
-    qDebug() << "Saved Min Zoom: " << minZoomBox->cleanText().toDouble() << "x";
     settings.setValue("image/maxZoom", maxZoomBox->cleanText().toDouble() );
     settings.setValue("image/colorFilter", colorFilterBox->currentText());
     settings.setValue("controls/clickToDrag", isClickToDragChecked);
