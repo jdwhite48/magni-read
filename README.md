@@ -68,17 +68,6 @@ win32 {
 6. Now you should be able to modify and run the project's source code from the QtCreator IDE
 
 ## TODO
-### Upcoming
-* Performance improvements and bug fixes
-* Pinch on touchscreen to zoom image in and out
-* Add horizontal guide bar over image to help users read
-
-### Future Ideas
-* Allow user to sharpen and denoise image
-* Save snapshots to the user's computer
-* Choose resolution of image
-* Add color filters for those with colorblindness
-* Cross-platform compatibility (Linux && OS X)
 
 ### Known Bugs
 * When changing webcams, the application acts unpredictably (changes video footage as intended, stops, or crashes). If the video footage stops, re-enter preview mode to get video from new webcam
